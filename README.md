@@ -29,6 +29,29 @@ See **[NEWS_CMS_README.md](./NEWS_CMS_README.md)** for complete setup and deploy
 - [Full Deployment Guide](./NEWS_CMS_README.md) - Complete setup instructions
 - [API Documentation](./NEWS_CMS_README.md#-api-endpoints) - All endpoints documented
 - [User Workflows](./NEWS_CMS_README.md#-user-workflows) - Admin, editor, and public flows
+- [Style Guide](./STYLE.md) - CSS architecture, design system, and customization guide
+
+## 🎨 Frontend Architecture
+
+The public-facing Fishtank News site uses a clean, componentized Astro architecture:
+
+### Core Components
+- **MainLayout.astro**: Base HTML wrapper with `<head>` and stylesheet
+- **Header.astro**: Site header with role-based navigation (public/admin/editor)
+- **Footer.astro**: Consistent footer across all pages
+- **ArticleCard.astro**: Reusable article preview cards with R2 image support
+
+### Pages
+- **index.astro** (`/`): Homepage with article grid (featured + regular articles)
+- **[slug].astro** (`/{slug}`): Article detail pages with full content
+
+### Styling
+- **Brutalist Design**: Bold borders, high contrast, monospace typography
+- **CSS Variables**: Complete design system with colors, spacing, borders, and typography variables
+- **Mobile-First**: Responsive design with breakpoints at 768px and 480px
+- **R2 Integration**: Images served from Cloudflare R2 with graceful fallbacks
+
+See [STYLE.md](./STYLE.md) for complete styling documentation and customization guide.
 
 ## 🔐 Default Credentials
 

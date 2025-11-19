@@ -1,0 +1,62 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { getArticleBySlug } from '@/lib/db-utils';
+import { marked } from 'marked';
+
+const { slug } = Astro.params;
+const db = Astro.locals.runtime.env.DB;
+const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
+
+if (!slug) {
+  return Astro.redirect('/');
+}
+
+// Fetch article from database
+const article = await getArticleBySlug(db, slug);
+
+// Check if article exists and is approved
+if (!article || article.status !== 'approved') {
+  return Astro.redirect('/');
+}
+
+// Parse markdown content
+const htmlContent = marked.parse(article.content);
+
+// Construct image URL from R2 if featured_image exists
+const imageUrl = article.featured_image 
+  ? (article.featured_image.startsWith('http') 
+      ? article.featured_image 
+      : r2PublicUrl ? `${r2PublicUrl}/${article.featured_image}` : article.featured_image)
+  : null;
+
+const formattedDate = new Date(article.published_at || article.created_at).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<MainLayout title={article.title} description={article.excerpt || article.title}>
+  <Header role="public" />
+  <main>
+    <div class="ftn-container">
+      <article class="ftn-article-detail">
+        <h1>{article.title}</h1>
+        
+        <div class="ftn-article-meta">
+          <span class="ftn-article-author">By {article.author_name}</span>
+          <span class="ftn-article-date">{formattedDate}</span>
+        </div>
+        
+        {imageUrl && (
+          <img src={imageUrl} alt={article.title} class="ftn-article-hero" />
+        )}
+        
+        <div class="ftn-article-body" set:html={htmlContent} />
+      </article>
+    </div>
+  </main>
+  <Footer />
+</MainLayout>

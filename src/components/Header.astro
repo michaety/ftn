@@ -1,0 +1,50 @@
+---
+interface Props {
+  role?: 'public' | 'admin' | 'editor';
+  userName?: string;
+}
+
+const { role = 'public', userName } = Astro.props;
+---
+
+<header class="ftn-header">
+  <div class="ftn-container">
+    <div class="ftn-header-content">
+      <h1 class="ftn-logo">
+        <a href="/">FISHTANK NEWS</a>
+      </h1>
+      <nav class="ftn-nav">
+        {role === 'public' ? (
+          <>
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+          </>
+        ) : role === 'admin' ? (
+          <>
+            <a href="/news/admin">Dashboard</a>
+            <a href="/news/admin/articles">Articles</a>
+            <a href="/news/admin/invites">Invites</a>
+            {userName && <span class="ftn-user">{userName}</span>}
+            <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
+          </>
+        ) : (
+          <>
+            <a href="/news/editor">Dashboard</a>
+            <a href="/news/editor/new">New Article</a>
+            {userName && <span class="ftn-user">{userName}</span>}
+            <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
+          </>
+        )}
+      </nav>
+    </div>
+  </div>
+</header>
+
+{(role === 'admin' || role === 'editor') && (
+  <script is:inline>
+    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/';
+    });
+  </script>
+)}
