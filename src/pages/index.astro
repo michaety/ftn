@@ -33,18 +33,33 @@ const repoLink = 'https://github.com/cloudflare/templates/tree/main/saas-admin-t
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>SaaS Admin Template</title>
+    <style>
+      /* Inline critical base styles for proper rendering */
+      * {
+        border-color: hsl(var(--border));
+      }
+      body {
+        margin: 0;
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
   </head>
   <body>
     <div class="flex flex-col items-center justify-center gap-4 py-20 px-8">
       <h1 class="text-5xl font-bold">SaaS Admin Template</h1>
       <p class="text-xl text-muted-foreground">Manage a SaaS application - customers, subscriptions - using Cloudflare Workers and D1.</p>
-      <div class="flex flex gap-4 mt-4">
+      <div class="flex gap-4 mt-4">
         <a class={buttonVariants()} href="/admin">
           <LayoutDashboard /> Go to admin
         </a>
         <a class={buttonVariants({ variant: 'outline' })} href={repoLink}>
           <Github /> View on GitHub
         </a>
+      </div>
     </div>
   </body>
 </html>
