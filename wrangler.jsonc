@@ -1,6 +1,6 @@
 {
   "name": "ftn",
-  "main": "./dist/index.js",
+  "main": "./dist/_worker.js/index.js",
   "assets": {
     "directory": "./dist"
   },
