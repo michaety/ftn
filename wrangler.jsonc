@@ -23,8 +23,12 @@
   "kv_namespaces": [
     {
       "binding": "SESSION",
-      "id": "placeholder-kv-id",
-      "preview_id": "placeholder-kv-preview-id"
+      // REQUIRED: Replace with your actual KV namespace ID
+      // Run: npx wrangler kv:namespace create SESSION
+      // Then: npx wrangler kv:namespace create SESSION --preview
+      // Copy the IDs from the command output below
+      "id": "YOUR_KV_NAMESPACE_ID_HERE",
+      "preview_id": "YOUR_KV_PREVIEW_ID_HERE"
     }
   ],
   "r2_buckets": [

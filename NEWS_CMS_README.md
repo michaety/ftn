@@ -47,26 +47,41 @@ Copy the `database_id` from the output and update it in `wrangler.jsonc`:
 ]
 ```
 
-#### Create KV Namespace
+#### Create KV Namespace (Required for Sessions)
+
+**IMPORTANT**: You must create a KV namespace before deploying. The placeholder IDs in `wrangler.jsonc` will cause deployment to fail.
 
 ```bash
-# Production
+# Production KV namespace
 npx wrangler kv:namespace create SESSION
 
-# Preview (for local development)
+# Preview KV namespace (for local development)
 npx wrangler kv:namespace create SESSION --preview
 ```
 
-Update `wrangler.jsonc` with the IDs:
+The commands will output IDs like this:
+```
+🌀 Creating namespace with title "ftn-SESSION"
+✨ Success!
+Add the following to your configuration file in your kv_namespaces array:
+{ binding = "SESSION", id = "abc123def456..." }
+```
+
+**Copy both IDs** and update `wrangler.jsonc`:
 
 ```json
 "kv_namespaces": [
   {
     "binding": "SESSION",
-    "id": "YOUR_KV_ID_HERE",
-    "preview_id": "YOUR_KV_PREVIEW_ID_HERE"
+    "id": "abc123def456...",           // ID from production command
+    "preview_id": "xyz789ghi012..."    // ID from preview command
   }
 ]
+```
+
+⚠️ **Without valid KV namespace IDs, deployment will fail with error:**
+```
+KV namespace 'placeholder-kv-id' is not valid. [code: 10042]
 ```
 
 #### Create R2 Bucket
@@ -274,6 +289,33 @@ ftn/
 - HttpOnly cookies for session management
 
 ## 🐛 Troubleshooting
+
+### KV Namespace Errors
+
+**Error: `KV namespace 'placeholder-kv-id' is not valid. [code: 10042]`**
+
+This means you haven't created a KV namespace or updated `wrangler.jsonc` with the actual IDs.
+
+```bash
+# Create the KV namespaces
+npx wrangler kv:namespace create SESSION
+npx wrangler kv:namespace create SESSION --preview
+
+# Update wrangler.jsonc with the IDs returned from the commands above
+```
+
+**Error: `Invalid binding 'SESSION'`**
+
+Ensure your `wrangler.jsonc` has the KV namespace configured:
+```json
+"kv_namespaces": [
+  {
+    "binding": "SESSION",
+    "id": "your-actual-kv-id",
+    "preview_id": "your-actual-preview-id"
+  }
+]
+```
 
 ### Database Errors
 ```bash

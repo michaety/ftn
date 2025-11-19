@@ -39,8 +39,17 @@ See **[NEWS_CMS_README.md](./NEWS_CMS_README.md)** for complete setup and deploy
 
 ## 📦 Installation
 
+⚠️ **Before deployment**: You must create Cloudflare resources (D1, KV, R2). See the [Full Deployment Guide](./NEWS_CMS_README.md) for complete setup instructions.
+
 ```bash
 npm install
+
+# Create KV namespace for sessions (REQUIRED)
+npx wrangler kv:namespace create SESSION
+npx wrangler kv:namespace create SESSION --preview
+# Update wrangler.jsonc with the returned IDs
+
+# Run migrations and deploy
 npm run db:migrate
 npm run build
 npm run deploy
