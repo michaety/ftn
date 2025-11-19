@@ -10,7 +10,7 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 const articles = await getArticles(db, 'approved');
 ---
 
-<NewsLayout title="Home">
+<NewsLayout title="Home" hideNavigation={true}>
   <div class="container ftn-container">
     <!-- Left Sidebar -->
     <aside class="sidebar ftn-sidebar left">
@@ -40,8 +40,10 @@ const articles = await getArticles(db, 'approved');
     <main class="main-feed ftn-main-feed">
       <div class="filters ftn-filters">
         <button class="active" data-filter="all">All</button>
+        <button data-filter="breaking">Breaking</button>
         <button data-filter="rumors">Rumors</button>
         <button data-filter="opinions">Opinions</button>
+        <button data-filter="fake-news">Fake News</button>
       </div>
 
       {articles.length === 0 ? (

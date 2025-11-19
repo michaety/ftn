@@ -8,13 +8,15 @@ interface Props {
   description?: string;
   role?: 'public' | 'admin' | 'editor';
   userName?: string;
+  hideNavigation?: boolean;
 }
 
 const { 
   title = 'Fishtank News',
   description = 'Latest news and updates',
   role = 'public',
-  userName
+  userName,
+  hideNavigation = false
 } = Astro.props;
 
 const fullTitle = title === 'Fishtank News' ? title : `${title} - Fishtank News`;
@@ -29,7 +31,7 @@ const fullTitle = title === 'Fishtank News' ? title : `${title} - Fishtank News`
     <title>{fullTitle}</title>
   </head>
   <body>
-    <NewsHeader role={role} userName={userName} />
+    <NewsHeader role={role} userName={userName} hideNavigation={hideNavigation} />
     <main>
       <slot />
     </main>
