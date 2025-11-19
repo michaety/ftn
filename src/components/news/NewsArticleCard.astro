@@ -8,14 +8,16 @@ interface Article {
   author_name: string;
   published_at?: string;
   created_at: string;
+  category?: string;
 }
 
 interface Props {
   article: Article;
   r2PublicUrl?: string;
+  index?: number;
 }
 
-const { article, r2PublicUrl = '' } = Astro.props;
+const { article, r2PublicUrl = '', index = 0 } = Astro.props;
 
 // Construct image URL from R2 if featured_image exists
 const imageUrl = article.featured_image 
@@ -29,27 +31,31 @@ const formattedDate = new Date(article.published_at || article.created_at).toLoc
   month: 'long',
   day: 'numeric'
 });
+
+// Determine article classes based on category
+const categoryClass = article.category?.toLowerCase() || 'all';
+const articleClasses = `article ftn-article-card all ${categoryClass}`;
 ---
 
-<article class="ftn-article-card">
+<article class={articleClasses} style={`--index: ${index + 1};`}>
+  <h2 class="ftn-article-title">
+    <a href={`/news/articles/${article.slug}`}>{article.title}</a>
+  </h2>
+  
   {imageUrl && (
     <div class="ftn-article-image">
-      <img src={imageUrl} alt={article.title} />
+      <img src={imageUrl} alt={article.title} class="article-thumbnail" />
     </div>
   )}
   
-  <div class="ftn-article-content">
-    <h2 class="ftn-article-title">
-      <a href={`/news/articles/${article.slug}`}>{article.title}</a>
-    </h2>
-    
+  <div class="ftn-article-content article-content">
     {article.excerpt && (
       <p class="ftn-article-excerpt">{article.excerpt}</p>
     )}
-    
-    <div class="ftn-article-meta">
-      <span class="ftn-article-author">By {article.author_name}</span>
-      <span class="ftn-article-date">{formattedDate}</span>
-    </div>
   </div>
+  
+  <span class="tag ftn-article-meta">
+    By {article.author_name} | {formattedDate}
+    {article.category && ` | ${article.category}`}
+  </span>
 </article>
