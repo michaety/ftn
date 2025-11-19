@@ -1,6 +1,6 @@
 {
   "name": "ftn",
-  "main": "./dist/index.js",
+  "main": "./dist/_worker.js/index.js",
   "assets": {
     "directory": "./dist"
   },
@@ -23,8 +23,10 @@
   "kv_namespaces": [
     {
       "binding": "SESSION",
-      "id": "placeholder-kv-id",
-      "preview_id": "placeholder-kv-preview-id"
+      "id": "f71ca6a63dfe4fd39fb6eacaab42c39c",
+      // For local development, create a preview namespace:
+      // Run: npx wrangler kv:namespace create SESSION --preview
+      "preview_id": "YOUR_KV_PREVIEW_ID_HERE"
     }
   ],
   "r2_buckets": [
