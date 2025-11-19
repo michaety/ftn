@@ -1,148 +1,94 @@
 ---
-import '@/styles/news.css';
+import NewsLayout from '@/layouts/NewsLayout.astro';
+import NewsArticleCard from '@/components/news/NewsArticleCard.astro';
+import { getSession, getCookie, getArticlesByAuthor } from '@/lib/db-utils';
+
+// Check authentication
+const db = Astro.locals.runtime.env.DB;
+const kv = Astro.locals.runtime.env.SESSION;
+const sessionId = getCookie(Astro.request, 'sessionId');
+const session = await getSession(kv, sessionId);
+
+if (!session || !['admin', 'editor'].includes(session.userRole)) {
+  return Astro.redirect('/login');
+}
+
+// Fetch user's articles
+const articles = await getArticlesByAuthor(db, session.userId);
+const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Editor Dashboard - Fishtank News</title>
-</head>
-<body>
-  <div id="app"></div>
+<NewsLayout title="Editor Dashboard" role="editor" userName={session.userName}>
+  <div class="ftn-container">
+    <div class="ftn-dashboard">
+      <h1 class="ftn-dashboard-title">Editor Dashboard</h1>
+      
+      <div class="ftn-dashboard-section">
+        <h2 class="ftn-section-title">My Articles</h2>
+        <div style="margin-bottom: 20px;">
+          <a href="/news/editor/new" class="ftn-btn">Create New Article</a>
+        </div>
+        
+        {articles.length === 0 ? (
+          <p style="text-align: center; padding: 40px 0;">
+            No articles yet. <a href="/news/editor/new" class="ftn-btn">Create your first article</a>
+          </p>
+        ) : (
+          <div class="ftn-grid">
+            {articles.map((article: any) => (
+              <article class="ftn-article-card">
+                {article.featured_image && (
+                  <div class="ftn-article-image">
+                    <img 
+                      src={article.featured_image.startsWith('http') ? article.featured_image : r2PublicUrl ? `${r2PublicUrl}/${article.featured_image}` : article.featured_image} 
+                      alt={article.title} 
+                    />
+                  </div>
+                )}
+                
+                <div class="ftn-article-content">
+                  <h2 class="ftn-article-title">{article.title}</h2>
+                  
+                  {article.excerpt && (
+                    <p class="ftn-article-excerpt">{article.excerpt}</p>
+                  )}
+                  
+                  <div class="ftn-article-meta">
+                    <span class="ftn-article-author">Status: {article.status}</span>
+                    <span class="ftn-article-date">
+                      {new Date(article.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <div class="ftn-article-actions">
+                    <a href={`/news/editor/edit/${article.id}`} class="ftn-btn ftn-btn-edit">
+                      Edit
+                    </a>
+                    <button 
+                      onclick={`deleteArticle(${article.id})`} 
+                      class="ftn-btn ftn-btn-delete"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Check authentication
-    async function checkAuth() {
-      try {
-        const response = await fetch('/api/articles');
-        if (!response.ok) {
-          window.location.href = '/login';
-          return null;
-        }
-        return true;
-      } catch (error) {
-        window.location.href = '/login';
-        return null;
-      }
-    }
-
-    async function loadDashboard() {
-      const authenticated = await checkAuth();
-      if (!authenticated) return;
-
-      const app = document.getElementById('app');
-      
-      app.innerHTML = `
-        <header class="ftn-header">
-          <div class="ftn-container">
-            <div class="ftn-header-content">
-              <h1 class="ftn-logo">
-                <a href="/news/editor">FISHTANK NEWS - EDITOR</a>
-              </h1>
-              <nav class="ftn-nav">
-                <a href="/news/editor">Dashboard</a>
-                <a href="/news/editor/new">New Article</a>
-                <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
-              </nav>
-            </div>
-          </div>
-        </header>
-
-        <main class="ftn-container">
-          <div class="ftn-dashboard">
-            <h1 class="ftn-dashboard-title">Editor Dashboard</h1>
-            
-            <div class="ftn-dashboard-section">
-              <h2 class="ftn-section-title">My Articles</h2>
-              <div style="margin-bottom: 20px;">
-                <a href="/news/editor/new" class="ftn-btn">Create New Article</a>
-              </div>
-              <div id="my-articles" class="ftn-grid">
-                <p>Loading...</p>
-              </div>
-            </div>
-          </div>
-        </main>
-
-        <footer class="ftn-footer">
-          <div class="ftn-container">
-            <div class="ftn-footer-content">
-              <p>&copy; ${new Date().getFullYear()} Fishtank News. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
-      `;
-
-      // Setup logout
-      document.getElementById('logoutBtn').addEventListener('click', async () => {
-        await fetch('/api/auth/logout', { method: 'POST' });
-        window.location.href = '/';
-      });
-
-      // Load articles
-      loadMyArticles();
-    }
-
-    async function loadMyArticles() {
-      const container = document.getElementById('my-articles');
-      
-      try {
-        const response = await fetch('/api/articles');
-        const data = await response.json();
-        
-        if (data.articles && data.articles.length > 0) {
-          container.innerHTML = data.articles.map(article => `
-            <article class="ftn-article-card">
-              ${article.featured_image ? `
-                <div class="ftn-article-image">
-                  <img src="${article.featured_image}" alt="${article.title}" />
-                </div>
-              ` : ''}
-              
-              <div class="ftn-article-content">
-                <h2 class="ftn-article-title">${article.title}</h2>
-                
-                ${article.excerpt ? `
-                  <p class="ftn-article-excerpt">${article.excerpt}</p>
-                ` : ''}
-                
-                <div class="ftn-article-meta">
-                  <span class="ftn-article-author">Status: ${article.status}</span>
-                  <span class="ftn-article-date">
-                    ${new Date(article.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-
-                <div class="ftn-article-actions">
-                  <a href="/news/editor/edit/${article.id}" class="ftn-btn ftn-btn-edit">
-                    Edit
-                  </a>
-                  <button onclick="deleteArticle(${article.id})" class="ftn-btn ftn-btn-delete">
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </article>
-          `).join('');
-        } else {
-          container.innerHTML = '<p style="grid-column: 1 / -1;">No articles yet. <a href="/news/editor/new" class="ftn-btn">Create your first article</a></p>';
-        }
-      } catch (error) {
-        console.error('Error loading articles:', error);
-        container.innerHTML = '<p style="grid-column: 1 / -1; color: red;">Error loading articles.</p>';
-      }
-    }
-
-    window.deleteArticle = async (id) => {
+    (window as any).deleteArticle = async (id: number) => {
       if (!confirm('Are you sure you want to delete this article?')) return;
       
       try {
         const response = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
         if (response.ok) {
           alert('Article deleted');
-          loadMyArticles();
+          window.location.reload();
         } else {
           alert('Failed to delete article');
         }
@@ -150,8 +96,5 @@ import '@/styles/news.css';
         alert('Error deleting article');
       }
     };
-
-    loadDashboard();
   </script>
-</body>
-</html>
+</NewsLayout>

@@ -1,152 +1,96 @@
 ---
-import '@/styles/news.css';
+import NewsLayout from '@/layouts/NewsLayout.astro';
+import { getSession, getCookie, getArticles } from '@/lib/db-utils';
+
+// Check authentication
+const db = Astro.locals.runtime.env.DB;
+const kv = Astro.locals.runtime.env.SESSION;
+const sessionId = getCookie(Astro.request, 'sessionId');
+const session = await getSession(kv, sessionId);
+
+if (!session || session.userRole !== 'admin') {
+  return Astro.redirect('/login');
+}
+
+// Fetch pending articles
+const pendingArticles = await getArticles(db, 'pending');
+const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard - Fishtank News</title>
-</head>
-<body>
-  <div id="app"></div>
+<NewsLayout title="Admin Dashboard" role="admin" userName={session.userName}>
+  <div class="ftn-container">
+    <div class="ftn-dashboard">
+      <h1 class="ftn-dashboard-title">Admin Dashboard</h1>
+      
+      <div class="ftn-dashboard-section">
+        <h2 class="ftn-section-title">Pending Articles</h2>
+        
+        {pendingArticles.length === 0 ? (
+          <p style="text-align: center; padding: 40px 0;">No pending articles.</p>
+        ) : (
+          <div class="ftn-grid">
+            {pendingArticles.map((article: any) => (
+              <article class="ftn-article-card">
+                {article.featured_image && (
+                  <div class="ftn-article-image">
+                    <img 
+                      src={article.featured_image.startsWith('http') ? article.featured_image : r2PublicUrl ? `${r2PublicUrl}/${article.featured_image}` : article.featured_image} 
+                      alt={article.title} 
+                    />
+                  </div>
+                )}
+                
+                <div class="ftn-article-content">
+                  <h2 class="ftn-article-title">{article.title}</h2>
+                  
+                  {article.excerpt && (
+                    <p class="ftn-article-excerpt">{article.excerpt}</p>
+                  )}
+                  
+                  <div class="ftn-article-meta">
+                    <span class="ftn-article-author">By {article.author_name}</span>
+                    <span class="ftn-article-date">
+                      {new Date(article.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <div class="ftn-article-actions">
+                    <button 
+                      onclick={`approveArticle(${article.id})`} 
+                      class="ftn-btn ftn-btn-approve"
+                    >
+                      Approve
+                    </button>
+                    <button 
+                      onclick={`rejectArticle(${article.id})`} 
+                      class="ftn-btn ftn-btn-reject"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="ftn-dashboard-section">
+        <h2 class="ftn-section-title">Quick Actions</h2>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <a href="/news/admin" class="ftn-btn">Manage All Articles</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Check authentication
-    async function checkAuth() {
-      try {
-        const response = await fetch('/api/admin/users');
-        if (!response.ok) {
-          window.location.href = '/login';
-          return null;
-        }
-        return true;
-      } catch (error) {
-        window.location.href = '/login';
-        return null;
-      }
-    }
-
-    async function loadDashboard() {
-      const authenticated = await checkAuth();
-      if (!authenticated) return;
-
-      const app = document.getElementById('app');
-      
-      app.innerHTML = `
-        <header class="ftn-header">
-          <div class="ftn-container">
-            <div class="ftn-header-content">
-              <h1 class="ftn-logo">
-                <a href="/news/admin">FISHTANK NEWS - ADMIN</a>
-              </h1>
-              <nav class="ftn-nav">
-                <a href="/news/admin">Dashboard</a>
-                <a href="/news/admin/articles">Articles</a>
-                <a href="/news/admin/invites">Invites</a>
-                <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
-              </nav>
-            </div>
-          </div>
-        </header>
-
-        <main class="ftn-container">
-          <div class="ftn-dashboard">
-            <h1 class="ftn-dashboard-title">Admin Dashboard</h1>
-            
-            <div class="ftn-dashboard-section">
-              <h2 class="ftn-section-title">Pending Articles</h2>
-              <div id="pending-articles" class="ftn-grid">
-                <p>Loading...</p>
-              </div>
-            </div>
-
-            <div class="ftn-dashboard-section">
-              <h2 class="ftn-section-title">Quick Actions</h2>
-              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="/news/admin/articles" class="ftn-btn">Manage All Articles</a>
-                <a href="/news/admin/invites" class="ftn-btn">Send Invites</a>
-              </div>
-            </div>
-          </div>
-        </main>
-
-        <footer class="ftn-footer">
-          <div class="ftn-container">
-            <div class="ftn-footer-content">
-              <p>&copy; ${new Date().getFullYear()} Fishtank News. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
-      `;
-
-      // Setup logout
-      document.getElementById('logoutBtn').addEventListener('click', async () => {
-        await fetch('/api/auth/logout', { method: 'POST' });
-        window.location.href = '/';
-      });
-
-      // Load pending articles
-      loadPendingArticles();
-    }
-
-    async function loadPendingArticles() {
-      const container = document.getElementById('pending-articles');
-      
-      try {
-        const response = await fetch('/api/articles?status=pending');
-        const data = await response.json();
-        
-        if (data.articles && data.articles.length > 0) {
-          container.innerHTML = data.articles.map(article => `
-            <article class="ftn-article-card">
-              ${article.featured_image ? `
-                <div class="ftn-article-image">
-                  <img src="${article.featured_image}" alt="${article.title}" />
-                </div>
-              ` : ''}
-              
-              <div class="ftn-article-content">
-                <h2 class="ftn-article-title">${article.title}</h2>
-                
-                ${article.excerpt ? `
-                  <p class="ftn-article-excerpt">${article.excerpt}</p>
-                ` : ''}
-                
-                <div class="ftn-article-meta">
-                  <span class="ftn-article-author">By ${article.author_name}</span>
-                  <span class="ftn-article-date">
-                    ${new Date(article.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-
-                <div class="ftn-article-actions">
-                  <button onclick="approveArticle(${article.id})" class="ftn-btn ftn-btn-approve">
-                    Approve
-                  </button>
-                  <button onclick="rejectArticle(${article.id})" class="ftn-btn ftn-btn-reject">
-                    Reject
-                  </button>
-                </div>
-              </div>
-            </article>
-          `).join('');
-        } else {
-          container.innerHTML = '<p style="grid-column: 1 / -1;">No pending articles.</p>';
-        }
-      } catch (error) {
-        console.error('Error loading articles:', error);
-        container.innerHTML = '<p style="grid-column: 1 / -1; color: red;">Error loading articles.</p>';
-      }
-    }
-
-    window.approveArticle = async (id) => {
+    (window as any).approveArticle = async (id: number) => {
       try {
         const response = await fetch(`/api/articles/${id}/approve`, { method: 'POST' });
         if (response.ok) {
           alert('Article approved!');
-          loadPendingArticles();
+          window.location.reload();
         } else {
           alert('Failed to approve article');
         }
@@ -155,12 +99,12 @@ import '@/styles/news.css';
       }
     };
 
-    window.rejectArticle = async (id) => {
+    (window as any).rejectArticle = async (id: number) => {
       try {
         const response = await fetch(`/api/articles/${id}/reject`, { method: 'POST' });
         if (response.ok) {
           alert('Article rejected');
-          loadPendingArticles();
+          window.location.reload();
         } else {
           alert('Failed to reject article');
         }
@@ -168,8 +112,5 @@ import '@/styles/news.css';
         alert('Error rejecting article');
       }
     };
-
-    loadDashboard();
   </script>
-</body>
-</html>
+</NewsLayout>

@@ -1,31 +1,19 @@
 ---
-import '@/styles/news.css';
+import NewsLayout from '@/layouts/NewsLayout.astro';
+import { getSession, getCookie } from '@/lib/db-utils';
+
+// Check authentication
+const kv = Astro.locals.runtime.env.SESSION;
+const sessionId = getCookie(Astro.request, 'sessionId');
+const session = await getSession(kv, sessionId);
+
+if (!session || !['admin', 'editor'].includes(session.userRole)) {
+  return Astro.redirect('/login');
+}
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>New Article - Fishtank News</title>
-</head>
-<body>
-  <header class="ftn-header">
-    <div class="ftn-container">
-      <div class="ftn-header-content">
-        <h1 class="ftn-logo">
-          <a href="/news/editor">FISHTANK NEWS - EDITOR</a>
-        </h1>
-        <nav class="ftn-nav">
-          <a href="/news/editor">Dashboard</a>
-          <a href="/news/editor/new">New Article</a>
-          <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
-        </nav>
-      </div>
-    </div>
-  </header>
-
-  <main class="ftn-container">
+<NewsLayout title="Create New Article" role="editor" userName={session.userName}>
+  <div class="ftn-container">
     <div class="ftn-dashboard">
       <h1 class="ftn-dashboard-title">Create New Article</h1>
       
@@ -120,50 +108,36 @@ import '@/styles/news.css';
         </div>
       </form>
     </div>
-  </main>
-
-  <footer class="ftn-footer">
-    <div class="ftn-container">
-      <div class="ftn-footer-content">
-        <p>&copy; {new Date().getFullYear()} Fishtank News. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+  </div>
 
   <script>
-    const form = document.getElementById('articleForm');
-    const errorDiv = document.getElementById('error');
-    const successDiv = document.getElementById('success');
-    const contentTextarea = document.getElementById('content');
-    const imageUploadInput = document.getElementById('imageUpload');
-    const uploadImageBtn = document.getElementById('uploadImageBtn');
-    const insertImageBtn = document.getElementById('insertImageBtn');
-    const uploadStatus = document.getElementById('uploadStatus');
-    const featuredImageInput = document.getElementById('featured_image');
-
-    // Setup logout
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      window.location.href = '/';
-    });
+    const form = document.getElementById('articleForm') as HTMLFormElement;
+    const errorDiv = document.getElementById('error')!;
+    const successDiv = document.getElementById('success')!;
+    const contentTextarea = document.getElementById('content') as HTMLTextAreaElement;
+    const imageUploadInput = document.getElementById('imageUpload') as HTMLInputElement;
+    const uploadImageBtn = document.getElementById('uploadImageBtn') as HTMLButtonElement;
+    const insertImageBtn = document.getElementById('insertImageBtn')!;
+    const uploadStatus = document.getElementById('uploadStatus')!;
+    const featuredImageInput = document.getElementById('featured_image') as HTMLInputElement;
 
     // Markdown toolbar handlers
     document.querySelectorAll('[data-markdown]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const markdown = btn.dataset.markdown;
+        const markdown = (btn as HTMLElement).dataset.markdown!;
         insertAtCursor(contentTextarea, markdown);
       });
     });
 
     document.querySelectorAll('[data-markdown-wrap]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const before = btn.dataset.markdownWrap;
-        const after = btn.dataset.markdownAfter || before;
+        const before = (btn as HTMLElement).dataset.markdownWrap!;
+        const after = (btn as HTMLElement).dataset.markdownAfter || before;
         wrapSelection(contentTextarea, before, after);
       });
     });
 
-    function insertAtCursor(textarea, text) {
+    function insertAtCursor(textarea: HTMLTextAreaElement, text: string) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       const value = textarea.value;
@@ -172,7 +146,7 @@ import '@/styles/news.css';
       textarea.setSelectionRange(start + text.length, start + text.length);
     }
 
-    function wrapSelection(textarea, before, after) {
+    function wrapSelection(textarea: HTMLTextAreaElement, before: string, after: string) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       const selectedText = textarea.value.substring(start, end);
@@ -188,7 +162,7 @@ import '@/styles/news.css';
     });
 
     imageUploadInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
+      const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
 
       uploadStatus.textContent = 'Uploading...';
@@ -214,7 +188,7 @@ import '@/styles/news.css';
           uploadStatus.style.color = 'red';
         }
       } catch (error) {
-        uploadStatus.textContent = 'Upload error: ' + error.message;
+        uploadStatus.textContent = 'Upload error: ' + (error as Error).message;
         uploadStatus.style.color = 'red';
       } finally {
         uploadImageBtn.disabled = false;
@@ -263,5 +237,4 @@ import '@/styles/news.css';
       }
     });
   </script>
-</body>
-</html>
+</NewsLayout>

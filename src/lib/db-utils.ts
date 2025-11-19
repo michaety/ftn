@@ -43,9 +43,9 @@ export async function getArticles(db: any, status: string | null = null) {
   
   query += ' ORDER BY a.created_at DESC';
   
-  const stmt = db.prepare(query);
+  let stmt = db.prepare(query);
   if (params.length > 0) {
-    stmt.bind(...params);
+    stmt = stmt.bind(...params);
   }
   
   const result = await stmt.all();
