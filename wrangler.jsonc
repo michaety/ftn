@@ -20,6 +20,20 @@
       "database_id": "b072df1a-a998-4789-a54c-4524b66f54e3"
     }
   ],
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "placeholder-kv-id",
+      "preview_id": "placeholder-kv-preview-id"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "ftn-r2",
+      "preview_bucket_name": "ftn-r2-preview"
+    }
+  ],
   "workflows": [
     {
       "name": "saas-admin-template-customer-workflow",
