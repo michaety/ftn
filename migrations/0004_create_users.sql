@@ -23,4 +23,4 @@ CREATE TRIGGER update_users_updated_at
 -- Create default admin user (password: admin123)
 -- Password hash is bcrypt hash of 'admin123'
 INSERT INTO users (email, password_hash, role, name) 
-VALUES ('admin@fishtank.news', '$2a$10$rN8YVJHqGZMPYcVxqZ7QHO8vKqRmF7LfTMxJ8V8Z7QHO8vKqRmF7L', 'admin', 'Admin User');
+VALUES ('admin@fishtank.news', '$2a$10$YGwm7Fjxna3QBhggGVb8huUnNuNWBTzzK4Ui8aeV5d8dX9itW5.BG', 'admin', 'Admin User');
