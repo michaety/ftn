@@ -1,0 +1,105 @@
+---
+import '@/styles/news.css';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Fishtank News</title>
+</head>
+<body>
+  <header class="ftn-header">
+    <div class="ftn-container">
+      <div class="ftn-header-content">
+        <h1 class="ftn-logo">
+          <a href="/">FISHTANK NEWS</a>
+        </h1>
+        <nav class="ftn-nav">
+          <a href="/">Home</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <form class="ftn-form" id="loginForm">
+      <h2 class="ftn-form-title">Login</h2>
+      
+      <div class="ftn-form-group">
+        <label for="email" class="ftn-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="ftn-input"
+          required
+        />
+      </div>
+
+      <div class="ftn-form-group">
+        <label for="password" class="ftn-label">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="ftn-input"
+          required
+        />
+      </div>
+
+      <div id="error" class="ftn-error" style="display: none;"></div>
+
+      <button type="submit" class="ftn-btn" style="width: 100%; margin-top: 20px;">
+        Login
+      </button>
+    </form>
+  </main>
+
+  <footer class="ftn-footer">
+    <div class="ftn-container">
+      <div class="ftn-footer-content">
+        <p>&copy; {new Date().getFullYear()} Fishtank News. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorDiv = document.getElementById('error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Redirect based on role
+          if (data.user.role === 'admin') {
+            window.location.href = '/news/admin';
+          } else if (data.user.role === 'editor') {
+            window.location.href = '/news/editor';
+          } else {
+            window.location.href = '/';
+          }
+        } else {
+          errorDiv.textContent = data.error || 'Login failed';
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        errorDiv.textContent = 'An error occurred. Please try again.';
+        errorDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
