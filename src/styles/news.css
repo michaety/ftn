@@ -15,13 +15,13 @@
 }
 
 body {
-    font-family: 'Georgia', serif;
-    background-color: var(--beige-bg);
-    background-image: url('https://www.transparenttextures.com/patterns/old-wallpaper.png');
-    background-repeat: repeat;
-    margin: 0;
-    padding: 0;
-    color: var(--ink-black);
+    font-family: 'Georgia', serif !important;
+    background-color: var(--beige-bg) !important;
+    background-image: url('https://www.transparenttextures.com/patterns/old-wallpaper.png') !important;
+    background-repeat: repeat !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: var(--ink-black) !important;
     overflow-x: hidden;
     position: relative;
 }
@@ -46,12 +46,12 @@ body::before {
 }
 
 header, .ftn-header {
-    background-color: var(--paper-white);
-    text-align: center;
-    padding: 30px 20px 20px;
-    border-bottom: 4px double var(--ink-black);
-    border-top: 2px solid var(--ink-black);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    background-color: var(--paper-white) !important;
+    text-align: center !important;
+    padding: 30px 20px 20px !important;
+    border-bottom: 4px double var(--ink-black) !important;
+    border-top: 2px solid var(--ink-black) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
     position: relative;
     z-index: 100;
     min-height: var(--header-height);
@@ -83,19 +83,19 @@ header::after,
 
 .header-title,
 .ftn-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 5.5em;
-    font-weight: 900;
+    font-family: 'Playfair Display', serif !important;
+    font-size: 5.5em !important;
+    font-weight: 900 !important;
     margin: 0;
-    letter-spacing: 8px;
-    text-transform: uppercase;
-    color: var(--ink-black);
+    letter-spacing: 8px !important;
+    text-transform: uppercase !important;
+    color: var(--ink-black) !important;
     text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
     line-height: 1.1;
 }
 
 .ftn-logo a {
-    color: var(--ink-black);
+    color: var(--ink-black) !important;
     text-decoration: none;
 }
 
@@ -169,37 +169,37 @@ header::after,
 
 .container,
 .ftn-container {
-    display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
-    position: relative;
-    padding-top: 20px;
+    display: flex !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    padding-top: 20px !important;
 }
 
 /* Fixed sidebars */
 .sidebar,
 .ftn-sidebar {
-    width: 280px;
-    background-color: var(--paper-white);
-    padding: 25px 20px;
-    border: 2px solid var(--ink-black);
-    box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
-    position: fixed;
-    top: calc(var(--header-height) + 20px);
-    height: calc(100vh - var(--header-height) - 40px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 50;
+    width: 280px !important;
+    background-color: var(--paper-white) !important;
+    padding: 25px 20px !important;
+    border: 2px solid var(--ink-black) !important;
+    box-shadow: 3px 3px 0px rgba(0,0,0,0.1) !important;
+    position: fixed !important;
+    top: calc(var(--header-height) + 20px) !important;
+    height: calc(100vh - var(--header-height) - 40px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 50 !important;
 }
 
 .sidebar.left,
 .ftn-sidebar.left {
-    left: max(20px, calc(50% - 700px));
+    left: max(20px, calc(50% - 700px)) !important;
 }
 
 .sidebar.right,
 .ftn-sidebar.right {
-    right: max(20px, calc(50% - 700px));
+    right: max(20px, calc(50% - 700px)) !important;
 }
 
 /* Custom scrollbar for sidebars */
@@ -221,13 +221,13 @@ header::after,
 
 .main-feed,
 .ftn-main-feed {
-    background-color: var(--paper-white);
-    padding: 40px;
-    border: 2px solid var(--ink-black);
-    box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
-    margin: 0 auto;
-    max-width: 800px;
-    width: 100%;
+    background-color: var(--paper-white) !important;
+    padding: 40px !important;
+    border: 2px solid var(--ink-black) !important;
+    box-shadow: 3px 3px 0px rgba(0,0,0,0.1) !important;
+    margin: 0 auto !important;
+    max-width: 800px !important;
+    width: 100% !important;
     min-height: 100vh;
     position: relative;
     z-index: 2;
