@@ -1,99 +1,39 @@
 ---
-import '@/styles/news.css';
+import NewsLayout from '@/layouts/NewsLayout.astro';
+import NewsArticleCard from '@/components/news/NewsArticleCard.astro';
+import { getArticles } from '@/lib/db-utils';
 
-// In a real deployment, this would be fetched from the API
-// For now, we'll create a client-side rendered page
+const db = Astro.locals.runtime.env.DB;
+const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
+
+// Fetch approved articles from the database
+const articles = await getArticles(db, 'approved');
+
+// Separate featured article (first one) from the rest
+const featuredArticle = articles.length > 0 ? articles[0] : null;
+const regularArticles = articles.slice(1);
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fishtank News - Home</title>
-</head>
-<body>
-  <header class="ftn-header">
-    <div class="ftn-container">
-      <div class="ftn-header-content">
-        <h1 class="ftn-logo">
-          <a href="/news">FISHTANK NEWS</a>
-        </h1>
-        <nav class="ftn-nav">
-          <a href="/news">Home</a>
-          <a href="/login">Login</a>
-        </nav>
-      </div>
-    </div>
-  </header>
-
-  <main class="ftn-container">
-    <div class="ftn-dashboard">
-      <h1 class="ftn-dashboard-title">Latest News</h1>
-      <div id="articles-container" class="ftn-grid">
-        <p style="text-align: center; grid-column: 1 / -1;">Loading articles...</p>
-      </div>
-    </div>
-  </main>
-
-  <footer class="ftn-footer">
-    <div class="ftn-container">
-      <div class="ftn-footer-content">
-        <p>&copy; {new Date().getFullYear()} Fishtank News. All rights reserved.</p>
-        <div class="ftn-footer-links">
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
-          <a href="/privacy">Privacy</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    async function loadArticles() {
-      const container = document.getElementById('articles-container');
-      
-      try {
-        const response = await fetch('/api/articles?status=approved');
-        const data = await response.json();
+<NewsLayout title="Home">
+  <div class="ftn-container">
+    <h1 class="ftn-page-title">Latest News</h1>
+    
+    {articles.length === 0 ? (
+      <p style="text-align: center; padding: 40px 0;">No articles published yet.</p>
+    ) : (
+      <div class="ftn-articles-grid">
+        {/* Featured Article - Full Width */}
+        {featuredArticle && (
+          <div class="ftn-featured-article">
+            <NewsArticleCard article={featuredArticle} r2PublicUrl={r2PublicUrl} />
+          </div>
+        )}
         
-        if (data.articles && data.articles.length > 0) {
-          container.innerHTML = data.articles.map(article => `
-            <article class="ftn-article-card">
-              ${article.featured_image ? `
-                <div class="ftn-article-image">
-                  <img src="${article.featured_image}" alt="${article.title}" />
-                </div>
-              ` : ''}
-              
-              <div class="ftn-article-content">
-                <h2 class="ftn-article-title">
-                  <a href="/news/articles/${article.slug}">${article.title}</a>
-                </h2>
-                
-                ${article.excerpt ? `
-                  <p class="ftn-article-excerpt">${article.excerpt}</p>
-                ` : ''}
-                
-                <div class="ftn-article-meta">
-                  <span class="ftn-article-author">By ${article.author_name}</span>
-                  <span class="ftn-article-date">
-                    ${new Date(article.published_at || article.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </article>
-          `).join('');
-        } else {
-          container.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">No articles published yet.</p>';
-        }
-      } catch (error) {
-        console.error('Error loading articles:', error);
-        container.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; color: red;">Error loading articles.</p>';
-      }
-    }
-
-    loadArticles();
-  </script>
-</body>
-</html>
+        {/* Regular Articles Grid */}
+        {regularArticles.map((article) => (
+          <NewsArticleCard article={article} r2PublicUrl={r2PublicUrl} />
+        ))}
+      </div>
+    )}
+  </div>
+</NewsLayout>

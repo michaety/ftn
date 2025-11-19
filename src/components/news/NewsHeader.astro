@@ -1,0 +1,21 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '' } = Astro.props;
+---
+
+<header class="ftn-header">
+  <div class="ftn-container">
+    <div class="ftn-header-content">
+      <h1 class="ftn-logo">
+        <a href="/news">FISHTANK NEWS</a>
+      </h1>
+      <nav class="ftn-nav">
+        <a href="/news">Home</a>
+        <a href="/login">Login</a>
+      </nav>
+    </div>
+  </div>
+</header>
