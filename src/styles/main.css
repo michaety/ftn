@@ -17,9 +17,9 @@
   box-sizing: border-box;
 }
 
-/* Reset Tailwind's preflight styles for news pages */
+/* Base reset for news pages */
 h1, h2, h3, h4, h5, h6, p, a, ul, ol, li, img, div {
-  margin: 0 !important;
+  margin: 0;
   padding: 0;
   border: 0;
   font: inherit;
@@ -36,15 +36,15 @@ img {
 }
 
 body {
-  font-family: 'Courier New', Courier, monospace !important;
-  background-color: var(--ftn-canvas) !important;
-  color: var(--ftn-black) !important;
-  line-height: 1.6 !important;
-  min-height: 100vh !important;
-  display: flex !important;
-  flex-direction: column !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: var(--ftn-canvas);
+  color: var(--ftn-black);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
 .ftn-container {
