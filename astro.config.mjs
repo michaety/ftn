@@ -16,7 +16,7 @@ export default defineConfig({
       },
     },
   }),
-  integrations: [react(), tailwind({ applyBaseStyles: true })],
+  integrations: [react(), tailwind({ applyBaseStyles: false })],
   output: "server",
   vite: {
     resolve: {
