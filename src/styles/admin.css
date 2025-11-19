@@ -1,0 +1,300 @@
+/* Custom Admin Styles - Override and Customize SaaS Admin Interface */
+
+/* 
+ * This stylesheet provides custom styling for the admin interface.
+ * Styles are defined globally to work with Astro islands (React components).
+ * Load order: globals.css (Tailwind) → admin.css (custom overrides)
+ */
+
+/* Example custom admin theme - uncomment and modify as needed */
+
+/*
+:root {
+  --admin-primary: #3b82f6;
+  --admin-secondary: #8b5cf6;
+  --admin-accent: #10b981;
+}
+*/
+
+/* Global admin container customization */
+/* Example: Change admin page background */
+/*
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+*/
+
+/* Custom header styling */
+/* Example: Customize the navigation bar */
+/*
+nav {
+  background-color: var(--admin-primary) !important;
+  border-bottom: 4px solid #1e40af !important;
+}
+
+nav a {
+  color: white !important;
+  font-weight: 600 !important;
+}
+*/
+
+/* Custom card styling */
+/* Example: Add custom shadows and borders to cards */
+/*
+.rounded-xl.border.bg-card {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e5e7eb !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rounded-xl.border.bg-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+*/
+
+/* Custom button styling */
+/* Example: Override button colors and styles */
+/*
+button[class*="bg-primary"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+}
+
+button[class*="bg-primary"]:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+}
+*/
+
+/* Custom table styling */
+/* Example: Enhance table appearance */
+/*
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table thead tr {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+table tbody tr:hover {
+  background-color: #f3f4f6;
+  transition: background-color 0.2s;
+}
+*/
+
+/* Custom typography */
+/* Example: Change fonts and text styles */
+/*
+h2.text-3xl {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+*/
+
+/* React component overrides */
+/* These styles use :global() to pierce through Astro island boundaries */
+
+/* Example: Style React dialog/modal components */
+/*
+[role="dialog"] {
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+*/
+
+/* Example: Style React table components */
+/*
+[role="table"] {
+  font-size: 14px !important;
+}
+
+[role="row"]:nth-child(even) {
+  background-color: #f9fafb;
+}
+*/
+
+/* Mobile responsive overrides */
+@media (max-width: 768px) {
+  /* Example: Adjust spacing on mobile */
+  /*
+  .p-8 {
+    padding: 1rem !important;
+  }
+  */
+}
+
+/* Dark mode overrides */
+/* Example: Custom dark mode colors */
+/*
+.dark {
+  --admin-primary: #60a5fa;
+  --admin-secondary: #a78bfa;
+}
+
+.dark body {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+*/
+
+/* Animation utilities */
+/* Example: Add custom animations */
+/*
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rounded-xl.border.bg-card {
+  animation: slideIn 0.3s ease-out;
+}
+*/
+
+/* Placeholder for user customization */
+/* Add your custom admin styles below this line */
+/* ================================================ */
+
+/* Demo: Custom admin styling examples (commented out by default) */
+/* Uncomment and modify these examples to customize your admin interface */
+
+/*
+===========================================
+EXAMPLE 1: Custom Background Gradient
+===========================================
+Adds a subtle gradient background to all admin pages
+*/
+/*
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+*/
+
+/*
+===========================================
+EXAMPLE 2: Custom Navigation Styling  
+===========================================
+Customizes the top navigation bar with gradient and hover effects
+*/
+/*
+nav {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+}
+
+nav a {
+  color: white !important;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+nav a:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+*/
+
+/*
+===========================================
+EXAMPLE 3: Enhanced Card Styling
+===========================================
+Adds custom shadows, borders, and hover effects to dashboard cards
+*/
+/*
+.rounded-xl.border.bg-card {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(102, 126, 234, 0.2) !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: white !important;
+}
+
+.rounded-xl.border.bg-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15);
+}
+*/
+
+/*
+===========================================
+EXAMPLE 4: Gradient Page Titles
+===========================================
+Applies a gradient color effect to page titles
+*/
+/*
+h2.text-3xl.font-bold.tracking-tight {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+*/
+
+/*
+===========================================
+EXAMPLE 5: Custom Button Styling
+===========================================
+Enhances primary buttons with gradients and hover effects
+*/
+/*
+button[class*="bg-primary"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+  transition: all 0.2s;
+}
+
+button[class*="bg-primary"]:hover {
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+  transform: translateY(-2px);
+}
+*/
+
+/*
+===========================================
+EXAMPLE 6: Enhanced Table Styling
+===========================================
+Customizes tables with gradient headers and hover effects
+Works with React Table components and Astro islands
+*/
+/*
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table thead tr {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+table thead th {
+  color: white !important;
+  font-weight: 600;
+  padding: 1rem !important;
+}
+
+table tbody tr {
+  transition: background-color 0.2s;
+}
+
+table tbody tr:hover {
+  background-color: rgba(102, 126, 234, 0.05);
+}
+*/
+
+/*
+===========================================
+CUSTOM STYLES START HERE
+===========================================
+Add your own custom styles below this line.
+These will load after Tailwind (globals.css) and override default styles.
+*/
