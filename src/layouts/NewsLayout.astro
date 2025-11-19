@@ -6,11 +6,15 @@ import NewsFooter from '@/components/news/NewsFooter.astro';
 interface Props {
   title?: string;
   description?: string;
+  role?: 'public' | 'admin' | 'editor';
+  userName?: string;
 }
 
 const { 
   title = 'Fishtank News',
-  description = 'Latest news and updates'
+  description = 'Latest news and updates',
+  role = 'public',
+  userName
 } = Astro.props;
 
 const fullTitle = title === 'Fishtank News' ? title : `${title} - Fishtank News`;
@@ -25,7 +29,7 @@ const fullTitle = title === 'Fishtank News' ? title : `${title} - Fishtank News`
     <title>{fullTitle}</title>
   </head>
   <body>
-    <NewsHeader />
+    <NewsHeader role={role} userName={userName} />
     <main>
       <slot />
     </main>
