@@ -32,8 +32,8 @@
   "r2_buckets": [
     {
       "binding": "MEDIA",
-      "bucket_name": "ftn-r2",
-      "preview_bucket_name": "ftn-r2-preview"
+      "bucket_name": "ft-r2",
+      "preview_bucket_name": "ft-r2-preview"
     }
   ]
 }
