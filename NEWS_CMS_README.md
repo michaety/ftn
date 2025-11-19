@@ -88,10 +88,10 @@ KV namespace 'placeholder-kv-id' is not valid. [code: 10042]
 
 ```bash
 # Production
-npx wrangler r2 bucket create ftn-r2
+npx wrangler r2 bucket create ft-r2
 
 # Preview (optional, for local development)
-npx wrangler r2 bucket create ftn-r2-preview
+npx wrangler r2 bucket create ft-r2-preview
 ```
 
 Update `wrangler.jsonc`:
@@ -100,8 +100,8 @@ Update `wrangler.jsonc`:
 "r2_buckets": [
   {
     "binding": "MEDIA",
-    "bucket_name": "ftn-r2",
-    "preview_bucket_name": "ftn-r2-preview"
+    "bucket_name": "ft-r2",
+    "preview_bucket_name": "ft-r2-preview"
   }
 ]
 ```
