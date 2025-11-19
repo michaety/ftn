@@ -1,22 +1,45 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { buttonVariants } from '@/components/ui/button';
-import { Github, LayoutDashboard } from 'lucide-react';
+import MainLayout from '@/layouts/MainLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import { getArticles } from '@/lib/db-utils';
 
-const repoLink = 'https://github.com/cloudflare/templates/tree/main/saas-admin-template';
+const db = Astro.locals.runtime.env.DB;
+const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
+
+// Fetch approved articles from the database
+const articles = await getArticles(db, 'approved');
+
+// Separate featured article (first one) from the rest
+const featuredArticle = articles.length > 0 ? articles[0] : null;
+const regularArticles = articles.slice(1);
 ---
 
-<BaseLayout title="SaaS Admin Template">
-  <div class="flex flex-col items-center justify-center gap-4 py-20 px-8 min-h-screen bg-background text-foreground">
-    <h1 class="text-5xl font-bold">SaaS Admin Template</h1>
-    <p class="text-xl text-muted-foreground text-center">Manage a SaaS application - customers, subscriptions - using Cloudflare Workers and D1.</p>
-    <div class="flex gap-4 mt-4">
-      <a class={buttonVariants()} href="/admin">
-        <LayoutDashboard /> Go to admin
-      </a>
-      <a class={buttonVariants({ variant: 'outline' })} href={repoLink}>
-        <Github /> View on GitHub
-      </a>
+<MainLayout title="Home">
+  <Header role="public" />
+  <main>
+    <div class="ftn-container">
+      <h1 class="ftn-page-title">Latest News</h1>
+      
+      {articles.length === 0 ? (
+        <p style="text-align: center; padding: 40px 0; font-size: 1.2rem;">No articles published yet.</p>
+      ) : (
+        <div class="ftn-articles-grid">
+          {/* Featured Article - Full Width */}
+          {featuredArticle && (
+            <div class="ftn-featured-article">
+              <ArticleCard article={featuredArticle} r2PublicUrl={r2PublicUrl} featured={true} />
+            </div>
+          )}
+          
+          {/* Regular Articles Grid */}
+          {regularArticles.map((article) => (
+            <ArticleCard article={article} r2PublicUrl={r2PublicUrl} />
+          ))}
+        </div>
+      )}
     </div>
-  </div>
-</BaseLayout>
+  </main>
+  <Footer />
+</MainLayout>

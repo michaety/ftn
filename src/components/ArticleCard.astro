@@ -1,0 +1,56 @@
+---
+interface Article {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  featured_image?: string;
+  author_name: string;
+  published_at?: string;
+  created_at: string;
+}
+
+interface Props {
+  article: Article;
+  r2PublicUrl?: string;
+  featured?: boolean;
+}
+
+const { article, r2PublicUrl = '', featured = false } = Astro.props;
+
+// Construct image URL from R2 if featured_image exists
+const imageUrl = article.featured_image 
+  ? (article.featured_image.startsWith('http') 
+      ? article.featured_image 
+      : r2PublicUrl ? `${r2PublicUrl}/${article.featured_image}` : article.featured_image)
+  : null;
+
+const formattedDate = new Date(article.published_at || article.created_at).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<article class="ftn-article-card">
+  {imageUrl && (
+    <div class="ftn-article-image">
+      <img src={imageUrl} alt={article.title} loading="lazy" />
+    </div>
+  )}
+  
+  <div class="ftn-article-content">
+    <h2 class="ftn-article-title">
+      <a href={`/${article.slug}`}>{article.title}</a>
+    </h2>
+    
+    {article.excerpt && (
+      <p class="ftn-article-excerpt">{article.excerpt}</p>
+    )}
+    
+    <div class="ftn-article-meta">
+      <span class="ftn-article-author">By {article.author_name}</span>
+      <span class="ftn-article-date">{formattedDate}</span>
+    </div>
+  </div>
+</article>
