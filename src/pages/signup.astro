@@ -1,0 +1,153 @@
+---
+import '@/styles/news.css';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - Fishtank News</title>
+</head>
+<body>
+  <header class="ftn-header">
+    <div class="ftn-container">
+      <div class="ftn-header-content">
+        <h1 class="ftn-logo">
+          <a href="/">FISHTANK NEWS</a>
+        </h1>
+        <nav class="ftn-nav">
+          <a href="/">Home</a>
+          <a href="/login">Login</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <form class="ftn-form" id="signupForm">
+      <h2 class="ftn-form-title">Editor Sign Up</h2>
+      <p style="text-align: center; margin-bottom: 20px;">
+        Sign up using your invite token
+      </p>
+      
+      <div class="ftn-form-group">
+        <label for="name" class="ftn-label">Full Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          class="ftn-input"
+          required
+        />
+      </div>
+
+      <div class="ftn-form-group">
+        <label for="email" class="ftn-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="ftn-input"
+          required
+        />
+      </div>
+
+      <div class="ftn-form-group">
+        <label for="password" class="ftn-label">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="ftn-input"
+          required
+          minlength="8"
+        />
+      </div>
+
+      <div class="ftn-form-group">
+        <label for="token" class="ftn-label">Invite Token</label>
+        <input
+          type="text"
+          id="token"
+          name="token"
+          class="ftn-input"
+          required
+          readonly
+        />
+      </div>
+
+      <div id="error" class="ftn-error" style="display: none;"></div>
+      <div id="success" class="ftn-success" style="display: none;"></div>
+
+      <button type="submit" class="ftn-btn" style="width: 100%; margin-top: 20px;">
+        Sign Up
+      </button>
+
+      <p style="text-align: center; margin-top: 20px;">
+        Already have an account? <a href="/login" style="color: var(--ftn-blue); font-weight: bold;">Login</a>
+      </p>
+    </form>
+  </main>
+
+  <footer class="ftn-footer">
+    <div class="ftn-container">
+      <div class="ftn-footer-content">
+        <p>&copy; {new Date().getFullYear()} Fishtank News. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('signupForm');
+    const errorDiv = document.getElementById('error');
+    const successDiv = document.getElementById('success');
+    const tokenInput = document.getElementById('token');
+
+    // Get token from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (!token) {
+      errorDiv.textContent = 'Invalid signup link. Please use the invite link sent to your email.';
+      errorDiv.style.display = 'block';
+      form.querySelector('button[type="submit"]').disabled = true;
+    } else {
+      tokenInput.value = token;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      
+      const formData = new FormData(form);
+      
+      try {
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          successDiv.textContent = 'Account created successfully! Redirecting...';
+          successDiv.style.display = 'block';
+          
+          setTimeout(() => {
+            window.location.href = '/news/editor';
+          }, 1500);
+        } else {
+          errorDiv.textContent = data.error || 'Sign up failed';
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        errorDiv.textContent = 'An error occurred. Please try again.';
+        errorDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
