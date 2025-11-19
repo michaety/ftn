@@ -23,11 +23,9 @@
   "kv_namespaces": [
     {
       "binding": "SESSION",
-      // REQUIRED: Replace with your actual KV namespace ID
-      // Run: npx wrangler kv:namespace create SESSION
-      // Then: npx wrangler kv:namespace create SESSION --preview
-      // Copy the IDs from the command output below
-      "id": "YOUR_KV_NAMESPACE_ID_HERE",
+      "id": "f71ca6a63dfe4fd39fb6eacaab42c39c",
+      // For local development, create a preview namespace:
+      // Run: npx wrangler kv:namespace create SESSION --preview
       "preview_id": "YOUR_KV_PREVIEW_ID_HERE"
     }
   ],
