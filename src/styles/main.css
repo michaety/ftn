@@ -1,6 +1,7 @@
 /* Fishtank News - Main Stylesheet - Brutalist Design */
 
 :root {
+  /* Colors */
   --ftn-canvas: #f5f5dc;
   --ftn-black: #000000;
   --ftn-white: #ffffff;
@@ -9,6 +10,27 @@
   --ftn-red: #ff0000;
   --ftn-green: #00ff00;
   --ftn-blue: #0000ff;
+  
+  /* Spacing */
+  --spacing-xs: 10px;
+  --spacing-sm: 20px;
+  --spacing-md: 30px;
+  --spacing-lg: 40px;
+  --spacing-xl: 60px;
+  
+  /* Borders */
+  --border-thin: 3px;
+  --border-thick: 6px;
+  
+  /* Typography */
+  --font-family: 'Courier New', Courier, monospace;
+  --font-size-base: 1rem;
+  --font-size-sm: 0.9rem;
+  --font-size-lg: 1.1rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 2.5rem;
+  --font-size-4xl: 3rem;
 }
 
 * {

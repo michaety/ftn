@@ -44,13 +44,42 @@ All core design values are defined as CSS custom properties in the `:root` selec
 --ftn-blue: #0000ff;         /* Edit actions and links */
 ```
 
+### Spacing
+```css
+--spacing-xs: 10px;          /* Extra small spacing */
+--spacing-sm: 20px;          /* Small spacing */
+--spacing-md: 30px;          /* Medium spacing */
+--spacing-lg: 40px;          /* Large spacing */
+--spacing-xl: 60px;          /* Extra large spacing */
+```
+
+### Borders
+```css
+--border-thin: 3px;          /* Secondary borders */
+--border-thick: 6px;         /* Primary borders */
+```
+
+### Typography
+```css
+--font-family: 'Courier New', Courier, monospace;
+--font-size-base: 1rem;      /* Base font size (16px) */
+--font-size-sm: 0.9rem;      /* Small text */
+--font-size-lg: 1.1rem;      /* Large text */
+--font-size-xl: 1.5rem;      /* Extra large text */
+--font-size-2xl: 2rem;       /* Heading size */
+--font-size-3xl: 2.5rem;     /* Large heading */
+--font-size-4xl: 3rem;       /* Page title */
+```
+
 ### Usage
 To use these variables in your CSS:
 ```css
 .my-element {
   background-color: var(--ftn-canvas);
   color: var(--ftn-black);
-  border: 6px solid var(--ftn-black);
+  border: var(--border-thick) solid var(--ftn-black);
+  padding: var(--spacing-md);
+  font-size: var(--font-size-2xl);
 }
 ```
 
@@ -202,29 +231,53 @@ All components will automatically update.
 
 ### Changing Spacing
 
-Key spacing values to adjust:
-- Container padding: `.ftn-container { padding: 0 20px; }`
-- Grid gap: `.ftn-articles-grid { gap: 30px; }`
-- Component padding: `.ftn-article-content { padding: 30px; }`
+Key spacing values are defined as CSS variables:
+```css
+:root {
+  --spacing-xs: 10px;
+  --spacing-sm: 20px;
+  --spacing-md: 30px;
+  --spacing-lg: 40px;
+  --spacing-xl: 60px;
+}
+```
+
+Update these values to adjust spacing throughout the site.
 
 ### Changing Typography
 
 The site uses Courier New throughout. To change:
 ```css
+:root {
+  --font-family: 'Your Font', monospace;
+}
+
 body {
-  font-family: 'Your Font', monospace;
+  font-family: var(--font-family);
 }
 ```
 
-Font sizes are relative (rem-based) and scale automatically on mobile.
+Font sizes are defined as variables:
+```css
+:root {
+  --font-size-base: 1rem;
+  --font-size-2xl: 2rem;
+  --font-size-4xl: 3rem;
+  /* etc. */
+}
+```
 
 ### Changing Border Thickness
 
-The brutalist style uses thick borders. Key values:
-- Primary borders: `6px solid var(--ftn-black)`
-- Secondary borders: `3px solid var(--ftn-black)`
+Border thickness is controlled by variables:
+```css
+:root {
+  --border-thin: 3px;   /* Secondary borders */
+  --border-thick: 6px;  /* Primary borders */
+}
+```
 
-To adjust globally, search and replace these values.
+Update these values to make borders thinner or thicker throughout the site.
 
 ## 🆕 Adding New Components
 
