@@ -1,36 +1,54 @@
-# SaaS Admin Template
+# Fishtank News CMS
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/saas-admin-template)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/michaety/ftn)
 
-![SaaS Admin Template](https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/52b88668-0144-489c-dd02-fe620270ba00/public)
+A complete serverless news CMS built with Astro, Cloudflare Workers, D1, KV, and R2. Features admin/editor workflows, Markdown editing, image uploads, and a brutalist design matching fishtank-news.pages.dev.
 
-<!-- dash-content-start -->
+## 🚀 Quick Start
 
-A complete admin dashboard template built with Astro, Shadcn UI, and Cloudflare's developer stack. Quickly deploy a fully functional admin interface with customer and subscription management capabilities.
+See **[NEWS_CMS_README.md](./NEWS_CMS_README.md)** for complete setup and deployment instructions.
 
-## Features
+## ✨ Features
 
-- 🎨 Modern UI built with Astro and Shadcn UI
-- 🔐 Built-in API with token authentication
-- 👥 Customer management
-- 💳 Subscription tracking
-- 🚀 Deploy to Cloudflare Workers
-- 📦 Powered by Cloudflare D1 database
-- ✨ Clean, responsive interface
-- 🔍 Data validation with Zod
+- **Admin Dashboard**: Approve/reject articles, manage users, send editor invites
+- **Editor Dashboard**: Create articles with Markdown editor, upload images to R2
+- **Public Site**: Browse and read approved articles with beautiful brutalist design
+- **Authentication**: Session-based auth with bcrypt, role-based access control
+- **Serverless**: 100% deployable via Cloudflare Workers + GitHub
 
-## Tech Stack
+## 🏗️ Tech Stack
 
-- Frontend: [Astro](https://astro.build)
-- UI Components: [Shadcn UI](https://ui.shadcn.com)
-- Database: [Cloudflare D1](https://developers.cloudflare.com/d1)
-- Deployment: [Cloudflare Workers](https://workers.cloudflare.com)
-- Validation: [Zod](https://github.com/colinhacks/zod)
+- **Frontend**: Astro (SSR)
+- **Database**: Cloudflare D1 (SQLite)
+- **Sessions**: Cloudflare KV
+- **Storage**: Cloudflare R2
+- **Hosting**: Cloudflare Workers
 
-> [!IMPORTANT]
-> When using C3 to create this project, select "no" when it asks if you want to deploy. You need to follow this project's [setup steps](https://github.com/cloudflare/templates/tree/main/d1-template#setup-steps) before deploying.
+## 📖 Documentation
 
-<!-- dash-content-end -->
+- [Full Deployment Guide](./NEWS_CMS_README.md) - Complete setup instructions
+- [API Documentation](./NEWS_CMS_README.md#-api-endpoints) - All endpoints documented
+- [User Workflows](./NEWS_CMS_README.md#-user-workflows) - Admin, editor, and public flows
+
+## 🔐 Default Credentials
+
+- Email: `admin@fishtank.news`
+- Password: `admin123`
+
+**⚠️ Change immediately after first login!**
+
+## 📦 Installation
+
+```bash
+npm install
+npm run db:migrate
+npm run build
+npm run deploy
+```
+
+---
+
+## Original SaaS Admin Template Documentation
 
 ## Setup Steps
 

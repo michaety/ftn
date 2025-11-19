@@ -1,0 +1,107 @@
+---
+import '@/styles/news.css';
+
+const { slug } = Astro.params;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article - Fishtank News</title>
+</head>
+<body>
+  <header class="ftn-header">
+    <div class="ftn-container">
+      <div class="ftn-header-content">
+        <h1 class="ftn-logo">
+          <a href="/news">FISHTANK NEWS</a>
+        </h1>
+        <nav class="ftn-nav">
+          <a href="/news">Home</a>
+          <a href="/login">Login</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="ftn-container">
+    <div id="article-container">
+      <p style="text-align: center; padding: 40px;">Loading article...</p>
+    </div>
+  </main>
+
+  <footer class="ftn-footer">
+    <div class="ftn-container">
+      <div class="ftn-footer-content">
+        <p>&copy; {new Date().getFullYear()} Fishtank News. All rights reserved.</p>
+        <div class="ftn-footer-links">
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+          <a href="/privacy">Privacy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import {{ marked }} from 'https://cdn.jsdelivr.net/npm/marked@11.0.0/+esm';
+
+    const slug = window.location.pathname.split('/').pop();
+
+    async function loadArticle() {{
+      const container = document.getElementById('article-container');
+      
+      try {{
+        const response = await fetch('/api/articles?status=approved');
+        const data = await response.json();
+        
+        const article = data.articles?.find(a => a.slug === slug);
+        
+        if (article) {{
+          const htmlContent = marked.parse(article.content);
+          
+          container.innerHTML = `
+            <article class="ftn-article-full">
+              ${{article.featured_image ? `
+                <img src="${{article.featured_image}}" alt="${{article.title}}" style="margin-bottom: 30px;" />
+              ` : ''}}
+              
+              <h1>${{article.title}}</h1>
+              
+              <div class="ftn-article-meta" style="margin-bottom: 30px;">
+                <span class="ftn-article-author">By ${{article.author_name}}</span>
+                <span class="ftn-article-date">
+                  ${{new Date(article.published_at || article.created_at).toLocaleDateString('en-US', {{
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  }})}}
+                </span>
+              </div>
+              
+              <div class="ftn-article-body">
+                ${{htmlContent}}
+              </div>
+            </article>
+          `;
+        }} else {{
+          container.innerHTML = `
+            <div class="ftn-form">
+              <h2 class="ftn-form-title">Article Not Found</h2>
+              <p style="text-align: center; margin: 20px 0;">The article you're looking for doesn't exist or has been removed.</p>
+              <a href="/news" class="ftn-btn" style="display: block; text-align: center;">Back to Home</a>
+            </div>
+          `;
+        }}
+      }} catch (error) {{
+        console.error('Error loading article:', error);
+        container.innerHTML = '<p style="text-align: center; color: red; padding: 40px;">Error loading article.</p>';
+      }}
+    }}
+
+    loadArticle();
+  </script>
+</body>
+</html>
