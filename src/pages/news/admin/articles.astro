@@ -1,0 +1,234 @@
+---
+import '@/styles/news.css';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Articles - Fishtank News</title>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // Check authentication
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/admin/users');
+        if (!response.ok) {
+          window.location.href = '/login';
+          return null;
+        }
+        return true;
+      } catch (error) {
+        window.location.href = '/login';
+        return null;
+      }
+    }
+
+    async function loadPage() {
+      const authenticated = await checkAuth();
+      if (!authenticated) return;
+
+      const app = document.getElementById('app');
+      
+      app.innerHTML = `
+        <header class="ftn-header">
+          <div class="ftn-container">
+            <div class="ftn-header-content">
+              <h1 class="ftn-logo">
+                <a href="/news/admin">FISHTANK NEWS - ADMIN</a>
+              </h1>
+              <nav class="ftn-nav">
+                <a href="/news/admin">Dashboard</a>
+                <a href="/news/admin/articles">Articles</a>
+                <a href="/news/admin/invites">Invites</a>
+                <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
+              </nav>
+            </div>
+          </div>
+        </header>
+
+        <main class="ftn-container">
+          <div class="ftn-dashboard">
+            <h1 class="ftn-dashboard-title">Manage Articles</h1>
+            
+            <div class="ftn-dashboard-section">
+              <h2 class="ftn-section-title">Filter by Status</h2>
+              <div style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">
+                <button class="ftn-btn filter-btn" data-status="">All</button>
+                <button class="ftn-btn filter-btn" data-status="draft">Draft</button>
+                <button class="ftn-btn filter-btn" data-status="pending">Pending</button>
+                <button class="ftn-btn filter-btn" data-status="approved">Approved</button>
+                <button class="ftn-btn filter-btn" data-status="rejected">Rejected</button>
+              </div>
+            </div>
+
+            <div class="ftn-dashboard-section">
+              <h2 class="ftn-section-title">Articles</h2>
+              <div id="articles-list" class="ftn-grid">
+                <p>Loading...</p>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <footer class="ftn-footer">
+          <div class="ftn-container">
+            <div class="ftn-footer-content">
+              <p>&copy; ${new Date().getFullYear()} Fishtank News. All rights reserved.</p>
+            </div>
+          </div>
+        </footer>
+      `;
+
+      // Setup logout
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await fetch('/api/auth/logout', { method: 'POST' });
+        window.location.href = '/';
+      });
+
+      // Setup filter buttons
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterButtons.forEach(b => b.style.opacity = '0.5');
+          btn.style.opacity = '1';
+          loadArticles(btn.dataset.status);
+        });
+      });
+
+      // Set initial filter
+      filterButtons[0].style.opacity = '1';
+      loadArticles('');
+    }
+
+    async function loadArticles(status = '') {
+      const container = document.getElementById('articles-list');
+      
+      try {
+        const url = status ? '/api/articles?status=' + status : '/api/articles';
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.articles && data.articles.length > 0) {
+          container.innerHTML = data.articles.map(article => {
+            const statusColors = {
+              draft: 'gray',
+              pending: 'orange',
+              approved: 'green',
+              rejected: 'red'
+            };
+            
+            return `
+              <article class="ftn-article-card">
+                ${article.featured_image ? `
+                  <div class="ftn-article-image">
+                    <img src="${article.featured_image}" alt="${article.title}" />
+                  </div>
+                ` : ''}
+                
+                <div class="ftn-article-content">
+                  <h2 class="ftn-article-title">${article.title}</h2>
+                  
+                  ${article.excerpt ? `
+                    <p class="ftn-article-excerpt">${article.excerpt}</p>
+                  ` : ''}
+                  
+                  <div class="ftn-article-meta">
+                    <span class="ftn-article-author">By ${article.author_name || 'Unknown'}</span>
+                    <span class="ftn-article-date">
+                      ${new Date(article.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <div style="margin-top: 15px; padding-top: 15px; border-top: 3px solid black;">
+                    <span style="font-weight: bold; text-transform: uppercase; color: ${statusColors[article.status] || 'black'};">
+                      Status: ${article.status}
+                    </span>
+                  </div>
+
+                  <div class="ftn-article-actions">
+                    ${article.status === 'pending' ? `
+                      <button onclick="approveArticle(${article.id})" class="ftn-btn ftn-btn-approve">
+                        Approve
+                      </button>
+                      <button onclick="rejectArticle(${article.id})" class="ftn-btn ftn-btn-reject">
+                        Reject
+                      </button>
+                    ` : ''}
+                    ${article.status === 'approved' ? `
+                      <a href="/news/articles/${article.slug}" target="_blank" class="ftn-btn" style="background: blue;">
+                        View Public
+                      </a>
+                    ` : ''}
+                    <button onclick="deleteArticle(${article.id})" class="ftn-btn ftn-btn-delete">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join('');
+        } else {
+          container.innerHTML = '<p style="grid-column: 1 / -1;">No articles found.</p>';
+        }
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        container.innerHTML = '<p style="grid-column: 1 / -1; color: red;">Error loading articles.</p>';
+      }
+    }
+
+    window.approveArticle = async (id) => {
+      try {
+        const response = await fetch('/api/articles/' + id + '/approve', { method: 'POST' });
+        if (response.ok) {
+          alert('Article approved!');
+          const activeFilter = document.querySelector('.filter-btn[style*="opacity: 1"]');
+          loadArticles(activeFilter ? activeFilter.dataset.status : '');
+        } else {
+          alert('Failed to approve article');
+        }
+      } catch (error) {
+        alert('Error approving article');
+      }
+    };
+
+    window.rejectArticle = async (id) => {
+      try {
+        const response = await fetch('/api/articles/' + id + '/reject', { method: 'POST' });
+        if (response.ok) {
+          alert('Article rejected');
+          const activeFilter = document.querySelector('.filter-btn[style*="opacity: 1"]');
+          loadArticles(activeFilter ? activeFilter.dataset.status : '');
+        } else {
+          alert('Failed to reject article');
+        }
+      } catch (error) {
+        alert('Error rejecting article');
+      }
+    };
+
+    window.deleteArticle = async (id) => {
+      if (!confirm('Are you sure you want to delete this article? This action cannot be undone.')) return;
+      
+      try {
+        const response = await fetch('/api/articles/' + id, { method: 'DELETE' });
+        if (response.ok) {
+          alert('Article deleted');
+          const activeFilter = document.querySelector('.filter-btn[style*="opacity: 1"]');
+          loadArticles(activeFilter ? activeFilter.dataset.status : '');
+        } else {
+          alert('Failed to delete article');
+        }
+      } catch (error) {
+        alert('Error deleting article');
+      }
+    };
+
+    loadPage();
+  </script>
+</body>
+</html>
