@@ -33,12 +33,5 @@
       "bucket_name": "ftn-r2",
       "preview_bucket_name": "ftn-r2-preview"
     }
-  ],
-  "workflows": [
-    {
-      "name": "saas-admin-template-customer-workflow",
-      "binding": "CUSTOMER_WORKFLOW",
-      "class_name": "CustomerWorkflow"
-    }
   ]
 }
