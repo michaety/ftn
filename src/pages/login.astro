@@ -12,18 +12,15 @@ import '@/styles/news.css';
 <body>
   <header class="ftn-header">
     <div class="ftn-container">
-      <div class="ftn-header-content">
-        <h1 class="ftn-logo">
-          <a href="/">FISHTANK NEWS</a>
-        </h1>
-        <nav class="ftn-nav">
-          <a href="/">Home</a>
-        </nav>
+      <div class="ftn-header-content" style="justify-content: center;">
+        <div style="text-align: center;">
+          <img src="/logo.webp" alt="logo" style="max-width: 200px; margin: 0 auto;">
+        </div>
       </div>
     </div>
   </header>
 
-  <main>
+  <main style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 300px);">
     <form class="ftn-form" id="loginForm">
       <h2 class="ftn-form-title">Login</h2>
       
@@ -67,8 +64,8 @@ import '@/styles/news.css';
 
   <footer class="ftn-footer">
     <div class="ftn-container">
-      <div class="ftn-footer-content">
-        <p>&copy; {new Date().getFullYear()} Fishtank News. All rights reserved.</p>
+      <div class="ftn-footer-content" style="justify-content: center; text-align: center;">
+        <p>All trademarks, images and logos are the property of their respective owners. | <a href="https://fishtank.live" target="_blank" rel="noopener" style="text-decoration: underline;">fishtank.live</a></p>
       </div>
     </div>
   </footer>

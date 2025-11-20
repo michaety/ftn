@@ -506,9 +506,13 @@ hr {
     background-color: var(--paper-white);
     color: var(--ink-black);
     border-top: 4px double var(--ink-black);
-    padding: 40px 0;
+    padding: 20px 0;
     margin-top: 60px;
     text-align: center;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    clear: both;
 }
 
 .ftn-footer-content {
@@ -517,6 +521,9 @@ hr {
     align-items: center;
     flex-wrap: wrap;
     gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .ftn-footer-links {
