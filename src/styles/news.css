@@ -681,7 +681,7 @@ hr {
     /* Add spacing between header and filters on mobile */
     .filters,
     .ftn-filters {
-        margin-top: 20px;
+        margin-top: 40px;
     }
 
     .article h2,
