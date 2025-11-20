@@ -18,7 +18,7 @@ const currentDate = new Date().toLocaleDateString('en-US', {
 
 <header class="ftn-header">
   <h1 class="ftn-logo">
-    <a href="/news">Fishtank.news</a>
+    <a href="/">Fishtank.news</a>
   </h1>
   <p class="ftn-header-subtitle">
     Vol. 1, No. 1 ★ The Unofficial Source for Fishtank Updates ★ {currentDate}
@@ -28,14 +28,13 @@ const currentDate = new Date().toLocaleDateString('en-US', {
       <nav class="ftn-nav">
         {role === 'public' ? (
           <>
-            <a href="/news">Home</a>
+            <a href="/">Home</a>
             <a href="/login">Login</a>
           </>
         ) : role === 'admin' ? (
           <>
             <a href="/news/admin">Dashboard</a>
-            <a href="/news/admin">Articles</a>
-            <a href="/news/admin">Invites</a>
+            <a href="/news/admin/articles">Articles</a>
             {userName && <span class="ftn-user">{userName}</span>}
             <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
           </>
