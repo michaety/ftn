@@ -166,10 +166,10 @@ main {
   background-color: var(--ftn-black);
   color: var(--ftn-white);
   border-top: 6px solid var(--ftn-black);
-  padding: 40px 0;
+  padding: 20px 0;
   margin-top: auto;
   position: relative;
-  z-index: 100;
+  z-index: 1;
   width: 100%;
   clear: both;
 }

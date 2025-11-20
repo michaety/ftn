@@ -506,11 +506,11 @@ hr {
     background-color: var(--paper-white);
     color: var(--ink-black);
     border-top: 4px double var(--ink-black);
-    padding: 40px 0;
+    padding: 20px 0;
     margin-top: 60px;
     text-align: center;
     position: relative;
-    z-index: 100;
+    z-index: 1;
     width: 100%;
     clear: both;
 }
