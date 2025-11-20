@@ -10,7 +10,7 @@ export function Header({ currentPath }: { currentPath: string }) {
   return (
     <nav className="flex items-center space-x-4 lg:space-x-6 mx-6 h-16">
       <a href="/" className="text-sm font-bold leading-none text-foreground">
-        <img src="https://i.ibb.co/xSynPgL0/logo.webp" alt="logo" style={{ maxWidth: '120px' }} />
+        <img src="/logo.webp" alt="logo" style={{ maxWidth: '120px' }} />
       </a>
       {links.map((link) => (
         <a
