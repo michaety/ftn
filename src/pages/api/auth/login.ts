@@ -35,6 +35,21 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
+    // Check if user is approved
+    if (user.status === 'pending') {
+      return new Response(JSON.stringify({ error: 'Your account is pending admin approval' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (user.status === 'rejected') {
+      return new Response(JSON.stringify({ error: 'Your account registration was rejected' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // Create session
     const sessionId = await createSession(kv, user.id, user.email, user.role);
 

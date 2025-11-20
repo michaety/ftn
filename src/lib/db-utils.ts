@@ -13,17 +13,42 @@ export async function getUserById(db: any, id: number) {
   return result;
 }
 
-export async function createUser(db: any, { email, password, role, name }: { email: string; password: string; role: string; name: string }) {
+export async function createUser(db: any, { email, password, role, name, authorHandle, status = 'approved' }: { 
+  email: string; 
+  password: string; 
+  role: string; 
+  name: string;
+  authorHandle?: string;
+  status?: string;
+}) {
   const passwordHash = await bcrypt.hash(password, 10);
   const result = await db.prepare(
-    'INSERT INTO users (email, password_hash, role, name) VALUES (?, ?, ?, ?) RETURNING *'
-  ).bind(email, passwordHash, role, name).first();
+    'INSERT INTO users (email, password_hash, role, name, author_handle, status) VALUES (?, ?, ?, ?, ?, ?) RETURNING *'
+  ).bind(email, passwordHash, role, name, authorHandle || null, status).first();
   return result;
 }
 
 export async function getAllUsers(db: any) {
-  const result = await db.prepare('SELECT id, email, role, name, created_at FROM users ORDER BY created_at DESC').all();
+  const result = await db.prepare('SELECT id, email, role, name, author_handle, status, created_at FROM users ORDER BY created_at DESC').all();
   return result.results || [];
+}
+
+export async function getPendingUsers(db: any) {
+  const result = await db.prepare('SELECT id, email, role, name, author_handle, status, created_at FROM users WHERE status = ? ORDER BY created_at DESC')
+    .bind('pending').all();
+  return result.results || [];
+}
+
+export async function approveUser(db: any, userId: number) {
+  const result = await db.prepare('UPDATE users SET status = ? WHERE id = ? RETURNING *')
+    .bind('approved', userId).first();
+  return result;
+}
+
+export async function rejectUser(db: any, userId: number) {
+  const result = await db.prepare('UPDATE users SET status = ? WHERE id = ? RETURNING *')
+    .bind('rejected', userId).first();
+  return result;
 }
 
 export async function verifyPassword(password: string, hash: string) {

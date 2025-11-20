@@ -1,6 +1,6 @@
 ---
 import NewsLayout from '@/layouts/NewsLayout.astro';
-import { getSession, getCookie, getArticles } from '@/lib/db-utils';
+import { getSession, getCookie, getArticles, getPendingUsers } from '@/lib/db-utils';
 
 // Check authentication
 const db = Astro.locals.runtime.env.DB;
@@ -12,8 +12,9 @@ if (!session || session.userRole !== 'admin') {
   return Astro.redirect('/login');
 }
 
-// Fetch pending articles
+// Fetch pending articles and users
 const pendingArticles = await getArticles(db, 'pending');
+const pendingUsers = await getPendingUsers(db);
 const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 ---
 
@@ -76,9 +77,59 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
       </div>
 
       <div class="ftn-dashboard-section">
+        <h2 class="ftn-section-title">Pending User Signups</h2>
+        
+        {pendingUsers.length === 0 ? (
+          <p style="text-align: center; padding: 40px 0;">No pending signups.</p>
+        ) : (
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; background: white; border: 6px solid black; border-collapse: collapse;">
+              <thead>
+                <tr style="background: black; color: white;">
+                  <th style="padding: 15px; text-align: left; border: 3px solid black;">Email</th>
+                  <th style="padding: 15px; text-align: left; border: 3px solid black;">Name</th>
+                  <th style="padding: 15px; text-align: left; border: 3px solid black;">Handle</th>
+                  <th style="padding: 15px; text-align: left; border: 3px solid black;">Registered</th>
+                  <th style="padding: 15px; text-align: left; border: 3px solid black;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingUsers.map((user: any) => (
+                  <tr>
+                    <td style="padding: 15px; border: 3px solid black; font-weight: bold;">{user.email}</td>
+                    <td style="padding: 15px; border: 3px solid black;">{user.name}</td>
+                    <td style="padding: 15px; border: 3px solid black;">{user.author_handle || 'N/A'}</td>
+                    <td style="padding: 15px; border: 3px solid black;">{new Date(user.created_at).toLocaleDateString()}</td>
+                    <td style="padding: 15px; border: 3px solid black;">
+                      <div style="display: flex; gap: 10px;">
+                        <button 
+                          onclick={`approveUser(${user.id})`} 
+                          class="ftn-btn ftn-btn-approve"
+                          style="padding: 5px 10px;"
+                        >
+                          Approve
+                        </button>
+                        <button 
+                          onclick={`rejectUser(${user.id})`} 
+                          class="ftn-btn ftn-btn-reject"
+                          style="padding: 5px 10px;"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <div class="ftn-dashboard-section">
         <h2 class="ftn-section-title">Quick Actions</h2>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <a href="/news/admin" class="ftn-btn">Manage All Articles</a>
+          <a href="/news/admin/articles" class="ftn-btn">Manage All Articles</a>
         </div>
       </div>
     </div>
@@ -110,6 +161,50 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
         }
       } catch (error) {
         alert('Error rejecting article');
+      }
+    };
+
+    (window as any).approveUser = async (id: number) => {
+      try {
+        const formData = new FormData();
+        formData.append('userId', id.toString());
+        formData.append('action', 'approve');
+        
+        const response = await fetch('/api/admin/pending-users', { 
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          alert('User approved! They can now login.');
+          window.location.reload();
+        } else {
+          alert('Failed to approve user');
+        }
+      } catch (error) {
+        alert('Error approving user');
+      }
+    };
+
+    (window as any).rejectUser = async (id: number) => {
+      try {
+        const formData = new FormData();
+        formData.append('userId', id.toString());
+        formData.append('action', 'reject');
+        
+        const response = await fetch('/api/admin/pending-users', { 
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          alert('User rejected');
+          window.location.reload();
+        } else {
+          alert('Failed to reject user');
+        }
+      } catch (error) {
+        alert('Error rejecting user');
       }
     };
   </script>

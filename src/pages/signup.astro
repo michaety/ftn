@@ -39,13 +39,25 @@ import '@/styles/news.css';
       </div>
 
       <div class="ftn-form-group">
-        <label for="authorName" class="ftn-label">Author Name / Twitter Handle</label>
+        <label for="name" class="ftn-label">Author Name</label>
         <input
           type="text"
-          id="authorName"
-          name="authorName"
+          id="name"
+          name="name"
           class="ftn-input"
-          placeholder="@yourhandle or Your Name"
+          placeholder="Your Name"
+          required
+        />
+      </div>
+
+      <div class="ftn-form-group">
+        <label for="authorHandle" class="ftn-label">Author Handle / Twitter Handle</label>
+        <input
+          type="text"
+          id="authorHandle"
+          name="authorHandle"
+          class="ftn-input"
+          placeholder="@yourhandle"
           required
         />
       </div>
@@ -126,12 +138,9 @@ import '@/styles/news.css';
         const data = await response.json();
 
         if (response.ok) {
-          successDiv.textContent = 'Account created successfully! Redirecting to login...';
+          successDiv.textContent = data.message || 'Account created successfully! Your registration is pending admin approval.';
           successDiv.style.display = 'block';
-          
-          setTimeout(() => {
-            window.location.href = '/login';
-          }, 1500);
+          form.reset();
         } else {
           errorDiv.textContent = data.error || 'Sign up failed';
           errorDiv.style.display = 'block';
