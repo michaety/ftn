@@ -103,6 +103,14 @@ header::after,
     text-decoration: none;
 }
 
+.ftn-logo-img {
+    display: none;
+}
+
+.ftn-logo-text {
+    display: inline;
+}
+
 .header-subtitle,
 .ftn-header-subtitle {
     font-size: 1.1em;
@@ -570,7 +578,7 @@ hr {
     .container,
     .ftn-container {
         flex-direction: column;
-        padding: 20px;
+        padding: 0;
         display: flex !important;
     }
 
@@ -631,17 +639,29 @@ hr {
 
 @media (max-width: 768px) {
     :root {
-        --header-height: 180px;
+        --header-height: 120px;
     }
 
     body {
-        padding-top: 180px !important;
+        padding-top: 120px !important;
     }
 
     /* Reduce container padding on small screens */
     .container,
     .ftn-container {
         padding: 0;
+    }
+
+    /* Show logo image on mobile, hide text */
+    .ftn-logo-text {
+        display: none;
+    }
+
+    .ftn-logo-img {
+        display: block;
+        height: 60px;
+        width: auto;
+        margin: 0 auto;
     }
 
     .header-title,
@@ -652,7 +672,8 @@ hr {
 
     .header-subtitle,
     .ftn-header-subtitle {
-        font-size: 0.85em;
+        font-size: 0.75em;
+        padding: 5px 10px;
     }
 
     .filters button,
