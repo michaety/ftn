@@ -55,8 +55,10 @@ See [STYLE.md](./STYLE.md) for complete styling documentation and customization 
 
 ## 🔐 Default Credentials
 
-- Email: `admin@fishtank.news`
-- Password: `admin123`
+- Email: `michaety@pm.me`
+- Password: `rohypnol`
+- Handle: `@5wcol`
+- Name: `soon`
 
 **⚠️ Change immediately after first login!**
 
