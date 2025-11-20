@@ -1,0 +1,19 @@
+# Wrangler configuration for R2 Image Worker
+# This worker serves images from the R2 bucket at img.fishtank.news
+
+name = "r2-image-worker"
+main = "workers/r2-image-worker.js"
+compatibility_date = "2025-10-08"
+
+# R2 Bucket binding
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "fishtank-news"
+# For preview/development, uncomment and set:
+# preview_bucket_name = "fishtank-news-preview"
+
+# Routes - this worker should handle img.fishtank.news/*
+# Note: Configure this in Cloudflare Dashboard or via wrangler CLI
+# routes = [
+#   { pattern = "img.fishtank.news/*", zone_name = "fishtank.news" }
+# ]

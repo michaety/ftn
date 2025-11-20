@@ -18,6 +18,9 @@ export default defineConfig({
   }),
   integrations: [react(), tailwind({ applyBaseStyles: false })],
   output: "server",
+  security: {
+    checkOrigin: false,
+  },
   vite: {
     resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
