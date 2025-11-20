@@ -12,19 +12,15 @@ import '@/styles/news.css';
 <body>
   <header class="ftn-header">
     <div class="ftn-container">
-      <div class="ftn-header-content">
-        <h1 class="ftn-logo">
-          <a href="/">FISHTANK NEWS</a>
-        </h1>
-        <nav class="ftn-nav">
-          <a href="/">Home</a>
-          <a href="/login">Login</a>
-        </nav>
+      <div class="ftn-header-content" style="justify-content: center;">
+        <div style="text-align: center;">
+          <a href="https://ibb.co/xSynPgL0"><img src="https://i.ibb.co/xSynPgL0/logo.webp" alt="logo" border="0" style="max-width: 200px; margin: 0 auto;"></a>
+        </div>
       </div>
     </div>
   </header>
 
-  <main>
+  <main style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 300px);">
     <form class="ftn-form" id="signupForm">
       <h2 class="ftn-form-title">Sign Up</h2>
       <p style="text-align: center; margin-bottom: 20px;">
@@ -50,18 +46,6 @@ import '@/styles/news.css';
           name="authorName"
           class="ftn-input"
           placeholder="@yourhandle or Your Name"
-          required
-        />
-      </div>
-
-      <div class="ftn-form-group">
-        <label for="twitterProfile" class="ftn-label">Twitter Profile URL</label>
-        <input
-          type="url"
-          id="twitterProfile"
-          name="twitterProfile"
-          class="ftn-input"
-          placeholder="https://twitter.com/yourhandle"
           required
         />
       </div>
