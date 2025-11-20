@@ -1,4 +1,6 @@
 ---
+import { getImageUrl } from '@/lib/db-utils';
+
 interface Article {
   id: number;
   title: string;
@@ -20,12 +22,8 @@ interface Props {
 
 const { article, r2PublicUrl = '', index = 0 } = Astro.props;
 
-// Construct image URL from R2 if featured_image exists
-const imageUrl = article.featured_image 
-  ? (article.featured_image.startsWith('http') 
-      ? article.featured_image 
-      : r2PublicUrl ? `${r2PublicUrl}/${article.featured_image}` : article.featured_image)
-  : null;
+// Use the helper function to construct proper image URL
+const imageUrl = getImageUrl(article.featured_image, r2PublicUrl);
 
 const formattedDate = new Date(article.published_at || article.created_at).toLocaleDateString('en-US', {
   year: 'numeric',

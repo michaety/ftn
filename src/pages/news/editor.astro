@@ -1,7 +1,7 @@
 ---
 import NewsLayout from '@/layouts/NewsLayout.astro';
 import NewsArticleCard from '@/components/news/NewsArticleCard.astro';
-import { getSession, getCookie, getArticlesByAuthor } from '@/lib/db-utils';
+import { getSession, getCookie, getArticlesByAuthor, getImageUrl } from '@/lib/db-utils';
 
 // Check authentication
 const db = Astro.locals.runtime.env.DB;
@@ -40,7 +40,7 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
                 {article.featured_image && (
                   <div class="ftn-article-image">
                     <img 
-                      src={article.featured_image.startsWith('http') ? article.featured_image : r2PublicUrl ? `${r2PublicUrl}/${article.featured_image}` : article.featured_image} 
+                      src={getImageUrl(article.featured_image, r2PublicUrl) || article.featured_image} 
                       alt={article.title} 
                     />
                   </div>
