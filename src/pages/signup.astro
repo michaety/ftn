@@ -39,16 +39,18 @@ import '@/styles/news.css';
       </div>
 
       <div class="ftn-form-group">
-        <label for="authorName" class="ftn-label">Author Name / Twitter Handle</label>
+        <label for="name" class="ftn-label">Author Name / Twitter Handle</label>
         <input
           type="text"
-          id="authorName"
-          name="authorName"
+          id="name"
+          name="name"
           class="ftn-input"
           placeholder="@yourhandle or Your Name"
           required
         />
       </div>
+
+      <input type="hidden" id="token" name="token" />
 
       <div class="ftn-form-group">
         <label for="password" class="ftn-label">Password</label>
@@ -101,6 +103,18 @@ import '@/styles/news.css';
     const successDiv = document.getElementById('success');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirmPassword');
+    const tokenInput = document.getElementById('token');
+
+    // Extract token from URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (token) {
+      tokenInput.value = token;
+    } else {
+      errorDiv.textContent = 'Invalid signup link. Please use the invite link sent to your email.';
+      errorDiv.style.display = 'block';
+      form.querySelector('button[type="submit"]').disabled = true;
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
