@@ -9,8 +9,8 @@ const links = [
 export function Header({ currentPath }: { currentPath: string }) {
   return (
     <nav className="flex items-center space-x-4 lg:space-x-6 mx-6 h-16">
-      <a href="/" className="text-sm font-bold leading-none text-foreground">
-        <img src="/logo.webp" alt="logo" style={{ maxWidth: '120px' }} />
+      <a href="/" className="text-sm font-bold leading-none text-foreground" style={{ display: 'flex', alignItems: 'center' }}>
+        <img src="/logo.webp" alt="logo" style={{ maxWidth: '120px', display: 'block' }} />
       </a>
       {links.map((link) => (
         <a
