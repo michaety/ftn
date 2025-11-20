@@ -71,6 +71,7 @@ export const PUT: APIRoute = async ({ request, params, locals }) => {
     if (formData.has('excerpt')) updates.excerpt = formData.get('excerpt')?.toString();
     if (formData.has('featured_image')) updates.featured_image = formData.get('featured_image')?.toString();
     if (formData.has('status')) updates.status = formData.get('status')?.toString();
+    if (formData.has('category')) updates.category = formData.get('category')?.toString();
 
     const article = await updateArticle(db, id, updates);
 

@@ -108,6 +108,17 @@ import '@/styles/news.css';
         </div>
 
         <div class="ftn-form-group">
+          <label for="category" class="ftn-label">Category *</label>
+          <select id="category" name="category" class="ftn-input" required>
+            <option value="">Select a category...</option>
+            <option value="breaking">Breaking</option>
+            <option value="rumor">Rumor</option>
+            <option value="opinion">Opinion</option>
+            <option value="fake news">Fake News</option>
+          </select>
+        </div>
+
+        <div class="ftn-form-group">
           <label for="status" class="ftn-label">Status</label>
           <select id="status" name="status" class="ftn-input">
             <option value="draft">Draft</option>
@@ -175,6 +186,7 @@ import '@/styles/news.css';
         document.getElementById('excerpt').value = article.excerpt || '';
         document.getElementById('featured_image').value = article.featured_image || '';
         document.getElementById('content').value = article.content || '';
+        document.getElementById('category').value = article.category || '';
         document.getElementById('status').value = article.status || 'draft';
 
         // Show form

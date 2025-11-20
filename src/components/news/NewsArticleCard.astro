@@ -6,6 +6,7 @@ interface Article {
   excerpt?: string;
   featured_image?: string;
   author_name: string;
+  author_handle?: string;
   published_at?: string;
   created_at: string;
   category?: string;
@@ -32,6 +33,12 @@ const formattedDate = new Date(article.published_at || article.created_at).toLoc
   day: 'numeric'
 });
 
+// Get author handle
+const authorHandle = article.author_handle || '@fishtanklive';
+const twitterUrl = authorHandle.startsWith('@') 
+  ? `https://x.com/${authorHandle.substring(1)}` 
+  : `https://x.com/${authorHandle}`;
+
 // Determine article classes based on category
 const categoryClass = article.category?.toLowerCase() || 'all';
 const articleClasses = `article ftn-article-card all ${categoryClass}`;
@@ -55,7 +62,9 @@ const articleClasses = `article ftn-article-card all ${categoryClass}`;
   </div>
   
   <span class="tag ftn-article-meta">
-    By {article.author_name} | {formattedDate}
-    {article.category && ` | ${article.category}`}
+    {article.author_name} | <a href={twitterUrl} target="_blank" rel="noopener" style="color: var(--aged-sepia); font-weight: 700;">{authorHandle}</a> | {formattedDate}
+    {article.category && (
+      <span> | <span style="font-weight: 700; color: var(--ink-black);">{article.category.toUpperCase()}</span></span>
+    )}
   </span>
 </article>
