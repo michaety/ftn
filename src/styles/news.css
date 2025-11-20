@@ -607,6 +607,9 @@ hr {
     .ftn-logo {
         font-size: 3em;
         letter-spacing: 4px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
 
     .article h2,
@@ -638,10 +641,20 @@ hr {
         padding-top: 180px !important;
     }
 
+    /* Reduce container padding on small screens */
+    .container,
+    .ftn-container {
+        padding: 10px;
+    }
+
     .header-title,
     .ftn-logo {
-        font-size: 2.2em;
-        letter-spacing: 2px;
+        font-size: 1.8em;
+        letter-spacing: 1px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        white-space: normal;
     }
 
     .header-subtitle,
@@ -664,23 +677,46 @@ hr {
     .main-feed,
     .ftn-main-feed {
         padding: 20px;
+        margin-left: -10px;
+        margin-right: -10px;
+        width: calc(100% + 20px);
+        max-width: calc(100% + 20px);
     }
 
     .ftn-page-title {
         font-size: 1.8em;
     }
 
-    /* Add visual separation for sidebars on mobile */
+    /* Make sidebars span full width on mobile */
     .sidebar,
     .ftn-sidebar {
         margin-top: 30px;
-        padding: 20px 15px !important;
+        margin-left: -10px;
+        margin-right: -10px;
+        width: calc(100% + 20px);
+        padding: 20px !important;
+        text-align: center;
     }
 
-    /* Ensure newspaper aesthetic on mobile */
+    /* Center sidebar headings */
     .sidebar h3,
     .ftn-sidebar h3 {
+        text-align: center;
         font-size: 1.3em;
+    }
+
+    /* Center sidebar lists while keeping text left-aligned */
+    .sidebar ul,
+    .ftn-sidebar ul {
+        text-align: left;
+        display: inline-block;
+        max-width: 100%;
+    }
+
+    .sidebar p,
+    .ftn-sidebar p {
+        text-align: left;
+        max-width: 100%;
     }
 
     .article,
