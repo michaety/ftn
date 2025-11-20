@@ -103,6 +103,14 @@ header::after,
     text-decoration: none;
 }
 
+.ftn-logo-img {
+    display: none;
+}
+
+.ftn-logo-text {
+    display: inline;
+}
+
 .header-subtitle,
 .ftn-header-subtitle {
     font-size: 1.1em;
@@ -570,7 +578,8 @@ hr {
     .container,
     .ftn-container {
         flex-direction: column;
-        padding: 20px;
+        padding: 0;
+        display: flex !important;
     }
 
     .sidebar,
@@ -584,16 +593,28 @@ hr {
         top: auto !important;
     }
 
+    /* Reorder layout on mobile: main feed first, then sidebars */
     .main-feed,
     .ftn-main-feed {
         width: 100%;
         max-width: 100%;
+        order: 1;
+    }
+
+    .sidebar.left,
+    .ftn-sidebar.left {
+        order: 2;
+    }
+
+    .sidebar.right,
+    .ftn-sidebar.right {
+        order: 3;
     }
 
     .header-title,
     .ftn-logo {
-        font-size: 3em;
-        letter-spacing: 4px;
+        font-size: 2.5em;
+        letter-spacing: 3px;
     }
 
     .article h2,
@@ -617,15 +638,42 @@ hr {
 }
 
 @media (max-width: 768px) {
+    :root {
+        --header-height: 120px;
+    }
+
+    body {
+        padding-top: 120px !important;
+    }
+
+    /* Reduce container padding on small screens */
+    .container,
+    .ftn-container {
+        padding: 0;
+    }
+
+    /* Show logo image on mobile, hide text */
+    .ftn-logo-text {
+        display: none;
+    }
+
+    .ftn-logo-img {
+        display: block;
+        height: 60px;
+        width: auto;
+        margin: 0 auto;
+    }
+
     .header-title,
     .ftn-logo {
-        font-size: 2.2em;
-        letter-spacing: 2px;
+        font-size: 1.4em;
+        letter-spacing: 1px;
     }
 
     .header-subtitle,
     .ftn-header-subtitle {
-        font-size: 0.85em;
+        font-size: 0.75em;
+        padding: 5px 10px;
     }
 
     .filters button,
@@ -643,10 +691,49 @@ hr {
     .main-feed,
     .ftn-main-feed {
         padding: 20px;
+        width: 100%;
+        max-width: 100%;
     }
 
     .ftn-page-title {
         font-size: 1.8em;
+    }
+
+    /* Make sidebars span full width on mobile */
+    .sidebar,
+    .ftn-sidebar {
+        margin-top: 30px;
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+        padding: 20px !important;
+        text-align: center;
+    }
+
+    /* Center sidebar headings */
+    .sidebar h3,
+    .ftn-sidebar h3 {
+        text-align: center;
+        font-size: 1.3em;
+    }
+
+    /* Center sidebar lists while keeping text left-aligned */
+    .sidebar ul,
+    .ftn-sidebar ul {
+        text-align: left;
+        display: inline-block;
+        max-width: 100%;
+    }
+
+    .sidebar p,
+    .ftn-sidebar p {
+        text-align: left;
+        max-width: 100%;
+    }
+
+    .article,
+    .ftn-article-card {
+        margin-bottom: 40px;
     }
 }
 
