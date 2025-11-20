@@ -19,6 +19,22 @@ if (!article || article.status !== 'approved') {
   return Astro.redirect('/news');
 }
 
+// Configure marked to handle images properly
+marked.use({
+  renderer: {
+    image(href, title, text) {
+      // If the image URL starts with /api/media/, it's an uploaded image
+      // Otherwise, if it doesn't start with http, prepend the R2 public URL
+      let imageUrl = href;
+      if (!href.startsWith('http') && !href.startsWith('/api/media/')) {
+        imageUrl = r2PublicUrl ? `${r2PublicUrl}/${href}` : href;
+      }
+      const titleAttr = title ? ` title="${title}"` : '';
+      return `<img src="${imageUrl}" alt="${text}"${titleAttr} />`;
+    }
+  }
+});
+
 // Parse markdown content
 const htmlContent = marked.parse(article.content);
 
@@ -34,6 +50,12 @@ const formattedDate = new Date(article.published_at || article.created_at).toLoc
   month: 'long',
   day: 'numeric'
 });
+
+// Get author handle
+const authorHandle = article.author_handle || '@fishtanklive';
+const twitterUrl = authorHandle.startsWith('@') 
+  ? `https://x.com/${authorHandle.substring(1)}` 
+  : `https://x.com/${authorHandle}`;
 ---
 
 <NewsLayout title={article.title}>
@@ -41,16 +63,26 @@ const formattedDate = new Date(article.published_at || article.created_at).toLoc
     <article class="ftn-article-detail">
       <h1>{article.title}</h1>
       
-      <div class="ftn-article-meta">
-        <span class="ftn-article-author">By {article.author_name}</span>
-        <span class="ftn-article-date">{formattedDate}</span>
-      </div>
-      
       {imageUrl && (
         <img src={imageUrl} alt={article.title} class="ftn-article-hero" />
       )}
       
       <div class="ftn-article-body" set:html={htmlContent} />
+      
+      <div class="ftn-article-footer">
+        <div class="ftn-article-meta">
+          <span class="ftn-article-author">{article.author_name}</span>
+          <span class="ftn-article-separator">|</span>
+          <a href={twitterUrl} target="_blank" rel="noopener" class="ftn-article-handle">{authorHandle}</a>
+          <span class="ftn-article-separator">|</span>
+          <span class="ftn-article-date">{formattedDate}</span>
+        </div>
+        {article.category && (
+          <div class="ftn-article-category">
+            <span class="ftn-category-badge">{article.category}</span>
+          </div>
+        )}
+      </div>
     </article>
   </div>
 </NewsLayout>

@@ -43,9 +43,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const excerpt = formData.get('excerpt')?.toString();
     const featured_image = formData.get('featured_image')?.toString();
     const status = formData.get('status')?.toString() || 'draft';
+    const category = formData.get('category')?.toString();
 
     if (!title || !content) {
       return new Response(JSON.stringify({ error: 'Title and content are required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (!category) {
+      return new Response(JSON.stringify({ error: 'Category is required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -60,7 +68,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       excerpt,
       featured_image,
       author_id: session.userId,
-      status
+      status,
+      category
     });
 
     return new Response(JSON.stringify({ success: true, article }), {

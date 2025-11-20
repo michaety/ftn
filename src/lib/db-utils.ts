@@ -58,7 +58,7 @@ export async function verifyPassword(password: string, hash: string) {
 // ============== Article Utilities ==============
 
 export async function getArticles(db: any, status: string | null = null) {
-  let query = 'SELECT a.*, u.name as author_name, u.email as author_email FROM articles a LEFT JOIN users u ON a.author_id = u.id';
+  let query = 'SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle FROM articles a LEFT JOIN users u ON a.author_id = u.id';
   const params: any[] = [];
   
   if (status) {
@@ -79,14 +79,14 @@ export async function getArticles(db: any, status: string | null = null) {
 
 export async function getArticleById(db: any, id: number) {
   const result = await db.prepare(
-    'SELECT a.*, u.name as author_name, u.email as author_email FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.id = ?'
+    'SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.id = ?'
   ).bind(id).first();
   return result;
 }
 
 export async function getArticleBySlug(db: any, slug: string) {
   const result = await db.prepare(
-    'SELECT a.*, u.name as author_name, u.email as author_email FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.slug = ?'
+    'SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.slug = ?'
   ).bind(slug).first();
   return result;
 }
@@ -106,11 +106,12 @@ export async function createArticle(db: any, data: {
   featured_image?: string;
   author_id: number;
   status?: string;
+  category?: string;
 }) {
-  const { title, slug, content, excerpt, featured_image, author_id, status = 'draft' } = data;
+  const { title, slug, content, excerpt, featured_image, author_id, status = 'draft', category } = data;
   const result = await db.prepare(
-    'INSERT INTO articles (title, slug, content, excerpt, featured_image, author_id, status) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *'
-  ).bind(title, slug, content, excerpt || null, featured_image || null, author_id, status).first();
+    'INSERT INTO articles (title, slug, content, excerpt, featured_image, author_id, status, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING *'
+  ).bind(title, slug, content, excerpt || null, featured_image || null, author_id, status, category || null).first();
   return result;
 }
 
@@ -121,8 +122,9 @@ export async function updateArticle(db: any, id: number, data: {
   excerpt?: string;
   featured_image?: string;
   status?: string;
+  category?: string;
 }) {
-  const { title, slug, content, excerpt, featured_image, status } = data;
+  const { title, slug, content, excerpt, featured_image, status, category } = data;
   const updates: string[] = [];
   const params: any[] = [];
   
@@ -132,6 +134,7 @@ export async function updateArticle(db: any, id: number, data: {
   if (excerpt !== undefined) { updates.push('excerpt = ?'); params.push(excerpt); }
   if (featured_image !== undefined) { updates.push('featured_image = ?'); params.push(featured_image); }
   if (status !== undefined) { updates.push('status = ?'); params.push(status); }
+  if (category !== undefined) { updates.push('category = ?'); params.push(category); }
   
   params.push(id);
   
