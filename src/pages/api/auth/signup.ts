@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getInviteByToken, useInvite, createUser, createSession, setCookieHeader } from '@/lib/db-utils';
+import { createUser } from '@/lib/db-utils';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -7,9 +7,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const email = formData.get('email')?.toString();
     const password = formData.get('password')?.toString();
     const name = formData.get('name')?.toString();
-    const token = formData.get('token')?.toString();
+    const authorHandle = formData.get('authorHandle')?.toString();
 
-    if (!email || !password || !name || !token) {
+    if (!email || !password || !name || !authorHandle) {
       return new Response(JSON.stringify({ error: 'All fields are required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -17,59 +17,36 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const db = locals.runtime.env.DB;
-    const kv = locals.runtime.env.SESSION;
 
-    // Verify invite token
-    const invite = await getInviteByToken(db, token);
-    if (!invite) {
-      return new Response(JSON.stringify({ error: 'Invalid or expired invite token' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Check if email matches invite
-    if (invite.email !== email) {
-      return new Response(JSON.stringify({ error: 'Email does not match invite' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Create user
+    // Create user with pending status
     const user = await createUser(db, {
       email,
       password,
       role: 'editor',
-      name
+      name,
+      authorHandle,
+      status: 'pending'
     });
 
-    // Mark invite as used
-    await useInvite(db, token);
-
-    // Create session
-    const sessionId = await createSession(kv, user.id, user.email, user.role);
-
-    // Return success with cookie
-    const headers = new Headers({
-      'Content-Type': 'application/json',
-      'Set-Cookie': setCookieHeader('sessionId', sessionId)
-    });
-
+    // Return success
     return new Response(JSON.stringify({
       success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        name: user.name
-      }
+      message: 'Account created! Your registration is pending admin approval. You will be notified once approved.'
     }), {
       status: 201,
-      headers
+      headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
     console.error('Signup error:', error);
+    
+    // Check for duplicate email error
+    if (error instanceof Error && error.message.includes('UNIQUE')) {
+      return new Response(JSON.stringify({ error: 'Email already registered' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
