@@ -605,11 +605,8 @@ hr {
 
     .header-title,
     .ftn-logo {
-        font-size: 3em;
-        letter-spacing: 4px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        hyphens: auto;
+        font-size: 2.5em;
+        letter-spacing: 3px;
     }
 
     .article h2,
@@ -644,17 +641,13 @@ hr {
     /* Reduce container padding on small screens */
     .container,
     .ftn-container {
-        padding: 10px;
+        padding: 0;
     }
 
     .header-title,
     .ftn-logo {
-        font-size: 1.8em;
+        font-size: 1.4em;
         letter-spacing: 1px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        hyphens: auto;
-        white-space: normal;
     }
 
     .header-subtitle,
@@ -677,10 +670,8 @@ hr {
     .main-feed,
     .ftn-main-feed {
         padding: 20px;
-        margin-left: -10px;
-        margin-right: -10px;
-        width: calc(100% + 20px);
-        max-width: calc(100% + 20px);
+        width: 100%;
+        max-width: 100%;
     }
 
     .ftn-page-title {
@@ -691,9 +682,9 @@ hr {
     .sidebar,
     .ftn-sidebar {
         margin-top: 30px;
-        margin-left: -10px;
-        margin-right: -10px;
-        width: calc(100% + 20px);
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
         padding: 20px !important;
         text-align: center;
     }
