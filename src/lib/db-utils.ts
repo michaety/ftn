@@ -274,6 +274,35 @@ export async function getR2Url(key: string) {
   return `/api/media/${key}`;
 }
 
+/**
+ * Constructs the proper image URL for display
+ * @param imageKey - The R2 key or full URL stored in the database
+ * @param r2PublicUrl - The R2_PUBLIC_URL environment variable (e.g., https://img.fishtank.news)
+ * @returns The full URL to use in img src attributes
+ */
+export function getImageUrl(imageKey: string | null | undefined, r2PublicUrl: string = ''): string | null {
+  if (!imageKey) return null;
+  
+  // If it's already a full URL (starts with http:// or https://), return as-is
+  if (imageKey.startsWith('http://') || imageKey.startsWith('https://')) {
+    return imageKey;
+  }
+  
+  // If R2_PUBLIC_URL is configured, use it with the R2 key
+  if (r2PublicUrl) {
+    // Remove leading slash from imageKey if present
+    const cleanKey = imageKey.startsWith('/') ? imageKey.substring(1) : imageKey;
+    // Ensure r2PublicUrl doesn't end with slash
+    const baseUrl = r2PublicUrl.endsWith('/') ? r2PublicUrl.slice(0, -1) : r2PublicUrl;
+    return `${baseUrl}/${cleanKey}`;
+  }
+  
+  // Fallback to proxying through /api/media/ for local development
+  // Remove 'uploads/' prefix if present since /api/media/ expects the full key
+  const key = imageKey.startsWith('uploads/') ? imageKey : `uploads/${imageKey}`;
+  return `/api/media/${key}`;
+}
+
 // ============== Helper Functions ==============
 
 export function generateToken() {

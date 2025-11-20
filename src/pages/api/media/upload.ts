@@ -29,7 +29,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Upload to R2
     const key = await uploadToR2(r2, file, file.name);
-    const url = `/api/media/${encodeURIComponent(key)}`;
+    // Return the R2 key (e.g., "uploads/123-image.jpg") 
+    // Frontend will construct the full URL using R2_PUBLIC_URL or /api/media/ fallback
+    const url = key;
 
     return new Response(JSON.stringify({ success: true, key, url }), {
       status: 201,

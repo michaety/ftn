@@ -99,13 +99,16 @@ npm install
 cp .dev.vars.example .dev.vars
 ```
 
-Add your API token:
+Add your API token and R2 public URL:
 
 ```
 API_TOKEN=your_token_here
+R2_PUBLIC_URL=https://img.fishtank.news
 ```
 
 _An API token is required to authenticate requests to the API. You should generate this before trying to run the project locally or deploying it._
+
+_The R2_PUBLIC_URL should point to your R2 bucket's public domain. For production, this should be `https://img.fishtank.news`. For local development, you can omit this to use the `/api/media/` proxy. See [R2_IMAGE_FIX.md](./R2_IMAGE_FIX.md) for details._
 
 3. Create a [D1 database](https://developers.cloudflare.com/d1/get-started/) with the name "admin-db":
 
@@ -147,11 +150,23 @@ npm run deploy
 $ npm run db:migrate:remote
 ```
 
-8. Set your production API token:
+8. Set your production environment variables:
 
 ```bash
+# Set API token
 npx wrangler secret put API_TOKEN
+
+# Set R2 public URL (for image display)
+npx wrangler secret put R2_PUBLIC_URL
+# Enter: https://img.fishtank.news
 ```
+
+9. Configure DNS for R2 image hosting:
+   - In Cloudflare DNS, create a record for `img.fishtank.news`
+   - Point it to your R2 bucket's public URL
+   - Set to **DNS Only** (grey cloud icon) - do NOT proxy through Cloudflare
+   - Ensure no Worker route is bound to `img.fishtank.news/*`
+   - See [R2_IMAGE_FIX.md](./R2_IMAGE_FIX.md) for detailed instructions
 
 ## Usage
 
