@@ -30,14 +30,20 @@ const articles = await getArticles(db, 'approved');
       <p style="font-size: 0.85em; line-height: 1.5;">
         <strong>Latest:</strong> Production crew spotted at new location. Sources indicate a larger house with enhanced surveillance capabilities. The community eagerly anticipates official announcements regarding Season 5 casting and premiere dates.
       </p>
+      <div class="x-embed">
+        <h3>Community Updates</h3>
+        <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/i/lists/1712083470296686731?ref_src=twsrc%5Etfw">Unofficial Fishtank List</a>
+      </div>
     </aside>
 
     <!-- Main Feed -->
     <main class="main-feed ftn-main-feed">
       <div class="filters ftn-filters">
         <button class="active" data-filter="all">All</button>
+        <button data-filter="breaking">Breaking</button>
         <button data-filter="rumors">Rumors</button>
         <button data-filter="opinions">Opinions</button>
+        <button data-filter="fake-news">Fake News</button>
       </div>
 
       {articles.length === 0 ? (
@@ -70,9 +76,14 @@ const articles = await getArticles(db, 'approved');
       <p style="font-size: 0.85em; line-height: 1.5; margin-top: 15px;">
         <strong>Fan Project:</strong> Community members collaborate on detailed timeline of all seasons, creating an invaluable resource for newcomers and veterans alike.
       </p>
+      <div class="x-embed">
+        <h3>Official Feed</h3>
+        <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/fishtankislive?ref_src=twsrc%5Etfw">Tweets by fishtankislive</a>
+      </div>
     </aside>
   </div>
 
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const buttons = document.querySelectorAll('.filters button, .ftn-filters button');

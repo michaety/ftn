@@ -26,29 +26,42 @@ import '@/styles/news.css';
 
   <main>
     <form class="ftn-form" id="signupForm">
-      <h2 class="ftn-form-title">Editor Sign Up</h2>
+      <h2 class="ftn-form-title">Sign Up</h2>
       <p style="text-align: center; margin-bottom: 20px;">
-        Sign up using your invite token
+        Create your Fishtank News author account
       </p>
       
       <div class="ftn-form-group">
-        <label for="name" class="ftn-label">Full Name</label>
+        <label for="email" class="ftn-label">Email Address</label>
         <input
-          type="text"
-          id="name"
-          name="name"
+          type="email"
+          id="email"
+          name="email"
           class="ftn-input"
           required
         />
       </div>
 
       <div class="ftn-form-group">
-        <label for="email" class="ftn-label">Email</label>
+        <label for="authorName" class="ftn-label">Author Name / Twitter Handle</label>
         <input
-          type="email"
-          id="email"
-          name="email"
+          type="text"
+          id="authorName"
+          name="authorName"
           class="ftn-input"
+          placeholder="@yourhandle or Your Name"
+          required
+        />
+      </div>
+
+      <div class="ftn-form-group">
+        <label for="twitterProfile" class="ftn-label">Twitter Profile URL</label>
+        <input
+          type="url"
+          id="twitterProfile"
+          name="twitterProfile"
+          class="ftn-input"
+          placeholder="https://twitter.com/yourhandle"
           required
         />
       </div>
@@ -66,14 +79,14 @@ import '@/styles/news.css';
       </div>
 
       <div class="ftn-form-group">
-        <label for="token" class="ftn-label">Invite Token</label>
+        <label for="confirmPassword" class="ftn-label">Confirm Password</label>
         <input
-          type="text"
-          id="token"
-          name="token"
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
           class="ftn-input"
           required
-          readonly
+          minlength="8"
         />
       </div>
 
@@ -85,7 +98,7 @@ import '@/styles/news.css';
       </button>
 
       <p style="text-align: center; margin-top: 20px;">
-        Already have an account? <a href="/login" style="color: var(--ftn-blue); font-weight: bold;">Login</a>
+        Already have an account? <a href="/login" style="color: var(--ink-black); font-weight: bold; text-decoration: underline;">Login</a>
       </p>
     </form>
   </main>
@@ -102,25 +115,21 @@ import '@/styles/news.css';
     const form = document.getElementById('signupForm');
     const errorDiv = document.getElementById('error');
     const successDiv = document.getElementById('success');
-    const tokenInput = document.getElementById('token');
-
-    // Get token from URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-
-    if (!token) {
-      errorDiv.textContent = 'Invalid signup link. Please use the invite link sent to your email.';
-      errorDiv.style.display = 'block';
-      form.querySelector('button[type="submit"]').disabled = true;
-    } else {
-      tokenInput.value = token;
-    }
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       errorDiv.style.display = 'none';
       successDiv.style.display = 'none';
+      
+      // Validate passwords match
+      if (passwordInput.value !== confirmPasswordInput.value) {
+        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.style.display = 'block';
+        return;
+      }
       
       const formData = new FormData(form);
       
@@ -133,11 +142,11 @@ import '@/styles/news.css';
         const data = await response.json();
 
         if (response.ok) {
-          successDiv.textContent = 'Account created successfully! Redirecting...';
+          successDiv.textContent = 'Account created successfully! Redirecting to login...';
           successDiv.style.display = 'block';
           
           setTimeout(() => {
-            window.location.href = '/news/editor';
+            window.location.href = '/login';
           }, 1500);
         } else {
           errorDiv.textContent = data.error || 'Sign up failed';

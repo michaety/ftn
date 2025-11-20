@@ -3,9 +3,10 @@ interface Props {
   currentPath?: string;
   role?: 'public' | 'admin' | 'editor';
   userName?: string;
+  hideNavigation?: boolean;
 }
 
-const { currentPath = '', role = 'public', userName } = Astro.props;
+const { currentPath = '', role = 'public', userName, hideNavigation = false } = Astro.props;
 
 // Get current date for subtitle
 const currentDate = new Date().toLocaleDateString('en-US', {
@@ -22,31 +23,33 @@ const currentDate = new Date().toLocaleDateString('en-US', {
   <p class="ftn-header-subtitle">
     Vol. 1, No. 1 ★ The Unofficial Source for Fishtank Updates ★ {currentDate}
   </p>
-  <div class="ftn-header-content">
-    <nav class="ftn-nav">
-      {role === 'public' ? (
-        <>
-          <a href="/news">Home</a>
-          <a href="/login">Login</a>
-        </>
-      ) : role === 'admin' ? (
-        <>
-          <a href="/news/admin">Dashboard</a>
-          <a href="/news/admin">Articles</a>
-          <a href="/news/admin">Invites</a>
-          {userName && <span class="ftn-user">{userName}</span>}
-          <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
-        </>
-      ) : (
-        <>
-          <a href="/news/editor">Dashboard</a>
-          <a href="/news/editor/new">New Article</a>
-          {userName && <span class="ftn-user">{userName}</span>}
-          <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
-        </>
-      )}
-    </nav>
-  </div>
+  {!hideNavigation && (
+    <div class="ftn-header-content">
+      <nav class="ftn-nav">
+        {role === 'public' ? (
+          <>
+            <a href="/news">Home</a>
+            <a href="/login">Login</a>
+          </>
+        ) : role === 'admin' ? (
+          <>
+            <a href="/news/admin">Dashboard</a>
+            <a href="/news/admin">Articles</a>
+            <a href="/news/admin">Invites</a>
+            {userName && <span class="ftn-user">{userName}</span>}
+            <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
+          </>
+        ) : (
+          <>
+            <a href="/news/editor">Dashboard</a>
+            <a href="/news/editor/new">New Article</a>
+            {userName && <span class="ftn-user">{userName}</span>}
+            <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
+          </>
+        )}
+      </nav>
+    </div>
+  )}
 </header>
 
 {(role === 'admin' || role === 'editor') && (

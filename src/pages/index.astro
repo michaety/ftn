@@ -1,8 +1,6 @@
 ---
-import MainLayout from '@/layouts/MainLayout.astro';
-import Header from '@/components/Header.astro';
-import Footer from '@/components/Footer.astro';
-import ArticleCard from '@/components/ArticleCard.astro';
+import NewsLayout from '@/layouts/NewsLayout.astro';
+import NewsArticleCard from '@/components/news/NewsArticleCard.astro';
 import { getArticles } from '@/lib/db-utils';
 
 const db = Astro.locals.runtime.env.DB;
@@ -10,36 +8,124 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 
 // Fetch approved articles from the database
 const articles = await getArticles(db, 'approved');
-
-// Separate featured article (first one) from the rest
-const featuredArticle = articles.length > 0 ? articles[0] : null;
-const regularArticles = articles.slice(1);
 ---
 
-<MainLayout title="Home">
-  <Header role="public" />
-  <main>
-    <div class="ftn-container">
-      <h1 class="ftn-page-title">Latest News</h1>
-      
+<NewsLayout title="Home" hideNavigation={true}>
+  <div class="container ftn-container">
+    <!-- Left Sidebar -->
+    <aside class="sidebar ftn-sidebar left">
+      <h3>Featured Items</h3>
+      <ul>
+        <li><a href="#">Season 5 Pre-Production Updates</a></li>
+        <li><a href="#">Top Contestant Moments</a></li>
+        <li><a href="#">Behind-the-Scenes Drama</a></li>
+        <li><a href="#">Viewer Interaction Highlights</a></li>
+        <li><a href="#">House Layout Reveals</a></li>
+        <li><a href="#">Casting Call Announcements</a></li>
+      </ul>
+      <p style="margin-top: 20px; font-size: 0.85em;">
+        Stay updated with the latest developments in the Fishtank universe. From production updates to contestant interviews, we bring you comprehensive coverage of everything happening in and around the house.
+      </p>
+      <h3>Breaking Updates</h3>
+      <p style="font-size: 0.85em; line-height: 1.5;">
+        <strong>Latest:</strong> Production crew spotted at new location. Sources indicate a larger house with enhanced surveillance capabilities. The community eagerly anticipates official announcements regarding Season 5 casting and premiere dates.
+      </p>
+      <div class="x-embed">
+        <h3>Community Updates</h3>
+        <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/i/lists/1712083470296686731?ref_src=twsrc%5Etfw">Unofficial Fishtank List</a>
+      </div>
+    </aside>
+
+    <!-- Main Feed -->
+    <main class="main-feed ftn-main-feed">
+      <div class="filters ftn-filters">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="breaking">Breaking</button>
+        <button data-filter="rumors">Rumors</button>
+        <button data-filter="opinions">Opinions</button>
+        <button data-filter="fake-news">Fake News</button>
+      </div>
+
       {articles.length === 0 ? (
-        <p style="text-align: center; padding: 40px 0; font-size: 1.2rem;">No articles published yet.</p>
+        <p style="text-align: center; padding: 40px 0;">No articles published yet.</p>
       ) : (
-        <div class="ftn-articles-grid">
-          {/* Featured Article - Full Width */}
-          {featuredArticle && (
-            <div class="ftn-featured-article">
-              <ArticleCard article={featuredArticle} r2PublicUrl={r2PublicUrl} featured={true} />
-            </div>
-          )}
-          
-          {/* Regular Articles Grid */}
-          {regularArticles.map((article) => (
-            <ArticleCard article={article} r2PublicUrl={r2PublicUrl} />
-          ))}
-        </div>
+        articles.map((article, index) => (
+          <NewsArticleCard article={article} r2PublicUrl={r2PublicUrl} index={index} />
+        ))
       )}
-    </div>
-  </main>
-  <Footer />
-</MainLayout>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar ftn-sidebar right">
+      <h3>Socials & Links</h3>
+      <ul>
+        <li><a href="https://fishtank.live" target="_blank" rel="noopener">Official Fishtank Site</a></li>
+        <li><a href="https://x.com/fishtankislive" target="_blank" rel="noopener">Main X Account</a></li>
+        <li><a href="https://www.reddit.com/r/fishtanklive/" target="_blank" rel="noopener">Reddit Community</a></li>
+        <li><a href="#">Fan Forums</a></li>
+        <li><a href="#">Episode Archives</a></li>
+        <li><a href="#">Merchandise Store</a></li>
+      </ul>
+      <p style="margin-top: 20px; font-size: 0.85em;">
+        Connect with the Fishtank community across all major platforms. Join discussions, share theories, and stay connected with fellow fans who are just as passionate about the show as you are.
+      </p>
+      <h3>Community Highlights</h3>
+      <p style="font-size: 0.85em; line-height: 1.5;">
+        <strong>Today's Top Post:</strong> Comprehensive breakdown of Season 4's most controversial moments gains traction across social media. Fans debate the ethics of certain challenges while praising the show's innovative format.
+      </p>
+      <p style="font-size: 0.85em; line-height: 1.5; margin-top: 15px;">
+        <strong>Fan Project:</strong> Community members collaborate on detailed timeline of all seasons, creating an invaluable resource for newcomers and veterans alike.
+      </p>
+      <div class="x-embed">
+        <h3>Official Feed</h3>
+        <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/fishtankislive?ref_src=twsrc%5Etfw">Tweets by fishtankislive</a>
+      </div>
+    </aside>
+  </div>
+
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const buttons = document.querySelectorAll('.filters button, .ftn-filters button');
+      const articles = document.querySelectorAll('.article, .ftn-article-card');
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const filter = button.getAttribute('data-filter');
+          buttons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+
+          articles.forEach((article, index) => {
+            if (article.classList.contains(filter) || filter === 'all') {
+              article.classList.remove('hidden');
+              article.style.setProperty('--index', index.toString());
+            } else {
+              article.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      // Handle window resize for responsive sidebar behavior
+      function handleResize() {
+        const sidebars = document.querySelectorAll('.sidebar, .ftn-sidebar');
+        if (window.innerWidth <= 1024) {
+          sidebars.forEach(sidebar => {
+            sidebar.style.position = 'relative';
+            sidebar.style.height = 'auto';
+          });
+        } else {
+          sidebars.forEach(sidebar => {
+            sidebar.style.position = 'fixed';
+            const headerHeight = getComputedStyle(document.documentElement).getPropertyValue('--header-height') || '200px';
+            sidebar.style.height = `calc(100vh - ${headerHeight} - 40px)`;
+          });
+        }
+      }
+
+      // Initial check and event listener
+      handleResize();
+      window.addEventListener('resize', handleResize);
+    });
+  </script>
+</NewsLayout>
