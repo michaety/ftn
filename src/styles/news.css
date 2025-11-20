@@ -571,6 +571,7 @@ hr {
     .ftn-container {
         flex-direction: column;
         padding: 20px;
+        display: flex !important;
     }
 
     .sidebar,
@@ -584,10 +585,22 @@ hr {
         top: auto !important;
     }
 
+    /* Reorder layout on mobile: main feed first, then sidebars */
     .main-feed,
     .ftn-main-feed {
         width: 100%;
         max-width: 100%;
+        order: 1;
+    }
+
+    .sidebar.left,
+    .ftn-sidebar.left {
+        order: 2;
+    }
+
+    .sidebar.right,
+    .ftn-sidebar.right {
+        order: 3;
     }
 
     .header-title,
@@ -617,6 +630,14 @@ hr {
 }
 
 @media (max-width: 768px) {
+    :root {
+        --header-height: 180px;
+    }
+
+    body {
+        padding-top: 180px !important;
+    }
+
     .header-title,
     .ftn-logo {
         font-size: 2.2em;
@@ -647,6 +668,24 @@ hr {
 
     .ftn-page-title {
         font-size: 1.8em;
+    }
+
+    /* Add visual separation for sidebars on mobile */
+    .sidebar,
+    .ftn-sidebar {
+        margin-top: 30px;
+        padding: 20px 15px !important;
+    }
+
+    /* Ensure newspaper aesthetic on mobile */
+    .sidebar h3,
+    .ftn-sidebar h3 {
+        font-size: 1.3em;
+    }
+
+    .article,
+    .ftn-article-card {
+        margin-bottom: 40px;
     }
 }
 
