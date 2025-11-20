@@ -98,11 +98,6 @@ header::after,
     line-height: 1.1;
 }
 
-.ftn-logo a {
-    color: var(--ink-black) !important;
-    text-decoration: none;
-}
-
 .ftn-logo-img {
     display: none;
 }
@@ -659,7 +654,7 @@ hr {
 
     .ftn-logo-img {
         display: block;
-        height: 60px;
+        height: 80px;
         width: auto;
         margin: 0 auto;
     }
@@ -681,6 +676,12 @@ hr {
         font-size: 0.85em;
         padding: 8px 15px;
         margin: 5px;
+    }
+
+    /* Add spacing between header and filters on mobile */
+    .filters,
+    .ftn-filters {
+        margin-top: 20px;
     }
 
     .article h2,
