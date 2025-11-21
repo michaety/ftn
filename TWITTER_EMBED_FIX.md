@@ -26,7 +26,8 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting && !twitterScriptLoaded && !twitterScriptLoading) {
       loadTwitterWidget();
-      observer.disconnect();
+      // Guard in loadTwitterWidget prevents duplicate loads
+      // Observer stays active to handle retry scenarios
     }
   });
 }, {
@@ -38,6 +39,7 @@ const observer = new IntersectionObserver((entries) => {
 - Reduces initial page load time
 - Delays Twitter API requests until user scrolls to embed
 - Reduces rate limit pressure by not loading for users who don't scroll
+- Observer remains active to handle retry scenarios gracefully
 
 ### 2. Retry Logic with Exponential Backoff
 
@@ -45,15 +47,19 @@ Implements up to 3 retry attempts with exponential backoff (2s, 4s, 8s):
 
 ```javascript
 script.onerror = () => {
+  twitterScriptLoading = false;
+  
   if (retryCount < maxRetries) {
     retryCount++;
-    const delay = retryDelay * Math.pow(2, retryCount - 1);
+    // Exponential backoff using bit shifting for performance
+    const delay = retryDelay << (retryCount - 1);
     setTimeout(() => {
-      twitterScriptLoaded = false;
       loadTwitterWidget();
     }, delay);
   } else {
-    showErrorMessages();
+    // Mark as loaded to prevent further attempts
+    twitterScriptLoaded = true;
+    setEmbedState('error');
   }
 };
 ```
@@ -62,8 +68,37 @@ script.onerror = () => {
 - Gracefully handles temporary network issues
 - Respects rate limits by spacing out retry attempts
 - Gives Twitter's servers time to recover between attempts
+- Prevents race conditions by not resetting flags during retries
+- Prevents infinite retry loops after max attempts
 
-### 3. Loading and Error States
+### 3. State Management with setEmbedState()
+
+Centralized state management for all embed UI states:
+
+```javascript
+function setEmbedState(state) {
+  const loadingElements = document.querySelectorAll('.twitter-loading');
+  const errorElements = document.querySelectorAll('.twitter-error');
+  
+  if (state === 'loading') {
+    loadingElements.forEach(el => el.style.display = 'block');
+    errorElements.forEach(el => el.style.display = 'none');
+  } else if (state === 'loaded') {
+    loadingElements.forEach(el => el.style.display = 'none');
+    errorElements.forEach(el => el.style.display = 'none');
+  } else if (state === 'error') {
+    loadingElements.forEach(el => el.style.display = 'none');
+    errorElements.forEach(el => el.style.display = 'block');
+  }
+}
+```
+
+**Benefits:**
+- Single source of truth for UI state
+- Easier to maintain and extend
+- Prevents inconsistent state between loading and error indicators
+
+### 4. Loading and Error States
 
 Added visual feedback for users during different embed states:
 
@@ -88,26 +123,33 @@ Added visual feedback for users during different embed states:
 - Clear error messaging when rate limited
 - Direct link to view content on X as fallback
 
-### 4. Render Monitoring with Timeout
+### 5. Render Monitoring with Timeout
 
 Monitors whether the Twitter timeline actually renders after the script loads:
 
 ```javascript
+// Constants for configurability
+const renderCheckInterval = 500; // Check every 500ms
+const renderTimeout = 10000; // Wait up to 10 seconds
+
 const checkInterval = setInterval(() => {
   const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
   if (iframes.length > 0) {
-    hideLoadingIndicators();
+    setEmbedState('loaded');
     clearInterval(checkInterval);
   }
-}, 500);
+}, renderCheckInterval);
 
-// 10-second timeout fallback
+// Timeout fallback
 setTimeout(() => {
   clearInterval(checkInterval);
+  const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
   if (iframes.length === 0) {
-    showErrorMessages();
+    setEmbedState('error');
+  } else {
+    setEmbedState('loaded');
   }
-}, 10000);
+}, renderTimeout);
 ```
 
 **Benefits:**
