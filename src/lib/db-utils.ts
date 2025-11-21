@@ -288,18 +288,26 @@ export function getImageUrl(imageKey: string | null | undefined, r2PublicUrl: st
     return imageKey;
   }
   
+  // Handle legacy URLs that start with /api/media/ - extract just the R2 key
+  let cleanKey = imageKey;
+  if (cleanKey.startsWith('/api/media/')) {
+    cleanKey = cleanKey.substring('/api/media/'.length);
+  } else if (cleanKey.startsWith('api/media/')) {
+    cleanKey = cleanKey.substring('api/media/'.length);
+  }
+  
   // If R2_PUBLIC_URL is configured, use it with the R2 key
   if (r2PublicUrl) {
-    // Remove leading slash from imageKey if present
-    const cleanKey = imageKey.startsWith('/') ? imageKey.substring(1) : imageKey;
+    // Remove leading slash from cleanKey if present
+    const key = cleanKey.startsWith('/') ? cleanKey.substring(1) : cleanKey;
     // Ensure r2PublicUrl doesn't end with slash
     const baseUrl = r2PublicUrl.endsWith('/') ? r2PublicUrl.slice(0, -1) : r2PublicUrl;
-    return `${baseUrl}/${cleanKey}`;
+    return `${baseUrl}/${key}`;
   }
   
   // Fallback to proxying through /api/media/ for local development
   // Remove 'uploads/' prefix if present since /api/media/ expects the full key
-  const key = imageKey.startsWith('uploads/') ? imageKey : `uploads/${imageKey}`;
+  const key = cleanKey.startsWith('uploads/') ? cleanKey : `uploads/${cleanKey}`;
   return `/api/media/${key}`;
 }
 

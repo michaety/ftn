@@ -1,5 +1,19 @@
 # R2 Image Display Fix Documentation
 
+## Latest Update - Legacy URL Handling Fix
+
+**Issue:** Images stored with legacy `/api/media/` prefix in the database were creating malformed URLs when R2_PUBLIC_URL was configured.
+
+**Example:**
+- Database value: `/api/media/uploads/1763615180856-GuiLaEsWsAA-uDd.jpg`
+- With R2_PUBLIC_URL: `https://img.fishtank.news`
+- Old behavior: `https://img.fishtank.news/api/media/uploads/1763615180856-GuiLaEsWsAA-uDd.jpg` ❌
+- New behavior: `https://img.fishtank.news/uploads/1763615180856-GuiLaEsWsAA-uDd.jpg` ✅
+
+**Solution:** Enhanced `getImageUrl()` function to detect and strip `/api/media/` prefix from legacy URLs before constructing the final URL.
+
+---
+
 ## Problem Summary
 
 Images stored in Cloudflare R2 public bucket were loading correctly when accessed directly at URLs like:
@@ -55,18 +69,28 @@ export function getImageUrl(imageKey: string | null | undefined, r2PublicUrl: st
     return imageKey;
   }
   
+  // Handle legacy URLs that start with /api/media/ - extract just the R2 key
+  let cleanKey = imageKey;
+  if (cleanKey.startsWith('/api/media/')) {
+    cleanKey = cleanKey.substring('/api/media/'.length);
+  } else if (cleanKey.startsWith('api/media/')) {
+    cleanKey = cleanKey.substring('api/media/'.length);
+  }
+  
   // Production: Use R2 public URL
   if (r2PublicUrl) {
-    const cleanKey = imageKey.startsWith('/') ? imageKey.substring(1) : imageKey;
+    const key = cleanKey.startsWith('/') ? cleanKey.substring(1) : cleanKey;
     const baseUrl = r2PublicUrl.endsWith('/') ? r2PublicUrl.slice(0, -1) : r2PublicUrl;
-    return `${baseUrl}/${cleanKey}`;
+    return `${baseUrl}/${key}`;
   }
   
   // Development: Proxy through /api/media/
-  const key = imageKey.startsWith('uploads/') ? imageKey : `uploads/${imageKey}`;
+  const key = cleanKey.startsWith('uploads/') ? cleanKey : `uploads/${cleanKey}`;
   return `/api/media/${key}`;
 }
 ```
+
+**Update (Latest Fix):** The function now properly handles legacy URLs that include the `/api/media/` prefix. This prevents malformed URLs like `https://img.fishtank.news/api/media/uploads/...` from being constructed.
 
 ### 3. Updated All Display Pages
 Modified these files to use the helper function consistently:
