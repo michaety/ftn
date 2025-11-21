@@ -20,6 +20,56 @@ const {
 } = Astro.props;
 
 const fullTitle = title === 'Fishtank News' ? title : `${title} - Fishtank News`;
+
+// Build dynamic CSP that includes R2_PUBLIC_URL origin
+const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
+let r2Origin = '';
+if (r2PublicUrl) {
+  try {
+    r2Origin = new URL(r2PublicUrl).origin;
+  } catch (e) {
+    // If URL parsing fails, use empty string
+  }
+}
+
+// Build CSP directives
+const imgSrcs = [
+  "'self'",
+  'https://img.fishtank.news',
+  ...(r2Origin ? [r2Origin] : []),
+  'https://*.twimg.com',
+  'https://pbs.twimg.com',
+  'https://www.transparenttextures.com',
+  'data:',
+  'blob:'
+].join(' ');
+
+const styleSrcs = [
+  "'self'",
+  "'unsafe-inline'",
+  'https://fonts.googleapis.com'
+].join(' ');
+
+const fontSrcs = [
+  "'self'",
+  'https://fonts.gstatic.com',
+  'data:'
+].join(' ');
+
+const frameSrcs = [
+  'https://platform.twitter.com',
+  'https://twitter.com',
+  'https://x.com',
+  'https://syndication.twitter.com'
+].join(' ');
+
+const scriptSrcs = [
+  "'self'",
+  "'unsafe-inline'",
+  'https://platform.twitter.com'
+].join(' ');
+
+const cspContent = `img-src ${imgSrcs}; default-src 'self'; script-src ${scriptSrcs}; style-src ${styleSrcs}; connect-src 'self'; font-src ${fontSrcs}; frame-src ${frameSrcs};`;
 ---
 
 <!DOCTYPE html>
@@ -28,7 +78,7 @@ const fullTitle = title === 'Fishtank News' ? title : `${title} - Fishtank News`
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta http-equiv="Content-Security-Policy" content="img-src 'self' https://img.fishtank.news https://*.twimg.com https://pbs.twimg.com data: blob:; default-src 'self'; script-src 'self' 'unsafe-inline' https://platform.twitter.com; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self' data:; frame-src https://platform.twitter.com https://twitter.com https://x.com;" />
+    <meta http-equiv="Content-Security-Policy" content={cspContent} />
     <title>{fullTitle}</title>
   </head>
   <body>
