@@ -40,6 +40,7 @@ const imgSrcs = [
   ...(r2Origin ? [r2Origin] : []),
   'https://*.twimg.com',
   'https://pbs.twimg.com',
+  'https://syndication.twitter.com',
   'https://www.transparenttextures.com',
   'data:',
   'blob:'
@@ -67,7 +68,8 @@ const frameSrcs = [
 const scriptSrcs = [
   "'self'",
   "'unsafe-inline'",
-  'https://platform.twitter.com'
+  'https://platform.twitter.com',
+  'https://static.cloudflareinsights.com'
 ].join(' ');
 
 const defaultSrcs = ["'self'"].join(' ');
@@ -83,7 +85,7 @@ const cspContent = `img-src ${imgSrcs}; default-src ${defaultSrcs}; script-src $
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta http-equiv="Content-Security-Policy" content="img-src 'self' https://img.fishtank.news https://*.twimg.com https://pbs.twimg.com data: blob:; default-src 'self'; script-src 'self' 'unsafe-inline' https://platform.twitter.com; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self' data:; frame-src https://platform.twitter.com https://twitter.com https://x.com;" />
+    <meta http-equiv="Content-Security-Policy" content={cspContent} />
     
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="/thumbnail.png" />
