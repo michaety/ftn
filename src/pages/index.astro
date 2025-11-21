@@ -152,6 +152,8 @@ const articles = await getArticles(db, 'approved');
       let retryCount = 0;
       const maxRetries = 3;
       const retryDelay = 2000; // Start with 2 seconds
+      const renderCheckInterval = 500; // Check for iframe rendering every 500ms
+      const renderTimeout = 10000; // Wait up to 10 seconds for timeline render
 
       function hideLoadingIndicators() {
         document.querySelectorAll('.twitter-loading').forEach(el => {
@@ -187,9 +189,9 @@ const articles = await getArticles(db, 'approved');
               hideLoadingIndicators();
               clearInterval(checkInterval);
             }
-          }, 500);
+          }, renderCheckInterval);
 
-          // Fallback: after 10 seconds, hide loading regardless
+          // Fallback: after timeout, hide loading regardless
           setTimeout(() => {
             clearInterval(checkInterval);
             const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
@@ -200,7 +202,7 @@ const articles = await getArticles(db, 'approved');
             } else {
               hideLoadingIndicators();
             }
-          }, 10000);
+          }, renderTimeout);
         };
 
         script.onerror = () => {
@@ -213,6 +215,7 @@ const articles = await getArticles(db, 'approved');
             const delay = retryDelay * Math.pow(2, retryCount - 1);
             console.log(`Retrying Twitter widget load in ${delay}ms (attempt ${retryCount}/${maxRetries})`);
             setTimeout(() => {
+              // Reset flag before retry to avoid race conditions
               twitterScriptLoaded = false;
               loadTwitterWidget();
             }, delay);
