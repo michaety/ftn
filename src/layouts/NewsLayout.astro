@@ -28,7 +28,8 @@ if (r2PublicUrl) {
   try {
     r2Origin = new URL(r2PublicUrl).origin;
   } catch (e) {
-    // If URL parsing fails, use empty string
+    // Log warning if URL parsing fails to aid in debugging
+    console.warn(`Invalid R2_PUBLIC_URL: ${r2PublicUrl}`, e);
   }
 }
 
@@ -69,7 +70,11 @@ const scriptSrcs = [
   'https://platform.twitter.com'
 ].join(' ');
 
-const cspContent = `img-src ${imgSrcs}; default-src 'self'; script-src ${scriptSrcs}; style-src ${styleSrcs}; connect-src 'self'; font-src ${fontSrcs}; frame-src ${frameSrcs};`;
+const defaultSrcs = ["'self'"].join(' ');
+
+const connectSrcs = ["'self'"].join(' ');
+
+const cspContent = `img-src ${imgSrcs}; default-src ${defaultSrcs}; script-src ${scriptSrcs}; style-src ${styleSrcs}; connect-src ${connectSrcs}; font-src ${fontSrcs}; frame-src ${frameSrcs};`;
 ---
 
 <!DOCTYPE html>
