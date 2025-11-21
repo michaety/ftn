@@ -35,7 +35,7 @@ const apiTokenSet = API_TOKEN && API_TOKEN !== '';
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     
     <!-- Favicons -->
@@ -51,11 +51,11 @@ const apiTokenSet = API_TOKEN && API_TOKEN !== '';
     <meta property="og:image" content={new URL('/logo.webp', Astro.url)} />
     
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={title ? `${title} - SaaS Admin Template` : 'SaaS Admin Template'} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL('/logo.webp', Astro.url)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={Astro.url} />
+    <meta name="twitter:title" content={title ? `${title} - SaaS Admin Template` : 'SaaS Admin Template'} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/logo.webp', Astro.url)} />
     
     <meta name="generator" content={Astro.generator} />
     <title>{title ? `${title} - SaaS Admin Template` : 'SaaS Admin Template'}</title>
