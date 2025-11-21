@@ -241,8 +241,8 @@ const articles = await getArticles(db, 'approved');
             if (entry.isIntersecting && !twitterScriptLoaded && !twitterScriptLoading) {
               console.log('Twitter embed visible, loading widget...');
               loadTwitterWidget();
-              // Only disconnect after successful load, not on first intersection
-              // The guard in loadTwitterWidget prevents duplicate loads
+              // Observer stays active to allow retries if initial load fails
+              // The guard flags in loadTwitterWidget prevent duplicate loads
             }
           });
         }, {
