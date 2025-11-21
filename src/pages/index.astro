@@ -30,9 +30,19 @@ const articles = await getArticles(db, 'approved');
       <p style="font-size: 0.85em; line-height: 1.5;">
         <strong>Latest:</strong> Production crew spotted at new location. Sources indicate a larger house with enhanced surveillance capabilities. The community eagerly anticipates official announcements regarding Season 5 casting and premiere dates.
       </p>
-      <div class="x-embed">
+      <div class="x-embed" id="twitter-embed-1">
         <h3>Community Updates</h3>
-        <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/i/lists/1712083470296686731?ref_src=twsrc%5Etfw">Unofficial Fishtank List</a>
+        <div class="twitter-timeline-container">
+          <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/i/lists/1712083470296686731?ref_src=twsrc%5Etfw">Unofficial Fishtank List</a>
+          <div class="twitter-loading" style="display: block; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
+            <p style="margin: 0; font-size: 1em; color: var(--ink-black, #000);">Loading X timeline...</p>
+          </div>
+          <div class="twitter-error" style="display: none; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
+            <p style="margin: 0 0 15px 0; font-size: 1em; color: var(--ink-black, #000); font-weight: bold;">Unable to load X timeline</p>
+            <p style="margin: 0 0 15px 0; font-size: 0.9em; color: var(--ink-black, #000);">This may be due to rate limiting.</p>
+            <a href="https://twitter.com/i/lists/1712083470296686731" target="_blank" rel="noopener" style="color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold;">View on X →</a>
+          </div>
+        </div>
       </div>
     </aside>
 
@@ -76,14 +86,23 @@ const articles = await getArticles(db, 'approved');
       <p style="font-size: 0.85em; line-height: 1.5; margin-top: 15px;">
         <strong>Fan Project:</strong> Community members collaborate on detailed timeline of all seasons, creating an invaluable resource for newcomers and veterans alike.
       </p>
-      <div class="x-embed">
+      <div class="x-embed" id="twitter-embed-2">
         <h3>Official Feed</h3>
-        <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/fishtankislive?ref_src=twsrc%5Etfw">Tweets by fishtankislive</a>
+        <div class="twitter-timeline-container">
+          <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/fishtankislive?ref_src=twsrc%5Etfw">Tweets by fishtankislive</a>
+          <div class="twitter-loading" style="display: block; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
+            <p style="margin: 0; font-size: 1em; color: var(--ink-black, #000);">Loading X timeline...</p>
+          </div>
+          <div class="twitter-error" style="display: none; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
+            <p style="margin: 0 0 15px 0; font-size: 1em; color: var(--ink-black, #000); font-weight: bold;">Unable to load X timeline</p>
+            <p style="margin: 0 0 15px 0; font-size: 0.9em; color: var(--ink-black, #000);">This may be due to rate limiting.</p>
+            <a href="https://twitter.com/fishtankislive" target="_blank" rel="noopener" style="color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold;">View on X →</a>
+          </div>
+        </div>
       </div>
     </aside>
   </div>
 
-  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const buttons = document.querySelectorAll('.filters button, .ftn-filters button');
@@ -126,6 +145,109 @@ const articles = await getArticles(db, 'approved');
       // Initial check and event listener
       handleResize();
       window.addEventListener('resize', handleResize);
+
+      // Twitter embed lazy loading with error handling
+      let twitterScriptLoaded = false;
+      let twitterScriptLoading = false;
+      let retryCount = 0;
+      const maxRetries = 3;
+      const retryDelay = 2000; // Start with 2 seconds
+
+      function hideLoadingIndicators() {
+        document.querySelectorAll('.twitter-loading').forEach(el => {
+          el.style.display = 'none';
+        });
+      }
+
+      function showErrorMessages() {
+        document.querySelectorAll('.twitter-error').forEach(el => {
+          el.style.display = 'block';
+        });
+      }
+
+      function loadTwitterWidget() {
+        if (twitterScriptLoaded || twitterScriptLoading) return;
+        
+        twitterScriptLoading = true;
+        const script = document.createElement('script');
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.charset = 'utf-8';
+        script.async = true;
+
+        script.onload = () => {
+          console.log('Twitter widget script loaded successfully');
+          twitterScriptLoaded = true;
+          twitterScriptLoading = false;
+
+          // Monitor timeline rendering with timeout
+          const checkInterval = setInterval(() => {
+            const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
+            if (iframes.length > 0) {
+              console.log('Twitter timelines rendered successfully');
+              hideLoadingIndicators();
+              clearInterval(checkInterval);
+            }
+          }, 500);
+
+          // Fallback: after 10 seconds, hide loading regardless
+          setTimeout(() => {
+            clearInterval(checkInterval);
+            const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
+            if (iframes.length === 0) {
+              console.warn('Twitter timelines failed to render after timeout');
+              hideLoadingIndicators();
+              showErrorMessages();
+            } else {
+              hideLoadingIndicators();
+            }
+          }, 10000);
+        };
+
+        script.onerror = () => {
+          console.error('Failed to load Twitter widget script');
+          twitterScriptLoading = false;
+          
+          // Retry with exponential backoff
+          if (retryCount < maxRetries) {
+            retryCount++;
+            const delay = retryDelay * Math.pow(2, retryCount - 1);
+            console.log(`Retrying Twitter widget load in ${delay}ms (attempt ${retryCount}/${maxRetries})`);
+            setTimeout(() => {
+              twitterScriptLoaded = false;
+              loadTwitterWidget();
+            }, delay);
+          } else {
+            console.error('Max retries reached for Twitter widget script');
+            hideLoadingIndicators();
+            showErrorMessages();
+          }
+        };
+
+        document.head.appendChild(script);
+      }
+
+      // Intersection Observer for lazy loading
+      const twitterEmbeds = document.querySelectorAll('.x-embed');
+      
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !twitterScriptLoaded && !twitterScriptLoading) {
+              console.log('Twitter embed visible, loading widget...');
+              loadTwitterWidget();
+              observer.disconnect(); // Only load once
+            }
+          });
+        }, {
+          rootMargin: '100px' // Start loading when embed is 100px from viewport
+        });
+
+        twitterEmbeds.forEach(embed => observer.observe(embed));
+      } else {
+        // Fallback for browsers without IntersectionObserver
+        console.log('IntersectionObserver not supported, loading Twitter widget immediately');
+        loadTwitterWidget();
+      }
     });
   </script>
 </NewsLayout>
