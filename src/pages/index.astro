@@ -155,16 +155,21 @@ const articles = await getArticles(db, 'approved');
       const renderCheckInterval = 500; // Check for iframe rendering every 500ms
       const renderTimeout = 10000; // Wait up to 10 seconds for timeline render
 
-      function hideLoadingIndicators() {
-        document.querySelectorAll('.twitter-loading').forEach(el => {
-          el.style.display = 'none';
-        });
-      }
-
-      function showErrorMessages() {
-        document.querySelectorAll('.twitter-error').forEach(el => {
-          el.style.display = 'block';
-        });
+      // Manage embed UI state (loading, loaded, error)
+      function setEmbedState(state) {
+        const loadingElements = document.querySelectorAll('.twitter-loading');
+        const errorElements = document.querySelectorAll('.twitter-error');
+        
+        if (state === 'loading') {
+          loadingElements.forEach(el => el.style.display = 'block');
+          errorElements.forEach(el => el.style.display = 'none');
+        } else if (state === 'loaded') {
+          loadingElements.forEach(el => el.style.display = 'none');
+          errorElements.forEach(el => el.style.display = 'none');
+        } else if (state === 'error') {
+          loadingElements.forEach(el => el.style.display = 'none');
+          errorElements.forEach(el => el.style.display = 'block');
+        }
       }
 
       function loadTwitterWidget() {
@@ -186,7 +191,7 @@ const articles = await getArticles(db, 'approved');
             const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
             if (iframes.length > 0) {
               console.log('Twitter timelines rendered successfully');
-              hideLoadingIndicators();
+              setEmbedState('loaded');
               clearInterval(checkInterval);
             }
           }, renderCheckInterval);
@@ -197,10 +202,9 @@ const articles = await getArticles(db, 'approved');
             const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
             if (iframes.length === 0) {
               console.warn('Twitter timelines failed to render after timeout');
-              hideLoadingIndicators();
-              showErrorMessages();
+              setEmbedState('error');
             } else {
-              hideLoadingIndicators();
+              setEmbedState('loaded');
             }
           }, renderTimeout);
         };
@@ -212,17 +216,16 @@ const articles = await getArticles(db, 'approved');
           // Retry with exponential backoff
           if (retryCount < maxRetries) {
             retryCount++;
-            const delay = retryDelay * Math.pow(2, retryCount - 1);
+            // Exponential backoff using bit shifting for performance
+            const delay = retryDelay << (retryCount - 1);
             console.log(`Retrying Twitter widget load in ${delay}ms (attempt ${retryCount}/${maxRetries})`);
             setTimeout(() => {
-              // Reset flag before retry to avoid race conditions
-              twitterScriptLoaded = false;
               loadTwitterWidget();
             }, delay);
           } else {
             console.error('Max retries reached for Twitter widget script');
-            hideLoadingIndicators();
-            showErrorMessages();
+            twitterScriptLoaded = true; // Mark as loaded to prevent further attempts
+            setEmbedState('error');
           }
         };
 
@@ -238,7 +241,8 @@ const articles = await getArticles(db, 'approved');
             if (entry.isIntersecting && !twitterScriptLoaded && !twitterScriptLoading) {
               console.log('Twitter embed visible, loading widget...');
               loadTwitterWidget();
-              observer.disconnect(); // Only load once
+              // Only disconnect after successful load, not on first intersection
+              // The guard in loadTwitterWidget prevents duplicate loads
             }
           });
         }, {
