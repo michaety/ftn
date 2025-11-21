@@ -20,6 +20,61 @@ const {
 } = Astro.props;
 
 const fullTitle = title === 'Fishtank News' ? title : `${title} - Fishtank News`;
+
+// Build dynamic CSP that includes R2_PUBLIC_URL origin
+const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
+let r2Origin = '';
+if (r2PublicUrl) {
+  try {
+    r2Origin = new URL(r2PublicUrl).origin;
+  } catch (e) {
+    // Log warning if URL parsing fails to aid in debugging
+    console.warn(`Invalid R2_PUBLIC_URL: ${r2PublicUrl}`, e);
+  }
+}
+
+// Build CSP directives
+const imgSrcs = [
+  "'self'",
+  'https://img.fishtank.news',
+  ...(r2Origin ? [r2Origin] : []),
+  'https://*.twimg.com',
+  'https://pbs.twimg.com',
+  'https://www.transparenttextures.com',
+  'data:',
+  'blob:'
+].join(' ');
+
+const styleSrcs = [
+  "'self'",
+  "'unsafe-inline'",
+  'https://fonts.googleapis.com'
+].join(' ');
+
+const fontSrcs = [
+  "'self'",
+  'https://fonts.gstatic.com',
+  'data:'
+].join(' ');
+
+const frameSrcs = [
+  'https://platform.twitter.com',
+  'https://twitter.com',
+  'https://x.com',
+  'https://syndication.twitter.com'
+].join(' ');
+
+const scriptSrcs = [
+  "'self'",
+  "'unsafe-inline'",
+  'https://platform.twitter.com'
+].join(' ');
+
+const defaultSrcs = ["'self'"].join(' ');
+
+const connectSrcs = ["'self'"].join(' ');
+
+const cspContent = `img-src ${imgSrcs}; default-src ${defaultSrcs}; script-src ${scriptSrcs}; style-src ${styleSrcs}; connect-src ${connectSrcs}; font-src ${fontSrcs}; frame-src ${frameSrcs};`;
 ---
 
 <!DOCTYPE html>
