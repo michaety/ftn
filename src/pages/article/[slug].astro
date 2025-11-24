@@ -8,7 +8,7 @@ const db = Astro.locals.runtime.env.DB;
 const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 
 if (!slug) {
-  return Astro.redirect('/news');
+  return Astro.redirect('/');
 }
 
 // Fetch article from database
@@ -16,7 +16,7 @@ const article = await getArticleBySlug(db, slug);
 
 // Check if article exists and is approved
 if (!article || article.status !== 'approved') {
-  return Astro.redirect('/news');
+  return Astro.redirect('/');
 }
 
 // Configure marked to handle images properly
