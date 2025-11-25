@@ -109,8 +109,6 @@ export async function createArticle(db: any, data: {
   category?: string;
 }) {
   const { title, slug, content, excerpt, featured_image, author_id, status = 'approved', category } = data;
-  // Only set published_at for approved articles
-  const publishedAt = status === 'approved' ? 'CURRENT_TIMESTAMP' : null;
   const result = await db.prepare(
     `INSERT INTO articles (title, slug, content, excerpt, featured_image, author_id, status, category, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ${status === 'approved' ? 'CURRENT_TIMESTAMP' : 'NULL'}) RETURNING *`
   ).bind(title, slug, content, excerpt || null, featured_image || null, author_id, status, category || null).first();
@@ -135,7 +133,14 @@ export async function updateArticle(db: any, id: number, data: {
   if (content !== undefined) { updates.push('content = ?'); params.push(content); }
   if (excerpt !== undefined) { updates.push('excerpt = ?'); params.push(excerpt); }
   if (featured_image !== undefined) { updates.push('featured_image = ?'); params.push(featured_image); }
-  if (status !== undefined) { updates.push('status = ?'); params.push(status); }
+  if (status !== undefined) { 
+    updates.push('status = ?'); 
+    params.push(status);
+    // Set published_at when status changes to approved
+    if (status === 'approved') {
+      updates.push('published_at = CURRENT_TIMESTAMP');
+    }
+  }
   if (category !== undefined) { updates.push('category = ?'); params.push(category); }
   
   params.push(id);
