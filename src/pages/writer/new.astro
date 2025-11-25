@@ -203,8 +203,13 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
           featuredImageInput.value = data.url;
           uploadStatus.textContent = 'Image uploaded successfully!';
           uploadStatus.style.color = 'green';
-          // Show image preview
-          imagePreview.innerHTML = `<img src="${data.url}" alt="Featured image preview" style="max-width: 300px; border: 2px solid var(--ink-black); margin-top: 10px;" />`;
+          // Show image preview safely using DOM methods
+          imagePreview.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = data.url;
+          img.alt = 'Featured image preview';
+          img.style.cssText = 'max-width: 300px; border: 2px solid var(--ink-black); margin-top: 10px;';
+          imagePreview.appendChild(img);
         } else {
           uploadStatus.textContent = 'Upload failed: ' + (data.error || 'Unknown error');
           uploadStatus.style.color = 'red';

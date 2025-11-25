@@ -1,6 +1,9 @@
 ---
 import { getImageUrl } from '@/lib/db-utils';
 
+// Constants for text limits
+const MAX_MAIN_TEXT_LENGTH = 300;
+
 interface Article {
   id: number;
   title: string;
@@ -38,15 +41,18 @@ const twitterUrl = authorHandle.startsWith('@')
   ? `https://x.com/${authorHandle.substring(1)}` 
   : `https://x.com/${authorHandle}`;
 
-// Extract first paragraph from content for main page display
+/**
+ * Extract first paragraph from markdown content for main page display.
+ * Removes markdown headings, cleans formatting, and truncates to max length.
+ */
 function getFirstParagraph(content: string | undefined): string {
   if (!content) return '';
-  // Remove markdown formatting and split into paragraphs
+  // Remove markdown headings and normalize line breaks
   const cleanContent = content.replace(/^#+\s+.*/gm, '').replace(/\s*[\r\n]+\s*/g, '\n\n');
   const paragraphs = cleanContent.split(/\n\n+/).map(p => p.trim()).filter(p => p.length > 0);
   const firstPara = paragraphs[0] || '';
-  // Remove remaining markdown characters
-  return firstPara.replace(/[*_#\[\]`]/g, '').substring(0, 300);
+  // Remove remaining markdown characters and truncate
+  return firstPara.replace(/[*_#\[\]`]/g, '').substring(0, MAX_MAIN_TEXT_LENGTH);
 }
 
 const mainText = getFirstParagraph(article.content);
