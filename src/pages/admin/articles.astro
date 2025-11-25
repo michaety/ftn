@@ -214,7 +214,7 @@ import '@/styles/news.css';
             <div class="ftn-tile-actions">
               <a href="/writer/edit/${article.id}" class="ftn-tile-btn">Edit</a>
               ${article.status === 'approved' ? `
-                <a href="/news/articles/${safeSlug}" target="_blank" class="ftn-tile-btn view">View</a>
+                <a href="/articles/${safeSlug}" target="_blank" class="ftn-tile-btn view">View</a>
               ` : ''}
               <button type="button" class="ftn-tile-btn delete" data-delete-id="${article.id}">Delete</button>
             </div>
