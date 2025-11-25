@@ -23,9 +23,9 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
   <header class="ftn-header">
     <div class="ftn-container">
       <div class="ftn-header-content">
-        <h1 class="ftn-logo">
-          <a href="/writer">FISHTANK NEWS - WRITER</a>
-        </h1>
+        <a href="/writer" class="ftn-logo-link">
+          <img src="/logo.webp" alt="Fishtank News" class="ftn-header-logo-always" />
+        </a>
         <nav class="ftn-nav">
           <a href="/writer">Dashboard</a>
           <a href="/writer/new">New Article</a>
@@ -35,15 +35,17 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
     </div>
   </header>
 
-  <main class="ftn-container">
-    <div class="ftn-dashboard">
-      <h1 class="ftn-dashboard-title">Edit Article</h1>
+  <main class="ftn-writer-form-container">
+    <div class="ftn-writer-form-wrapper">
+      <div class="ftn-writer-form-header">
+        <img src="/logo.webp" alt="Fishtank News" class="ftn-writer-form-logo" />
+      </div>
       
       <div id="loading" style="text-align: center; padding: 40px;">
         <p>Loading article...</p>
       </div>
 
-      <form id="articleForm" style="background: white; border: 6px solid black; padding: 40px; margin: 40px 0; display: none;">
+      <form id="articleForm" class="ftn-writer-form" style="display: none;">
         <div class="ftn-form-group">
           <label for="title" class="ftn-label">Title</label>
           <input
@@ -140,9 +142,9 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
         <div id="error" class="ftn-error" style="display: none;"></div>
         <div id="success" class="ftn-success" style="display: none;"></div>
 
-        <div style="display: flex; gap: 10px; margin-top: 30px;">
+        <div class="ftn-form-actions">
           <button type="submit" class="ftn-btn">Update Article</button>
-          <a href="/writer" class="ftn-btn" style="background: gray;">Cancel</a>
+          <a href="/writer" class="ftn-btn ftn-btn-secondary">Cancel</a>
         </div>
       </form>
     </div>

@@ -13,11 +13,13 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
 ---
 
 <NewsLayout title="Create New Article" role="editor" userName={session.userName}>
-  <div class="ftn-container">
-    <div class="ftn-dashboard">
-      <h1 class="ftn-dashboard-title">Create New Article</h1>
+  <div class="ftn-writer-form-container">
+    <div class="ftn-writer-form-wrapper">
+      <div class="ftn-writer-form-header">
+        <img src="/logo.webp" alt="Fishtank News" class="ftn-writer-form-logo" />
+      </div>
       
-      <form id="articleForm" style="background: white; border: 6px solid black; padding: 40px; margin: 40px 0;">
+      <form id="articleForm" class="ftn-writer-form">
         <div class="ftn-form-group">
           <label for="title" class="ftn-label">Title</label>
           <input
@@ -114,9 +116,9 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
         <div id="error" class="ftn-error" style="display: none;"></div>
         <div id="success" class="ftn-success" style="display: none;"></div>
 
-        <div style="display: flex; gap: 10px; margin-top: 30px;">
+        <div class="ftn-form-actions">
           <button type="submit" class="ftn-btn">Save Article</button>
-          <a href="/writer" class="ftn-btn" style="background: gray;">Cancel</a>
+          <a href="/writer" class="ftn-btn ftn-btn-secondary">Cancel</a>
         </div>
       </form>
     </div>

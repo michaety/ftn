@@ -30,9 +30,11 @@ const showLogoImage = role === 'admin' || role === 'editor';
       </h1>
     )}
   </a>
-  <p class="ftn-header-subtitle">
-    Vol. 1, No. 1 ★ The Unofficial Source for Fishtank Updates ★ {currentDate}
-  </p>
+  {!showLogoImage && (
+    <p class="ftn-header-subtitle">
+      Vol. 1, No. 1 ★ The Unofficial Source for Fishtank Updates ★ {currentDate}
+    </p>
+  )}
   {!hideNavigation && (
     <div class="ftn-header-content">
       <nav class="ftn-nav">

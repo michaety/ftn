@@ -29,9 +29,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Upload to R2
     const key = await uploadToR2(r2, file, file.name);
-    // Return the R2 key (e.g., "uploads/123-image.jpg") 
-    // Frontend will construct the full URL using R2_PUBLIC_URL or /api/media/ fallback
-    const url = key;
+    
+    // Construct the full URL for frontend use
+    const r2PublicUrl = locals.runtime.env.R2_PUBLIC_URL;
+    let url: string;
+    if (r2PublicUrl) {
+      // Use the R2 public URL if configured
+      const baseUrl = r2PublicUrl.endsWith('/') ? r2PublicUrl.slice(0, -1) : r2PublicUrl;
+      url = `${baseUrl}/${key}`;
+    } else {
+      // Fallback to the API proxy endpoint
+      url = `/api/media/${key}`;
+    }
 
     return new Response(JSON.stringify({ success: true, key, url }), {
       status: 201,
