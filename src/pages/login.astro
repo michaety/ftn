@@ -92,9 +92,9 @@ import '@/styles/news.css';
         if (response.ok) {
           // Redirect based on role
           if (data.user.role === 'admin') {
-            window.location.href = '/news/admin';
+            window.location.href = '/admin';
           } else if (data.user.role === 'editor') {
-            window.location.href = '/news/editor';
+            window.location.href = '/writer';
           } else {
             window.location.href = '/';
           }

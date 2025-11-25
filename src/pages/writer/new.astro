@@ -106,7 +106,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
           <label for="status" class="ftn-label">Status</label>
           <select id="status" name="status" class="ftn-input">
             <option value="draft">Draft</option>
-            <option value="pending">Submit for Review</option>
+            <option value="approved" selected>Publish</option>
           </select>
         </div>
 
@@ -115,7 +115,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
 
         <div style="display: flex; gap: 10px; margin-top: 30px;">
           <button type="submit" class="ftn-btn">Save Article</button>
-          <a href="/news/editor" class="ftn-btn" style="background: gray;">Cancel</a>
+          <a href="/writer" class="ftn-btn" style="background: gray;">Cancel</a>
         </div>
       </form>
     </div>
@@ -236,7 +236,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
           successDiv.style.display = 'block';
           
           setTimeout(() => {
-            window.location.href = '/news/editor';
+            window.location.href = '/writer';
           }, 1500);
         } else {
           errorDiv.textContent = data.error || 'Failed to save article';

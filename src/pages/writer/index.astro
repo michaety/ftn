@@ -18,20 +18,20 @@ const articles = await getArticlesByAuthor(db, session.userId);
 const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 ---
 
-<NewsLayout title="Editor Dashboard" role="editor" userName={session.userName}>
+<NewsLayout title="Writer Dashboard" role="editor" userName={session.userName}>
   <div class="ftn-container">
     <div class="ftn-dashboard">
-      <h1 class="ftn-dashboard-title">Editor Dashboard</h1>
+      <h1 class="ftn-dashboard-title">Writer Dashboard</h1>
       
       <div class="ftn-dashboard-section">
         <h2 class="ftn-section-title">My Articles</h2>
         <div style="margin-bottom: 20px;">
-          <a href="/news/editor/new" class="ftn-btn">Create New Article</a>
+          <a href="/writer/new" class="ftn-btn">Create New Article</a>
         </div>
         
         {articles.length === 0 ? (
           <p style="text-align: center; padding: 40px 0;">
-            No articles yet. <a href="/news/editor/new" class="ftn-btn">Create your first article</a>
+            No articles yet. <a href="/writer/new" class="ftn-btn">Create your first article</a>
           </p>
         ) : (
           <div class="ftn-grid">
@@ -61,7 +61,7 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
                   </div>
 
                   <div class="ftn-article-actions">
-                    <a href={`/news/editor/edit/${article.id}`} class="ftn-btn ftn-btn-edit">
+                    <a href={`/writer/edit/${article.id}`} class="ftn-btn ftn-btn-edit">
                       Edit
                     </a>
                     <button 

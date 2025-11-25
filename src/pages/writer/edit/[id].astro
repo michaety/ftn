@@ -14,11 +14,11 @@ import '@/styles/news.css';
     <div class="ftn-container">
       <div class="ftn-header-content">
         <h1 class="ftn-logo">
-          <a href="/news/editor">FISHTANK NEWS - EDITOR</a>
+          <a href="/writer">FISHTANK NEWS - WRITER</a>
         </h1>
         <nav class="ftn-nav">
-          <a href="/news/editor">Dashboard</a>
-          <a href="/news/editor/new">New Article</a>
+          <a href="/writer">Dashboard</a>
+          <a href="/writer/new">New Article</a>
           <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
         </nav>
       </div>
@@ -122,7 +122,7 @@ import '@/styles/news.css';
           <label for="status" class="ftn-label">Status</label>
           <select id="status" name="status" class="ftn-input">
             <option value="draft">Draft</option>
-            <option value="pending">Submit for Review</option>
+            <option value="approved">Published</option>
           </select>
         </div>
 
@@ -131,7 +131,7 @@ import '@/styles/news.css';
 
         <div style="display: flex; gap: 10px; margin-top: 30px;">
           <button type="submit" class="ftn-btn">Update Article</button>
-          <a href="/news/editor" class="ftn-btn" style="background: gray;">Cancel</a>
+          <a href="/writer" class="ftn-btn" style="background: gray;">Cancel</a>
         </div>
       </form>
     </div>
@@ -194,7 +194,7 @@ import '@/styles/news.css';
         form.style.display = 'block';
       } catch (error) {
         console.error('Error loading article:', error);
-        loading.innerHTML = '<p style="color: red;">Error loading article. <a href="/news/editor">Go back to dashboard</a></p>';
+        loading.innerHTML = '<p style="color: red;">Error loading article. <a href="/writer">Go back to dashboard</a></p>';
       }
     }
 
@@ -302,7 +302,7 @@ import '@/styles/news.css';
           successDiv.style.display = 'block';
           
           setTimeout(() => {
-            window.location.href = '/news/editor';
+            window.location.href = '/writer';
           }, 1500);
         } else {
           errorDiv.textContent = data.error || 'Failed to update article';

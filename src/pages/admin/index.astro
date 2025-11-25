@@ -1,6 +1,6 @@
 ---
 import NewsLayout from '@/layouts/NewsLayout.astro';
-import { getSession, getCookie, getArticles, getPendingUsers, getImageUrl } from '@/lib/db-utils';
+import { getSession, getCookie, getArticles, getPendingUsers, getImageUrl, getArticlesByAuthor } from '@/lib/db-utils';
 
 // Check authentication
 const db = Astro.locals.runtime.env.DB;
@@ -12,8 +12,8 @@ if (!session || session.userRole !== 'admin') {
   return Astro.redirect('/login');
 }
 
-// Fetch pending articles and users
-const pendingArticles = await getArticles(db, 'pending');
+// Fetch all articles and pending users
+const allArticles = await getArticles(db);
 const pendingUsers = await getPendingUsers(db);
 const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 ---
@@ -22,15 +22,23 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
   <div class="ftn-container">
     <div class="ftn-dashboard">
       <h1 class="ftn-dashboard-title">Admin Dashboard</h1>
-      
+
       <div class="ftn-dashboard-section">
-        <h2 class="ftn-section-title">Pending Articles</h2>
+        <h2 class="ftn-section-title">Quick Actions</h2>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <a href="/writer/new" class="ftn-btn">Create New Article</a>
+          <a href="/admin/articles" class="ftn-btn">Manage All Articles</a>
+        </div>
+      </div>
+
+      <div class="ftn-dashboard-section">
+        <h2 class="ftn-section-title">Recent Articles</h2>
         
-        {pendingArticles.length === 0 ? (
-          <p style="text-align: center; padding: 40px 0;">No pending articles.</p>
+        {allArticles.length === 0 ? (
+          <p style="text-align: center; padding: 40px 0;">No articles yet. <a href="/writer/new" class="ftn-btn">Create your first article</a></p>
         ) : (
           <div class="ftn-grid">
-            {pendingArticles.map((article: any) => (
+            {allArticles.slice(0, 6).map((article: any) => (
               <article class="ftn-article-card">
                 {article.featured_image && (
                   <div class="ftn-article-image">
@@ -55,19 +63,21 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
                     </span>
                   </div>
 
+                  <div style="margin-top: 15px; padding-top: 15px; border-top: 3px solid black;">
+                    <span style="font-weight: bold; text-transform: uppercase; color: {article.status === 'approved' ? 'green' : 'gray'};">
+                      Status: {article.status}
+                    </span>
+                  </div>
+
                   <div class="ftn-article-actions">
-                    <button 
-                      onclick={`approveArticle(${article.id})`} 
-                      class="ftn-btn ftn-btn-approve"
-                    >
-                      Approve
-                    </button>
-                    <button 
-                      onclick={`rejectArticle(${article.id})`} 
-                      class="ftn-btn ftn-btn-reject"
-                    >
-                      Reject
-                    </button>
+                    <a href={`/writer/edit/${article.id}`} class="ftn-btn ftn-btn-edit">
+                      Edit
+                    </a>
+                    {article.status === 'approved' && (
+                      <a href={`/news/articles/${article.slug}`} target="_blank" class="ftn-btn" style="background: blue;">
+                        View
+                      </a>
+                    )}
                   </div>
                 </div>
               </article>
@@ -125,45 +135,10 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
           </div>
         )}
       </div>
-
-      <div class="ftn-dashboard-section">
-        <h2 class="ftn-section-title">Quick Actions</h2>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <a href="/news/admin/articles" class="ftn-btn">Manage All Articles</a>
-        </div>
-      </div>
     </div>
   </div>
 
   <script>
-    (window as any).approveArticle = async (id: number) => {
-      try {
-        const response = await fetch(`/api/articles/${id}/approve`, { method: 'POST' });
-        if (response.ok) {
-          alert('Article approved!');
-          window.location.reload();
-        } else {
-          alert('Failed to approve article');
-        }
-      } catch (error) {
-        alert('Error approving article');
-      }
-    };
-
-    (window as any).rejectArticle = async (id: number) => {
-      try {
-        const response = await fetch(`/api/articles/${id}/reject`, { method: 'POST' });
-        if (response.ok) {
-          alert('Article rejected');
-          window.location.reload();
-        } else {
-          alert('Failed to reject article');
-        }
-      } catch (error) {
-        alert('Error rejecting article');
-      }
-    };
-
     (window as any).approveUser = async (id: number) => {
       try {
         const formData = new FormData();
