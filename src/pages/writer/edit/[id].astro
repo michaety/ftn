@@ -1,5 +1,5 @@
 ---
-import NewsLayout from '@/layouts/NewsLayout.astro';
+import '@/styles/news.css';
 import { getSession, getCookie } from '@/lib/db-utils';
 
 // Check authentication
@@ -12,12 +12,38 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
 }
 ---
 
-<NewsLayout title="Create New Article" role="editor" userName={session.userName}>
-  <div class="ftn-container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Article - Fishtank News</title>
+</head>
+<body>
+  <header class="ftn-header">
+    <div class="ftn-container">
+      <div class="ftn-header-content">
+        <h1 class="ftn-logo">
+          <a href="/writer">FISHTANK NEWS - WRITER</a>
+        </h1>
+        <nav class="ftn-nav">
+          <a href="/writer">Dashboard</a>
+          <a href="/writer/new">New Article</a>
+          <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="ftn-container">
     <div class="ftn-dashboard">
-      <h1 class="ftn-dashboard-title">Create New Article</h1>
+      <h1 class="ftn-dashboard-title">Edit Article</h1>
       
-      <form id="articleForm" style="background: white; border: 6px solid black; padding: 40px; margin: 40px 0;">
+      <div id="loading" style="text-align: center; padding: 40px;">
+        <p>Loading article...</p>
+      </div>
+
+      <form id="articleForm" style="background: white; border: 6px solid black; padding: 40px; margin: 40px 0; display: none;">
         <div class="ftn-form-group">
           <label for="title" class="ftn-label">Title</label>
           <input
@@ -106,7 +132,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
           <label for="status" class="ftn-label">Status</label>
           <select id="status" name="status" class="ftn-input">
             <option value="draft">Draft</option>
-            <option value="pending">Submit for Review</option>
+            <option value="approved">Published</option>
           </select>
         </div>
 
@@ -114,41 +140,91 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
         <div id="success" class="ftn-success" style="display: none;"></div>
 
         <div style="display: flex; gap: 10px; margin-top: 30px;">
-          <button type="submit" class="ftn-btn">Save Article</button>
-          <a href="/news/editor" class="ftn-btn" style="background: gray;">Cancel</a>
+          <button type="submit" class="ftn-btn">Update Article</button>
+          <a href="/writer" class="ftn-btn" style="background: gray;">Cancel</a>
         </div>
       </form>
     </div>
-  </div>
+  </main>
+
+  <footer class="ftn-footer">
+    <div class="ftn-container">
+      <div class="ftn-footer-content">
+        <p>&copy; {new Date().getFullYear()} Fishtank News. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
   <script>
-    const form = document.getElementById('articleForm') as HTMLFormElement;
-    const errorDiv = document.getElementById('error')!;
-    const successDiv = document.getElementById('success')!;
-    const contentTextarea = document.getElementById('content') as HTMLTextAreaElement;
-    const imageUploadInput = document.getElementById('imageUpload') as HTMLInputElement;
-    const uploadImageBtn = document.getElementById('uploadImageBtn') as HTMLButtonElement;
-    const insertImageBtn = document.getElementById('insertImageBtn')!;
-    const uploadStatus = document.getElementById('uploadStatus')!;
-    const featuredImageInput = document.getElementById('featured_image') as HTMLInputElement;
+    const form = document.getElementById('articleForm');
+    const loading = document.getElementById('loading');
+    const errorDiv = document.getElementById('error');
+    const successDiv = document.getElementById('success');
+    const contentTextarea = document.getElementById('content');
+    const imageUploadInput = document.getElementById('imageUpload');
+    const uploadImageBtn = document.getElementById('uploadImageBtn');
+    const insertImageBtn = document.getElementById('insertImageBtn');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const featuredImageInput = document.getElementById('featured_image');
+
+    // Get article ID from URL
+    const articleId = window.location.pathname.split('/').pop();
+
+    // Setup logout
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/';
+    });
+
+    // Load article data
+    async function loadArticle() {
+      try {
+        const response = await fetch(`/api/articles/${articleId}`);
+        if (!response.ok) {
+          if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+          }
+          throw new Error('Failed to load article');
+        }
+
+        const data = await response.json();
+        const article = data.article;
+
+        // Populate form
+        document.getElementById('title').value = article.title || '';
+        document.getElementById('excerpt').value = article.excerpt || '';
+        document.getElementById('featured_image').value = article.featured_image || '';
+        document.getElementById('content').value = article.content || '';
+        document.getElementById('category').value = article.category || '';
+        document.getElementById('status').value = article.status || 'draft';
+
+        // Show form
+        loading.style.display = 'none';
+        form.style.display = 'block';
+      } catch (error) {
+        console.error('Error loading article:', error);
+        loading.innerHTML = '<p style="color: red;">Error loading article. <a href="/writer">Go back to dashboard</a></p>';
+      }
+    }
 
     // Markdown toolbar handlers
     document.querySelectorAll('[data-markdown]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const markdown = (btn as HTMLElement).dataset.markdown!;
+        const markdown = btn.dataset.markdown;
         insertAtCursor(contentTextarea, markdown);
       });
     });
 
     document.querySelectorAll('[data-markdown-wrap]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const before = (btn as HTMLElement).dataset.markdownWrap!;
-        const after = (btn as HTMLElement).dataset.markdownAfter || before;
+        const before = btn.dataset.markdownWrap;
+        const after = btn.dataset.markdownAfter || before;
         wrapSelection(contentTextarea, before, after);
       });
     });
 
-    function insertAtCursor(textarea: HTMLTextAreaElement, text: string) {
+    function insertAtCursor(textarea, text) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       const value = textarea.value;
@@ -157,7 +233,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
       textarea.setSelectionRange(start + text.length, start + text.length);
     }
 
-    function wrapSelection(textarea: HTMLTextAreaElement, before: string, after: string) {
+    function wrapSelection(textarea, before, after) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       const selectedText = textarea.value.substring(start, end);
@@ -173,7 +249,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
     });
 
     imageUploadInput.addEventListener('change', async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
+      const file = e.target.files[0];
       if (!file) return;
 
       uploadStatus.textContent = 'Uploading...';
@@ -199,7 +275,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
           uploadStatus.style.color = 'red';
         }
       } catch (error) {
-        uploadStatus.textContent = 'Upload error: ' + (error as Error).message;
+        uploadStatus.textContent = 'Upload error: ' + error.message;
         uploadStatus.style.color = 'red';
       } finally {
         uploadImageBtn.disabled = false;
@@ -224,22 +300,22 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
       const formData = new FormData(form);
 
       try {
-        const response = await fetch('/api/articles', {
-          method: 'POST',
+        const response = await fetch(`/api/articles/${articleId}`, {
+          method: 'PUT',
           body: formData
         });
 
         const data = await response.json();
 
         if (response.ok) {
-          successDiv.textContent = 'Article saved successfully!';
+          successDiv.textContent = 'Article updated successfully!';
           successDiv.style.display = 'block';
           
           setTimeout(() => {
-            window.location.href = '/news/editor';
+            window.location.href = '/writer';
           }, 1500);
         } else {
-          errorDiv.textContent = data.error || 'Failed to save article';
+          errorDiv.textContent = data.error || 'Failed to update article';
           errorDiv.style.display = 'block';
         }
       } catch (error) {
@@ -247,5 +323,9 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
         errorDiv.style.display = 'block';
       }
     });
+
+    // Load article on page load
+    loadArticle();
   </script>
-</NewsLayout>
+</body>
+</html>

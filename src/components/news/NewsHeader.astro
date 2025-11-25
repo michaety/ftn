@@ -34,15 +34,16 @@ const currentDate = new Date().toLocaleDateString('en-US', {
           </>
         ) : role === 'admin' ? (
           <>
-            <a href="/news/admin">Dashboard</a>
-            <a href="/news/admin/articles">Articles</a>
+            <a href="/admin">Dashboard</a>
+            <a href="/admin/articles">Articles</a>
+            <a href="/writer/new">New Article</a>
             {userName && <span class="ftn-user">{userName}</span>}
             <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
           </>
         ) : (
           <>
-            <a href="/news/editor">Dashboard</a>
-            <a href="/news/editor/new">New Article</a>
+            <a href="/writer">Dashboard</a>
+            <a href="/writer/new">New Article</a>
             {userName && <span class="ftn-user">{userName}</span>}
             <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
           </>

@@ -39,12 +39,12 @@ import '@/styles/news.css';
           <div class="ftn-container">
             <div class="ftn-header-content">
               <h1 class="ftn-logo">
-                <a href="/news/admin">FISHTANK NEWS - ADMIN</a>
+                <a href="/admin">FISHTANK NEWS - ADMIN</a>
               </h1>
               <nav class="ftn-nav">
-                <a href="/news/admin">Dashboard</a>
-                <a href="/news/admin/articles">Articles</a>
-                <a href="/news/admin/invites">Invites</a>
+                <a href="/admin">Dashboard</a>
+                <a href="/admin/articles">Articles</a>
+                <a href="/writer/new">New Article</a>
                 <button id="logoutBtn" class="ftn-logout-btn">Logout</button>
               </nav>
             </div>
@@ -60,9 +60,7 @@ import '@/styles/news.css';
               <div style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">
                 <button class="ftn-btn filter-btn" data-status="">All</button>
                 <button class="ftn-btn filter-btn" data-status="draft">Draft</button>
-                <button class="ftn-btn filter-btn" data-status="pending">Pending</button>
-                <button class="ftn-btn filter-btn" data-status="approved">Approved</button>
-                <button class="ftn-btn filter-btn" data-status="rejected">Rejected</button>
+                <button class="ftn-btn filter-btn" data-status="approved">Published</button>
               </div>
             </div>
 
@@ -117,9 +115,7 @@ import '@/styles/news.css';
           container.innerHTML = data.articles.map(article => {
             const statusColors = {
               draft: 'gray',
-              pending: 'orange',
-              approved: 'green',
-              rejected: 'red'
+              approved: 'green'
             };
             
             return `
@@ -146,19 +142,14 @@ import '@/styles/news.css';
 
                   <div style="margin-top: 15px; padding-top: 15px; border-top: 3px solid black;">
                     <span style="font-weight: bold; text-transform: uppercase; color: ${statusColors[article.status] || 'black'};">
-                      Status: ${article.status}
+                      Status: ${article.status === 'approved' ? 'Published' : article.status}
                     </span>
                   </div>
 
                   <div class="ftn-article-actions">
-                    ${article.status === 'pending' ? `
-                      <button onclick="approveArticle(${article.id})" class="ftn-btn ftn-btn-approve">
-                        Approve
-                      </button>
-                      <button onclick="rejectArticle(${article.id})" class="ftn-btn ftn-btn-reject">
-                        Reject
-                      </button>
-                    ` : ''}
+                    <a href="/writer/edit/${article.id}" class="ftn-btn ftn-btn-edit">
+                      Edit
+                    </a>
                     ${article.status === 'approved' ? `
                       <a href="/news/articles/${article.slug}" target="_blank" class="ftn-btn" style="background: blue;">
                         View Public
@@ -180,36 +171,6 @@ import '@/styles/news.css';
         container.innerHTML = '<p style="grid-column: 1 / -1; color: red;">Error loading articles.</p>';
       }
     }
-
-    window.approveArticle = async (id) => {
-      try {
-        const response = await fetch('/api/articles/' + id + '/approve', { method: 'POST' });
-        if (response.ok) {
-          alert('Article approved!');
-          const activeFilter = document.querySelector('.filter-btn[style*="opacity: 1"]');
-          loadArticles(activeFilter ? activeFilter.dataset.status : '');
-        } else {
-          alert('Failed to approve article');
-        }
-      } catch (error) {
-        alert('Error approving article');
-      }
-    };
-
-    window.rejectArticle = async (id) => {
-      try {
-        const response = await fetch('/api/articles/' + id + '/reject', { method: 'POST' });
-        if (response.ok) {
-          alert('Article rejected');
-          const activeFilter = document.querySelector('.filter-btn[style*="opacity: 1"]');
-          loadArticles(activeFilter ? activeFilter.dataset.status : '');
-        } else {
-          alert('Failed to reject article');
-        }
-      } catch (error) {
-        alert('Error rejecting article');
-      }
-    };
 
     window.deleteArticle = async (id) => {
       if (!confirm('Are you sure you want to delete this article? This action cannot be undone.')) return;
