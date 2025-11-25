@@ -3,7 +3,7 @@ import '@/styles/news.css';
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="ftn-auth-page">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,10 +14,16 @@ import '@/styles/news.css';
     <a href="/">
       <img src="/logo.webp" alt="Fishtank News logo" class="ftn-header-logo">
     </a>
+  <header class="ftn-header">
+    <div class="ftn-container">
+      <div class="ftn-header-content">
+        <img src="/logo.webp" alt="Fishtank News" class="ftn-auth-logo">
+      </div>
+    </div>
   </header>
 
-  <main style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 300px);">
-    <form class="ftn-form" id="loginForm">
+  <main class="ftn-auth-main">
+    <form class="ftn-auth-form" id="loginForm">
       <h2 class="ftn-form-title">Login</h2>
       
       <div class="ftn-form-group">
@@ -44,16 +50,16 @@ import '@/styles/news.css';
 
       <div id="error" class="ftn-error" style="display: none;"></div>
 
-      <button type="submit" class="ftn-btn" style="width: 100%; margin-top: 20px;">
+      <button type="submit" class="ftn-btn">
         Login
       </button>
 
-      <p style="text-align: center; margin-top: 20px;">
-        <a href="/forgot-password" style="color: var(--ink-black); text-decoration: underline;">Forgot Password?</a>
+      <p>
+        <a href="/forgot-password">Forgot Password?</a>
       </p>
 
-      <p style="text-align: center; margin-top: 10px;">
-        Don't have an account? <a href="/signup" style="color: var(--ink-black); font-weight: bold; text-decoration: underline;">Sign Up</a>
+      <p>
+        Don't have an account? <a href="/signup">Sign Up</a>
       </p>
     </form>
   </main>
