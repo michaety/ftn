@@ -109,8 +109,10 @@ export async function createArticle(db: any, data: {
   category?: string;
 }) {
   const { title, slug, content, excerpt, featured_image, author_id, status = 'approved', category } = data;
+  // Only set published_at for approved articles
+  const publishedAt = status === 'approved' ? 'CURRENT_TIMESTAMP' : null;
   const result = await db.prepare(
-    'INSERT INTO articles (title, slug, content, excerpt, featured_image, author_id, status, category, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP) RETURNING *'
+    `INSERT INTO articles (title, slug, content, excerpt, featured_image, author_id, status, category, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ${status === 'approved' ? 'CURRENT_TIMESTAMP' : 'NULL'}) RETURNING *`
   ).bind(title, slug, content, excerpt || null, featured_image || null, author_id, status, category || null).first();
   return result;
 }
