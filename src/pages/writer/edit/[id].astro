@@ -1,5 +1,15 @@
 ---
 import '@/styles/news.css';
+import { getSession, getCookie } from '@/lib/db-utils';
+
+// Check authentication
+const kv = Astro.locals.runtime.env.SESSION;
+const sessionId = getCookie(Astro.request, 'sessionId');
+const session = await getSession(kv, sessionId);
+
+if (!session || !['admin', 'editor'].includes(session.userRole)) {
+  return Astro.redirect('/login');
+}
 ---
 
 <!DOCTYPE html>
