@@ -39,6 +39,7 @@ const twitterUrl = authorHandle.startsWith('@')
 
 // Determine article classes based on category
 // Convert category to valid CSS class by lowercasing and replacing spaces with hyphens
+// e.g., "fake news" becomes "fake-news" to match filter button data-filter values
 const categoryClass = article.category?.toLowerCase().replace(/\s+/g, '-') || 'all';
 const articleClasses = `article ftn-article-card all ${categoryClass}`;
 ---
