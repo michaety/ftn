@@ -173,6 +173,20 @@ export async function rejectArticle(db: any, id: number) {
   return result;
 }
 
+export async function incrementArticleViews(db: any, id: number) {
+  const result = await db.prepare(
+    'UPDATE articles SET view_count = view_count + 1 WHERE id = ? RETURNING *'
+  ).bind(id).first();
+  return result;
+}
+
+export async function getTrendingArticles(db: any, limit: number = 2) {
+  const result = await db.prepare(
+    'SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.status = ? ORDER BY a.view_count DESC LIMIT ?'
+  ).bind('approved', limit).all();
+  return result.results || [];
+}
+
 // ============== Invite Utilities ==============
 
 export async function createInvite(db: any, { email, createdBy, expiresInDays = 7 }: {
