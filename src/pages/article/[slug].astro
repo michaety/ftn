@@ -1,6 +1,6 @@
 ---
 import NewsLayout from '@/layouts/NewsLayout.astro';
-import { getArticleBySlug, getImageUrl } from '@/lib/db-utils';
+import { getArticleBySlug, getImageUrl, incrementArticleViews } from '@/lib/db-utils';
 import { marked } from 'marked';
 
 const { slug } = Astro.params;
@@ -18,6 +18,9 @@ const article = await getArticleBySlug(db, slug);
 if (!article || article.status !== 'approved') {
   return Astro.redirect('/');
 }
+
+// Increment view count for the article
+await incrementArticleViews(db, article.id);
 
 // Configure marked to handle images properly
 marked.use({
