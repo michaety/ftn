@@ -930,7 +930,11 @@ hr {
     background: var(--ink-black);
 }
 
-/* Auth Page Styles (Login, Signup, Forgot Password) */
+/* Auth Page Styles (Login, Signup, Forgot Password)
+ * Note: !important overrides are necessary because the base header/container 
+ * styles in this file use !important extensively for the fixed header layout.
+ * These auth page styles need to override those defaults for a simpler layout.
+ */
 .ftn-auth-page body {
     padding-top: 0 !important;
 }
@@ -1063,6 +1067,7 @@ hr {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* 280px accounts for header (~200px) + footer (~80px) heights */
     min-height: calc(100vh - 280px);
     padding: 40px 20px;
 }
