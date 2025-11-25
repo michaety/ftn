@@ -121,26 +121,8 @@ const trendingArticles = await getTrendingArticles(db, 2);
         });
       });
 
-      // Handle window resize for responsive sidebar behavior
-      function handleResize() {
-        const sidebars = document.querySelectorAll('.sidebar, .ftn-sidebar');
-        if (window.innerWidth <= 1024) {
-          sidebars.forEach(sidebar => {
-            sidebar.style.position = 'relative';
-            sidebar.style.height = 'auto';
-          });
-        } else {
-          sidebars.forEach(sidebar => {
-            sidebar.style.position = 'fixed';
-            const headerHeight = getComputedStyle(document.documentElement).getPropertyValue('--header-height') || '200px';
-            sidebar.style.height = `calc(100vh - ${headerHeight} - 40px)`;
-          });
-        }
-      }
-
-      // Initial check and event listener
-      handleResize();
-      window.addEventListener('resize', handleResize);
+      // Note: Sidebar responsive behavior is now handled entirely by CSS media queries
+      // in news.css. No JavaScript manipulation of sidebar styles is needed.
 
       // Twitter embed lazy loading with error handling
       let twitterScriptLoaded = false;

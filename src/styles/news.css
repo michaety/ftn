@@ -778,8 +778,8 @@ hr {
 @media (max-width: 1024px) {
     .container,
     .ftn-container {
-        flex-direction: column;
-        padding: 0;
+        flex-direction: column !important;
+        padding: 0 15px !important;
         display: flex !important;
     }
 
@@ -788,28 +788,32 @@ hr {
         position: relative !important;
         left: auto !important;
         right: auto !important;
-        width: 100%;
-        height: auto;
-        margin-bottom: 20px;
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: 20px !important;
         top: auto !important;
+        overflow-y: visible !important;
     }
 
-    /* Reorder layout on mobile: main feed first, then sidebars */
+    /* Reorder layout on tablet/mobile: main feed first, then sidebars */
     .main-feed,
     .ftn-main-feed {
-        width: 100%;
-        max-width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
         order: 1;
+        margin: 0 !important;
     }
 
     .sidebar.left,
     .ftn-sidebar.left {
         order: 2;
+        left: auto !important;
     }
 
     .sidebar.right,
     .ftn-sidebar.right {
         order: 3;
+        right: auto !important;
     }
 
     .header-title,
@@ -850,7 +854,7 @@ hr {
     /* Reduce container padding on small screens */
     .container,
     .ftn-container {
-        padding: 0;
+        padding: 0 10px !important;
     }
 
     /* Show logo image on mobile, hide text */
@@ -897,9 +901,9 @@ hr {
 
     .main-feed,
     .ftn-main-feed {
-        padding: 20px;
-        width: 100%;
-        max-width: 100%;
+        padding: 20px !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     .ftn-page-title {
@@ -909,10 +913,10 @@ hr {
     /* Make sidebars span full width on mobile */
     .sidebar,
     .ftn-sidebar {
-        margin-top: 30px;
-        margin-left: 0;
-        margin-right: 0;
-        width: 100%;
+        margin-top: 30px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
         padding: 20px !important;
         text-align: center;
     }
@@ -941,6 +945,40 @@ hr {
     .article,
     .ftn-article-card {
         margin-bottom: 40px;
+    }
+}
+
+/* Extra small screens - phones in portrait */
+@media (max-width: 480px) {
+    .container,
+    .ftn-container {
+        padding: 0 5px !important;
+    }
+
+    .main-feed,
+    .ftn-main-feed {
+        padding: 15px !important;
+    }
+
+    .sidebar,
+    .ftn-sidebar {
+        padding: 15px !important;
+    }
+
+    .filters button,
+    .ftn-filters button {
+        font-size: 0.75em;
+        padding: 6px 10px;
+        margin: 3px;
+    }
+
+    .article h2,
+    .ftn-article-title {
+        font-size: 1.5em;
+    }
+
+    .ftn-page-title {
+        font-size: 1.5em;
     }
 }
 
