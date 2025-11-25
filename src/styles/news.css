@@ -929,3 +929,156 @@ hr {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--ink-black);
 }
+
+/* Auth Page Styles (Login, Signup, Forgot Password) */
+.ftn-auth-page body {
+    padding-top: 0 !important;
+}
+
+.ftn-auth-page .ftn-header {
+    position: relative !important;
+    text-align: center !important;
+}
+
+.ftn-auth-page .ftn-header .ftn-container {
+    display: block !important;
+    padding-top: 0 !important;
+}
+
+.ftn-auth-page .ftn-header .ftn-header-content {
+    display: block !important;
+    text-align: center !important;
+}
+
+.ftn-auth-page .ftn-auth-logo {
+    display: block !important;
+    max-width: 200px;
+    height: auto;
+    margin: 0 auto !important;
+}
+
+/* Enhanced Form Styles for Auth Pages */
+.ftn-auth-form {
+    background-color: var(--paper-white);
+    border: 3px solid var(--ink-black);
+    box-shadow: 5px 5px 0px rgba(0,0,0,0.15);
+    padding: 40px 50px;
+    max-width: 450px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.ftn-auth-form .ftn-form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2em;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: var(--ink-black);
+    border-bottom: 2px solid var(--ink-black);
+    padding-bottom: 15px;
+}
+
+.ftn-auth-form .ftn-form-group {
+    margin-bottom: 25px;
+}
+
+.ftn-auth-form .ftn-label {
+    display: block;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+    color: var(--ink-black);
+}
+
+.ftn-auth-form .ftn-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--ink-black);
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    background-color: var(--beige-bg);
+    transition: all 0.3s ease;
+}
+
+.ftn-auth-form .ftn-input:focus {
+    outline: none;
+    border-color: var(--aged-sepia);
+    background-color: var(--paper-white);
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.2);
+}
+
+.ftn-auth-form .ftn-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+.ftn-auth-form .ftn-error {
+    margin-top: 20px;
+    padding: 12px 15px;
+    border: 2px solid #c53030;
+    background-color: rgba(197, 48, 48, 0.1);
+    color: #c53030;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ftn-auth-form .ftn-success {
+    margin-top: 20px;
+    padding: 12px 15px;
+    border: 2px solid #2f855a;
+    background-color: rgba(47, 133, 90, 0.1);
+    color: #2f855a;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ftn-auth-form p {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.95em;
+    color: var(--ink-black);
+}
+
+.ftn-auth-form a {
+    color: var(--ink-black);
+    font-weight: 700;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.ftn-auth-form a:hover {
+    color: var(--aged-sepia);
+}
+
+/* Auth Page Main Container */
+.ftn-auth-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 280px);
+    padding: 40px 20px;
+}
+
+/* Responsive styles for auth pages */
+@media (max-width: 768px) {
+    .ftn-auth-form {
+        padding: 30px 25px;
+        margin: 0 15px;
+    }
+    
+    .ftn-auth-form .ftn-form-title {
+        font-size: 1.8em;
+    }
+    
+    .ftn-auth-page .ftn-auth-logo {
+        max-width: 160px;
+    }
+}
