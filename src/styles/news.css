@@ -941,7 +941,6 @@ hr {
     margin: 0 auto;
 }
 
-.ftn-form-title {
 /* Auth Page Styles (Login, Signup, Forgot Password)
  * Note: !important overrides are necessary because the base header/container 
  * styles in this file use !important extensively for the fixed header layout.
@@ -1077,6 +1076,10 @@ hr {
 
     .ftn-form-title {
         font-size: 1.6em;
+    }
+}
+
+.ftn-form-title {
     letter-spacing: 2px;
     margin-bottom: 30px;
     text-align: center;
