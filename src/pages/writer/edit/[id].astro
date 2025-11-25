@@ -56,24 +56,24 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
         </div>
 
         <div class="ftn-form-group">
-          <label for="excerpt" class="ftn-label">Excerpt (Optional)</label>
+          <label for="excerpt" class="ftn-label">Excerpt / Subtitle (Optional - max 150 characters)</label>
           <textarea
             id="excerpt"
             name="excerpt"
-            class="ftn-textarea"
-            rows="3"
-            placeholder="Brief summary of the article..."
+            class="ftn-textarea ftn-excerpt-input"
+            rows="2"
+            maxlength="150"
+            placeholder="Brief summary displayed as subtitle under the image..."
           ></textarea>
+          <div class="ftn-char-counter"><span id="excerptCount">0</span>/150</div>
         </div>
 
         <div class="ftn-form-group">
-          <label for="featured_image" class="ftn-label">Featured Image URL (Optional)</label>
+          <label for="featured_image" class="ftn-label">Featured Image</label>
           <input
-            type="text"
+            type="hidden"
             id="featured_image"
             name="featured_image"
-            class="ftn-input"
-            placeholder="/api/media/uploads/..."
           />
           <div style="margin-top: 10px;">
             <input type="file" id="imageUpload" accept="image/*" style="display: none;" />
@@ -82,6 +82,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
             </button>
             <span id="uploadStatus"></span>
           </div>
+          <div id="imagePreview" style="margin-top: 15px;"></div>
         </div>
 
         <div class="ftn-form-group">
@@ -166,6 +167,14 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
     const insertImageBtn = document.getElementById('insertImageBtn');
     const uploadStatus = document.getElementById('uploadStatus');
     const featuredImageInput = document.getElementById('featured_image');
+    const imagePreview = document.getElementById('imagePreview');
+    const excerptTextarea = document.getElementById('excerpt');
+    const excerptCount = document.getElementById('excerptCount');
+
+    // Excerpt character counter
+    excerptTextarea.addEventListener('input', () => {
+      excerptCount.textContent = excerptTextarea.value.length.toString();
+    });
 
     // Get article ID from URL
     const articleId = window.location.pathname.split('/').pop();
@@ -194,10 +203,16 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
         // Populate form
         document.getElementById('title').value = article.title || '';
         document.getElementById('excerpt').value = article.excerpt || '';
+        excerptCount.textContent = (article.excerpt || '').length.toString();
         document.getElementById('featured_image').value = article.featured_image || '';
         document.getElementById('content').value = article.content || '';
         document.getElementById('category').value = article.category || '';
         document.getElementById('status').value = article.status || 'draft';
+
+        // Show image preview if exists
+        if (article.featured_image) {
+          imagePreview.innerHTML = `<img src="${article.featured_image}" alt="Featured image preview" style="max-width: 300px; border: 2px solid var(--ink-black); margin-top: 10px;" />`;
+        }
 
         // Show form
         loading.style.display = 'none';
@@ -270,6 +285,8 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
           featuredImageInput.value = data.url;
           uploadStatus.textContent = 'Image uploaded successfully!';
           uploadStatus.style.color = 'green';
+          // Show image preview
+          imagePreview.innerHTML = `<img src="${data.url}" alt="Featured image preview" style="max-width: 300px; border: 2px solid var(--ink-black); margin-top: 10px;" />`;
         } else {
           uploadStatus.textContent = 'Upload failed: ' + (data.error || 'Unknown error');
           uploadStatus.style.color = 'red';

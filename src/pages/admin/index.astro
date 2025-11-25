@@ -21,7 +21,9 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 <NewsLayout title="Admin Dashboard" role="admin" userName={session.userName}>
   <div class="ftn-container">
     <div class="ftn-dashboard">
-      <h1 class="ftn-dashboard-title">Admin Dashboard</h1>
+      <div class="ftn-dashboard-header">
+        <img src="/logo.webp" alt="Fishtank News" class="ftn-dashboard-logo" />
+      </div>
 
       <div class="ftn-dashboard-section">
         <h2 class="ftn-section-title">Quick Actions</h2>
