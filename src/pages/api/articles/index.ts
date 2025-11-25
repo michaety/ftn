@@ -42,7 +42,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const content = formData.get('content')?.toString();
     const excerpt = formData.get('excerpt')?.toString();
     const featured_image = formData.get('featured_image')?.toString();
-    const status = formData.get('status')?.toString() || 'draft';
+    const status = formData.get('status')?.toString() || 'approved';
     const category = formData.get('category')?.toString();
 
     if (!title || !content) {

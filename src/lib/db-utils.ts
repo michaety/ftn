@@ -108,9 +108,9 @@ export async function createArticle(db: any, data: {
   status?: string;
   category?: string;
 }) {
-  const { title, slug, content, excerpt, featured_image, author_id, status = 'draft', category } = data;
+  const { title, slug, content, excerpt, featured_image, author_id, status = 'approved', category } = data;
   const result = await db.prepare(
-    'INSERT INTO articles (title, slug, content, excerpt, featured_image, author_id, status, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING *'
+    'INSERT INTO articles (title, slug, content, excerpt, featured_image, author_id, status, category, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP) RETURNING *'
   ).bind(title, slug, content, excerpt || null, featured_image || null, author_id, status, category || null).first();
   return result;
 }
