@@ -109,6 +109,9 @@ export async function createArticle(db: any, data: {
   category?: string;
 }) {
   const { title, slug, content, excerpt, featured_image, author_id, status = 'approved', category } = data;
+  // Note: The template literal only interpolates SQL constants (CURRENT_TIMESTAMP or NULL), 
+  // not user input. The status value is passed through .bind() as a parameterized value.
+  // Additionally, the API validates status to only accept 'draft' or 'approved'.
   const result = await db.prepare(
     `INSERT INTO articles (title, slug, content, excerpt, featured_image, author_id, status, category, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ${status === 'approved' ? 'CURRENT_TIMESTAMP' : 'NULL'}) RETURNING *`
   ).bind(title, slug, content, excerpt || null, featured_image || null, author_id, status, category || null).first();
