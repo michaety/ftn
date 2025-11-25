@@ -38,7 +38,8 @@ const twitterUrl = authorHandle.startsWith('@')
   : `https://x.com/${authorHandle}`;
 
 // Determine article classes based on category
-const categoryClass = article.category?.toLowerCase() || 'all';
+// Convert category to valid CSS class by lowercasing and replacing spaces with hyphens
+const categoryClass = article.category?.toLowerCase().replace(/\s+/g, '-') || 'all';
 const articleClasses = `article ftn-article-card all ${categoryClass}`;
 ---
 
