@@ -42,8 +42,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const content = formData.get('content')?.toString();
     const excerpt = formData.get('excerpt')?.toString();
     const featured_image = formData.get('featured_image')?.toString();
-    const status = formData.get('status')?.toString() || 'approved';
+    const statusInput = formData.get('status')?.toString() || 'approved';
     const category = formData.get('category')?.toString();
+
+    // Validate status to only allow known values
+    const validStatuses = ['draft', 'approved'];
+    const status = validStatuses.includes(statusInput) ? statusInput : 'approved';
 
     if (!title || !content) {
       return new Response(JSON.stringify({ error: 'Title and content are required' }), {
