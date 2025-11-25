@@ -1,6 +1,13 @@
 import type { APIRoute } from 'astro';
 import { getSession, getCookie, getTrendingSettings, setTrendingSettings, getArticles } from '@/lib/db-utils';
 
+interface ArticleRecord {
+  id: number;
+  title: string;
+  slug: string;
+  [key: string]: unknown;
+}
+
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
     const db = locals.runtime.env.DB;
@@ -20,11 +27,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
     const settings = await getTrendingSettings(db);
     
     // Also get approved articles for the selection UI
-    const articles = await getArticles(db, 'approved');
+    const articles = await getArticles(db, 'approved') as ArticleRecord[];
 
     return new Response(JSON.stringify({ 
       settings,
-      articles: articles.map((a: any) => ({ id: a.id, title: a.title, slug: a.slug }))
+      articles: articles.map((a) => ({ id: a.id, title: a.title, slug: a.slug }))
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

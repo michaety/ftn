@@ -186,16 +186,40 @@ export async function getTrendingArticles(db: any, limit: number = 2) {
   
   if (settings.mode === 'manual' && settings.articleIds.length > 0) {
     // Use manually selected articles
-    const placeholders = settings.articleIds.map(() => '?').join(',');
+    // Validate that all IDs are positive integers to prevent injection
+    const validatedIds = settings.articleIds.filter(id => 
+      typeof id === 'number' && Number.isInteger(id) && id > 0
+    );
+    
+    if (validatedIds.length === 0) {
+      // Fall back to automatic mode if no valid IDs
+      const result = await db.prepare(
+        'SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.status = ? ORDER BY a.view_count DESC LIMIT ?'
+      ).bind('approved', limit).all();
+      return result.results || [];
+    }
+    
+    // Build placeholders for the IN clause (parameterized)
+    const placeholders = validatedIds.map(() => '?').join(',');
+    
+    // For ordering, we use a subquery approach that doesn't interpolate values into SQL
+    // We'll fetch all matching articles and then sort in JavaScript
     const result = await db.prepare(
       `SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle 
        FROM articles a 
        LEFT JOIN users u ON a.author_id = u.id 
        WHERE a.id IN (${placeholders}) AND a.status = ?
-       ORDER BY CASE ${settings.articleIds.map((id: number, idx: number) => `WHEN a.id = ${id} THEN ${idx}`).join(' ')} END
        LIMIT ?`
-    ).bind(...settings.articleIds, 'approved', limit).all();
-    return result.results || [];
+    ).bind(...validatedIds, 'approved', limit).all();
+    
+    // Sort results to match the order of validatedIds
+    const articles = result.results || [];
+    const orderedArticles = validatedIds
+      .map(id => articles.find((a: any) => a.id === id))
+      .filter((a: any) => a !== undefined)
+      .slice(0, limit);
+    
+    return orderedArticles;
   }
   
   // Default to automatic mode (by view count)
@@ -229,6 +253,7 @@ export async function getTrendingSettings(db: any): Promise<{ mode: 'automatic' 
     try {
       articleIds = JSON.parse(articleIdsStr);
     } catch (e) {
+      console.error('Failed to parse trending article IDs:', e);
       articleIds = [];
     }
   }
