@@ -181,10 +181,67 @@ export async function incrementArticleViews(db: any, id: number) {
 }
 
 export async function getTrendingArticles(db: any, limit: number = 2) {
+  // Check if manual mode is enabled
+  const settings = await getTrendingSettings(db);
+  
+  if (settings.mode === 'manual' && settings.articleIds.length > 0) {
+    // Use manually selected articles
+    const placeholders = settings.articleIds.map(() => '?').join(',');
+    const result = await db.prepare(
+      `SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle 
+       FROM articles a 
+       LEFT JOIN users u ON a.author_id = u.id 
+       WHERE a.id IN (${placeholders}) AND a.status = ?
+       ORDER BY CASE ${settings.articleIds.map((id: number, idx: number) => `WHEN a.id = ${id} THEN ${idx}`).join(' ')} END
+       LIMIT ?`
+    ).bind(...settings.articleIds, 'approved', limit).all();
+    return result.results || [];
+  }
+  
+  // Default to automatic mode (by view count)
   const result = await db.prepare(
     'SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.status = ? ORDER BY a.view_count DESC LIMIT ?'
   ).bind('approved', limit).all();
   return result.results || [];
+}
+
+// ============== Site Settings Utilities ==============
+
+export async function getSiteSetting(db: any, key: string): Promise<string | null> {
+  const result = await db.prepare(
+    'SELECT setting_value FROM site_settings WHERE setting_key = ?'
+  ).bind(key).first();
+  return result?.setting_value || null;
+}
+
+export async function setSiteSetting(db: any, key: string, value: string): Promise<void> {
+  await db.prepare(
+    'INSERT INTO site_settings (setting_key, setting_value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value, updated_at = CURRENT_TIMESTAMP'
+  ).bind(key, value).run();
+}
+
+export async function getTrendingSettings(db: any): Promise<{ mode: 'automatic' | 'manual'; articleIds: number[] }> {
+  const mode = await getSiteSetting(db, 'trending_mode');
+  const articleIdsStr = await getSiteSetting(db, 'trending_manual_articles');
+  
+  let articleIds: number[] = [];
+  if (articleIdsStr) {
+    try {
+      articleIds = JSON.parse(articleIdsStr);
+    } catch (e) {
+      articleIds = [];
+    }
+  }
+  
+  return {
+    mode: (mode === 'manual' ? 'manual' : 'automatic') as 'automatic' | 'manual',
+    articleIds
+  };
+}
+
+export async function setTrendingSettings(db: any, settings: { mode: 'automatic' | 'manual'; articleIds: number[] }): Promise<void> {
+  await setSiteSetting(db, 'trending_mode', settings.mode);
+  await setSiteSetting(db, 'trending_manual_articles', JSON.stringify(settings.articleIds));
 }
 
 // ============== Invite Utilities ==============
