@@ -1,6 +1,5 @@
 ---
 import NewsLayout from '@/layouts/NewsLayout.astro';
-import NewsArticleCard from '@/components/news/NewsArticleCard.astro';
 import { getSession, getCookie, getArticlesByAuthor, getImageUrl } from '@/lib/db-utils';
 
 // Check authentication
@@ -13,7 +12,7 @@ if (!session || !['admin', 'editor'].includes(session.userRole)) {
   return Astro.redirect('/login');
 }
 
-// Fetch user's articles
+// Fetch user's articles for initial load
 const articles = await getArticlesByAuthor(db, session.userId);
 const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 ---
@@ -36,46 +35,43 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
             No articles yet. <a href="/writer/new" class="ftn-btn">Create your first article</a>
           </p>
         ) : (
-          <div class="ftn-grid">
-            {articles.map((article: any) => (
-              <article class="ftn-article-card">
-                {article.featured_image && (
-                  <div class="ftn-article-image">
-                    <img 
-                      src={getImageUrl(article.featured_image, r2PublicUrl) || article.featured_image} 
-                      alt={article.title} 
-                    />
-                  </div>
-                )}
-                
-                <div class="ftn-article-content">
-                  <h2 class="ftn-article-title">{article.title}</h2>
-                  
-                  {article.excerpt && (
-                    <p class="ftn-article-excerpt">{article.excerpt}</p>
+          <div id="articles-grid" class="ftn-tile-grid">
+            {articles.map((article: any) => {
+              const statusClass = article.status === 'approved' ? 'published' : 'draft';
+              const statusText = article.status === 'approved' ? 'Published' : 'Draft';
+              const imageUrl = getImageUrl(article.featured_image, r2PublicUrl) || article.featured_image;
+              
+              return (
+                <article class="ftn-tile-card" data-article-id={article.id}>
+                  {article.featured_image ? (
+                    <div class="ftn-tile-image">
+                      <img src={imageUrl} alt={article.title} loading="lazy" />
+                    </div>
+                  ) : (
+                    <div class="ftn-tile-no-image">No Image</div>
                   )}
                   
-                  <div class="ftn-article-meta">
-                    <span class="ftn-article-author">Status: {article.status}</span>
-                    <span class="ftn-article-date">
-                      {new Date(article.created_at).toLocaleDateString()}
-                    </span>
+                  <div class="ftn-tile-content">
+                    <h3 class="ftn-tile-title">{article.title}</h3>
+                    <span class={`ftn-tile-status ${statusClass}`}>{statusText}</span>
+                    
+                    <div class="ftn-tile-actions">
+                      <a href={`/writer/edit/${article.id}`} class="ftn-tile-btn">Edit</a>
+                      {article.status === 'approved' && (
+                        <a href={`/news/articles/${article.slug}`} target="_blank" class="ftn-tile-btn view">View</a>
+                      )}
+                      <button 
+                        type="button"
+                        class="ftn-tile-btn delete"
+                        data-delete-id={article.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-
-                  <div class="ftn-article-actions">
-                    <a href={`/writer/edit/${article.id}`} class="ftn-btn ftn-btn-edit">
-                      Edit
-                    </a>
-                    <button 
-                      onclick={`deleteArticle(${article.id})`} 
-                      class="ftn-btn ftn-btn-delete"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
         )}
       </div>
@@ -83,20 +79,31 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
   </div>
 
   <script>
-    (window as any).deleteArticle = async (id: number) => {
-      if (!confirm('Are you sure you want to delete this article?')) return;
-      
-      try {
-        const response = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
-        if (response.ok) {
-          alert('Article deleted');
-          window.location.reload();
-        } else {
-          alert('Failed to delete article');
+    // Use event delegation for delete buttons to avoid XSS
+    document.addEventListener('click', async (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.matches('[data-delete-id]')) {
+        const id = target.getAttribute('data-delete-id');
+        if (!id) return;
+        
+        if (!confirm('Are you sure you want to delete this article?')) return;
+        
+        try {
+          const response = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
+          if (response.ok) {
+            // Remove the card from DOM
+            const card = document.querySelector(`[data-article-id="${id}"]`);
+            if (card) {
+              card.remove();
+            }
+            alert('Article deleted');
+          } else {
+            alert('Failed to delete article');
+          }
+        } catch (error) {
+          alert('Error deleting article');
         }
-      } catch (error) {
-        alert('Error deleting article');
       }
-    };
+    });
   </script>
 </NewsLayout>

@@ -39,51 +39,36 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
         {allArticles.length === 0 ? (
           <p style="text-align: center; padding: 40px 0;">No articles yet. <a href="/writer/new" class="ftn-btn">Create your first article</a></p>
         ) : (
-          <div class="ftn-grid">
-            {allArticles.slice(0, 6).map((article: any) => (
-              <article class="ftn-article-card">
-                {article.featured_image && (
-                  <div class="ftn-article-image">
-                    <img 
-                      src={getImageUrl(article.featured_image, r2PublicUrl) || article.featured_image} 
-                      alt={article.title} 
-                    />
-                  </div>
-                )}
-                
-                <div class="ftn-article-content">
-                  <h2 class="ftn-article-title">{article.title}</h2>
-                  
-                  {article.excerpt && (
-                    <p class="ftn-article-excerpt">{article.excerpt}</p>
+          <div class="ftn-tile-grid">
+            {allArticles.slice(0, 8).map((article: any) => {
+              const statusClass = article.status === 'approved' ? 'published' : 'draft';
+              const statusText = article.status === 'approved' ? 'Published' : 'Draft';
+              const imageUrl = getImageUrl(article.featured_image, r2PublicUrl) || article.featured_image;
+              
+              return (
+                <article class="ftn-tile-card">
+                  {article.featured_image ? (
+                    <div class="ftn-tile-image">
+                      <img src={imageUrl} alt={article.title} loading="lazy" />
+                    </div>
+                  ) : (
+                    <div class="ftn-tile-no-image">No Image</div>
                   )}
                   
-                  <div class="ftn-article-meta">
-                    <span class="ftn-article-author">By {article.author_name}</span>
-                    <span class="ftn-article-date">
-                      {new Date(article.created_at).toLocaleDateString()}
-                    </span>
+                  <div class="ftn-tile-content">
+                    <h3 class="ftn-tile-title">{article.title}</h3>
+                    <span class={`ftn-tile-status ${statusClass}`}>{statusText}</span>
+                    
+                    <div class="ftn-tile-actions">
+                      <a href={`/writer/edit/${article.id}`} class="ftn-tile-btn">Edit</a>
+                      {article.status === 'approved' && (
+                        <a href={`/news/articles/${article.slug}`} target="_blank" class="ftn-tile-btn view">View</a>
+                      )}
+                    </div>
                   </div>
-
-                  <div style="margin-top: 15px; padding-top: 15px; border-top: 3px solid black;">
-                    <span style="font-weight: bold; text-transform: uppercase; color: {article.status === 'approved' ? 'green' : 'gray'};">
-                      Status: {article.status}
-                    </span>
-                  </div>
-
-                  <div class="ftn-article-actions">
-                    <a href={`/writer/edit/${article.id}`} class="ftn-btn ftn-btn-edit">
-                      Edit
-                    </a>
-                    {article.status === 'approved' && (
-                      <a href={`/news/articles/${article.slug}`} target="_blank" class="ftn-btn" style="background: blue;">
-                        View
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
         )}
       </div>
@@ -115,16 +100,18 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
                     <td style="padding: 15px; border: 3px solid black;">
                       <div style="display: flex; gap: 10px;">
                         <button 
-                          onclick={`approveUser(${user.id})`} 
+                          type="button"
                           class="ftn-btn ftn-btn-approve"
                           style="padding: 5px 10px;"
+                          data-approve-id={user.id}
                         >
                           Approve
                         </button>
                         <button 
-                          onclick={`rejectUser(${user.id})`} 
+                          type="button"
                           class="ftn-btn ftn-btn-reject"
                           style="padding: 5px 10px;"
+                          data-reject-id={user.id}
                         >
                           Reject
                         </button>
@@ -141,48 +128,61 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
   </div>
 
   <script>
-    (window as any).approveUser = async (id: number) => {
-      try {
-        const formData = new FormData();
-        formData.append('userId', id.toString());
-        formData.append('action', 'approve');
+    // Use event delegation for user action buttons
+    document.addEventListener('click', async (e: Event) => {
+      const target = e.target as HTMLElement;
+      
+      // Handle approve button
+      if (target.matches('[data-approve-id]')) {
+        const id = target.getAttribute('data-approve-id');
+        if (!id) return;
         
-        const response = await fetch('/api/admin/pending-users', { 
-          method: 'POST',
-          body: formData
-        });
-        
-        if (response.ok) {
-          alert('User approved! They can now login.');
-          window.location.reload();
-        } else {
-          alert('Failed to approve user');
+        try {
+          const formData = new FormData();
+          formData.append('userId', id);
+          formData.append('action', 'approve');
+          
+          const response = await fetch('/api/admin/pending-users', { 
+            method: 'POST',
+            body: formData
+          });
+          
+          if (response.ok) {
+            alert('User approved! They can now login.');
+            window.location.reload();
+          } else {
+            alert('Failed to approve user');
+          }
+        } catch (error) {
+          alert('Error approving user');
         }
-      } catch (error) {
-        alert('Error approving user');
       }
-    };
-
-    (window as any).rejectUser = async (id: number) => {
-      try {
-        const formData = new FormData();
-        formData.append('userId', id.toString());
-        formData.append('action', 'reject');
+      
+      // Handle reject button
+      if (target.matches('[data-reject-id]')) {
+        const id = target.getAttribute('data-reject-id');
+        if (!id) return;
         
-        const response = await fetch('/api/admin/pending-users', { 
-          method: 'POST',
-          body: formData
-        });
-        
-        if (response.ok) {
-          alert('User rejected');
-          window.location.reload();
-        } else {
-          alert('Failed to reject user');
+        try {
+          const formData = new FormData();
+          formData.append('userId', id);
+          formData.append('action', 'reject');
+          
+          const response = await fetch('/api/admin/pending-users', { 
+            method: 'POST',
+            body: formData
+          });
+          
+          if (response.ok) {
+            alert('User rejected');
+            window.location.reload();
+          } else {
+            alert('Failed to reject user');
+          }
+        } catch (error) {
+          alert('Error rejecting user');
         }
-      } catch (error) {
-        alert('Error rejecting user');
       }
-    };
+    });
   </script>
 </NewsLayout>
