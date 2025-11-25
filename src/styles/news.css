@@ -930,6 +930,18 @@ hr {
     background: var(--ink-black);
 }
 
+/* Form Styles for Signup/Login Pages */
+.ftn-form {
+    background-color: var(--paper-white);
+    border: 2px solid var(--ink-black);
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.ftn-form-title {
 /* Auth Page Styles (Login, Signup, Forgot Password)
  * Note: !important overrides are necessary because the base header/container 
  * styles in this file use !important extensively for the fixed header layout.
@@ -977,6 +989,94 @@ hr {
     font-size: 2.2em;
     font-weight: 900;
     text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 25px 0;
+    letter-spacing: 2px;
+    border-bottom: 3px double var(--ink-black);
+    padding-bottom: 15px;
+    color: var(--ink-black);
+}
+
+.ftn-form-group {
+    margin-bottom: 20px;
+}
+
+.ftn-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--ink-black);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ftn-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--ink-black);
+    background-color: var(--paper-white);
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    color: var(--ink-black);
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ftn-input:focus {
+    outline: none;
+    border-color: var(--aged-sepia);
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.2);
+}
+
+.ftn-input::placeholder {
+    color: var(--aged-sepia);
+    opacity: 0.7;
+}
+
+.ftn-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 12px 15px;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.ftn-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 12px 15px;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+/* Centered header variant for login/signup pages */
+.ftn-header-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ftn-header-logo {
+    max-width: 200px;
+    height: auto;
+    display: block;
+}
+
+/* Responsive form adjustments */
+@media (max-width: 768px) {
+    .ftn-form {
+        padding: 25px 20px;
+        max-width: 100%;
+        margin: 0 15px;
+    }
+
+    .ftn-form-title {
+        font-size: 1.6em;
     letter-spacing: 2px;
     margin-bottom: 30px;
     text-align: center;
