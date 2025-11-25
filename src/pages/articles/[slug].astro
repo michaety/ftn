@@ -1,7 +1,6 @@
 ---
 import NewsLayout from '@/layouts/NewsLayout.astro';
-import { getArticleBySlug } from '@/lib/db-utils';
-import { getImageUrl } from '@/lib/db-utils';
+import { getArticleBySlug, getImageUrl } from '@/lib/db-utils';
 import { marked } from 'marked';
 
 const { slug } = Astro.params;

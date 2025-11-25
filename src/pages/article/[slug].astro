@@ -22,7 +22,7 @@ if (!article || article.status !== 'approved') {
 // Configure marked to handle images properly
 marked.use({
   renderer: {
-    image(href, title, text) {
+    image({ href, title, text }) {
       // Use the helper function to construct proper image URL
       const imageUrl = getImageUrl(href, r2PublicUrl);
       const titleAttr = title ? ` title="${title}"` : '';
