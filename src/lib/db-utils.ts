@@ -200,10 +200,11 @@ export async function getTrendingArticles(db: any, limit: number = 2) {
     }
     
     // Build placeholders for the IN clause (parameterized)
+    // Note: placeholders is safe as it only contains '?' characters generated from validated array length
+    // The actual ID values are passed via .bind() as parameterized values
     const placeholders = validatedIds.map(() => '?').join(',');
     
-    // For ordering, we use a subquery approach that doesn't interpolate values into SQL
-    // We'll fetch all matching articles and then sort in JavaScript
+    // Fetch matching articles using parameterized query, then sort in JavaScript to preserve order
     const result = await db.prepare(
       `SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle 
        FROM articles a 
