@@ -6,6 +6,7 @@ import NewsFooter from '@/components/news/NewsFooter.astro';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
   role?: 'public' | 'admin' | 'editor';
   userName?: string;
   hideNavigation?: boolean;
@@ -14,12 +15,16 @@ interface Props {
 const { 
   title = 'Fishtank News',
   description = 'Latest news and updates',
+  image,
   role = 'public',
   userName,
   hideNavigation = false
 } = Astro.props;
 
 const fullTitle = title === 'Fishtank News' ? title : `${title} - Fishtank News`;
+
+// Use custom image if provided, otherwise fall back to logo
+const ogImage = image ? new URL(image, Astro.url) : new URL('/logo.webp', Astro.url);
 
 // Build dynamic CSP that includes R2_PUBLIC_URL origin
 const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
@@ -97,14 +102,14 @@ const cspContent = `img-src ${imgSrcs}; default-src ${defaultSrcs}; script-src $
     <meta property="og:url" content={Astro.url} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL('/logo.webp', Astro.url)} />
+    <meta property="og:image" content={ogImage} />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={Astro.url} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/logo.webp', Astro.url)} />
+    <meta name="twitter:image" content={ogImage} />
     
     <title>{fullTitle}</title>
   </head>

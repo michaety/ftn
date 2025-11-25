@@ -4,6 +4,9 @@ import { getArticleBySlug } from '@/lib/db-utils';
 import { getImageUrl } from '@/lib/db-utils';
 import { marked } from 'marked';
 
+// Constants for text limits
+const MAX_SOCIAL_DESCRIPTION_LENGTH = 150;
+
 const { slug } = Astro.params;
 const db = Astro.locals.runtime.env.DB;
 const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
@@ -49,15 +52,23 @@ const authorHandle = article.author_handle || '@fishtanklive';
 const twitterUrl = authorHandle.startsWith('@') 
   ? `https://x.com/${authorHandle.substring(1)}` 
   : `https://x.com/${authorHandle}`;
+
+// Description for social preview - use excerpt or first portion of cleaned content
+const socialDescription = article.excerpt || 
+  article.content?.substring(0, MAX_SOCIAL_DESCRIPTION_LENGTH).replace(/[#*_\[\]]/g, '') + '...';
 ---
 
-<NewsLayout title={article.title}>
+<NewsLayout title={article.title} description={socialDescription} image={imageUrl}>
   <div class="ftn-container">
     <article class="ftn-article-detail">
       <h1>{article.title}</h1>
       
       {imageUrl && (
         <img src={imageUrl} alt={article.title} class="ftn-article-hero" />
+      )}
+
+      {article.excerpt && (
+        <p class="ftn-article-subtitle">{article.excerpt}</p>
       )}
       
       <div class="ftn-article-body" set:html={htmlContent} />

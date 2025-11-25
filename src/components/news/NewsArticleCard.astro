@@ -1,11 +1,15 @@
 ---
 import { getImageUrl } from '@/lib/db-utils';
 
+// Constants for text limits
+const MAX_MAIN_TEXT_LENGTH = 300;
+
 interface Article {
   id: number;
   title: string;
   slug: string;
   excerpt?: string;
+  content?: string;
   featured_image?: string;
   author_name: string;
   author_handle?: string;
@@ -37,6 +41,22 @@ const twitterUrl = authorHandle.startsWith('@')
   ? `https://x.com/${authorHandle.substring(1)}` 
   : `https://x.com/${authorHandle}`;
 
+/**
+ * Extract first paragraph from markdown content for main page display.
+ * Removes markdown headings, cleans formatting, and truncates to max length.
+ */
+function getFirstParagraph(content: string | undefined): string {
+  if (!content) return '';
+  // Remove markdown headings and normalize line breaks
+  const cleanContent = content.replace(/^#+\s+.*/gm, '').replace(/\s*[\r\n]+\s*/g, '\n\n');
+  const paragraphs = cleanContent.split(/\n\n+/).map(p => p.trim()).filter(p => p.length > 0);
+  const firstPara = paragraphs[0] || '';
+  // Remove remaining markdown characters and truncate
+  return firstPara.replace(/[*_#\[\]`]/g, '').substring(0, MAX_MAIN_TEXT_LENGTH);
+}
+
+const mainText = getFirstParagraph(article.content);
+
 // Determine article classes based on category
 // Convert category to valid CSS class by lowercasing and replacing spaces with hyphens
 // e.g., "fake news" becomes "fake-news" to match filter button data-filter values
@@ -54,10 +74,14 @@ const articleClasses = `article ftn-article-card all ${categoryClass}`;
       <img src={imageUrl} alt={article.title} class="article-thumbnail" />
     </div>
   )}
+
+  {article.excerpt && (
+    <p class="ftn-article-excerpt-subtitle">{article.excerpt}</p>
+  )}
   
   <div class="ftn-article-content article-content">
-    {article.excerpt && (
-      <p class="ftn-article-excerpt">{article.excerpt}</p>
+    {mainText && (
+      <p class="ftn-article-main-text">{mainText}</p>
     )}
   </div>
   

@@ -98,6 +98,15 @@ header::after,
     line-height: 1.1;
 }
 
+.ftn-logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.ftn-logo-link:hover .ftn-logo {
+    color: var(--aged-sepia) !important;
+}
+
 .ftn-logo-img {
     display: none;
 }
@@ -381,6 +390,22 @@ header::after,
     margin-bottom: 1em;
 }
 
+/* Excerpt displayed as subtitle under image */
+.ftn-article-excerpt-subtitle {
+    font-size: 0.9em;
+    color: var(--aged-sepia);
+    text-align: center;
+    font-style: italic;
+    margin: 5px auto 15px;
+    max-width: 400px;
+    line-height: 1.4;
+}
+
+/* Main text from first paragraph */
+.ftn-article-main-text {
+    margin-bottom: 1em;
+}
+
 .article-content::first-letter {
     font-size: 3em;
     font-weight: bold;
@@ -557,6 +582,21 @@ hr {
     letter-spacing: 2px;
     border-bottom: 3px double var(--ink-black);
     padding-bottom: 15px;
+}
+
+/* Dashboard Header with Logo */
+.ftn-dashboard-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px double var(--ink-black);
+}
+
+.ftn-dashboard-logo {
+    max-width: 300px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 /* Articles Grid */
@@ -796,6 +836,16 @@ hr {
     filter: grayscale(100%) sepia(30%) contrast(1.1);
 }
 
+.ftn-article-subtitle {
+    font-size: 0.9em;
+    color: var(--aged-sepia);
+    text-align: center;
+    font-style: italic;
+    margin: 10px auto 30px;
+    max-width: 600px;
+    line-height: 1.5;
+}
+
 .ftn-article-body {
     line-height: 1.8;
     font-size: 1.05em;
@@ -1031,6 +1081,31 @@ hr {
 .ftn-input::placeholder {
     color: var(--aged-sepia);
     opacity: 0.7;
+}
+
+.ftn-excerpt-input {
+    font-size: 0.9em;
+    color: var(--aged-sepia);
+    font-style: italic;
+}
+
+.ftn-char-counter {
+    text-align: right;
+    font-size: 0.85em;
+    color: var(--aged-sepia);
+    margin-top: 5px;
+}
+
+.ftn-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--ink-black);
+    background-color: var(--paper-white);
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    color: var(--ink-black);
+    box-sizing: border-box;
+    resize: vertical;
 }
 
 .ftn-error {
