@@ -35,19 +35,14 @@ const trendingArticles = await getTrendingArticles(db, 4);
         <p style="font-size: 0.85em; color: var(--aged-sepia, #8B7355);">No trending articles yet.</p>
       )}
       
-      <div class="x-embed" id="twitter-embed-1">
+      <div class="x-embed" id="list-gif-embed">
         <h3>Community Updates</h3>
         <p style="font-size: 0.85em; margin-bottom: 10px;">See what the community has to say:</p>
-        <div class="twitter-timeline-container">
-          <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/5wcol/lists/1712083470296686731?ref_src=twsrc%5Etfw">A Twitter List by 5wcol</a>
-          <div class="twitter-loading" style="display: block; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
-            <p style="margin: 0; font-size: 1em; color: var(--ink-black, #000);">Loading X timeline...</p>
-          </div>
-          <div class="twitter-error" style="display: none; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
-            <p style="margin: 0 0 15px 0; font-size: 1em; color: var(--ink-black, #000); font-weight: bold;">Unable to load X timeline</p>
-            <p style="margin: 0 0 15px 0; font-size: 0.9em; color: var(--ink-black, #000);">This may be due to rate limiting.</p>
-            <a href="https://twitter.com/5wcol/lists/1712083470296686731" target="_blank" rel="noopener" style="color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold;">View on X →</a>
-          </div>
+        <div class="list-gif-container" style="text-align: center;">
+          <a href="https://twitter.com/5wcol/lists/1712083470296686731" target="_blank" rel="noopener">
+            <img id="list-gif" src="/list.gif" alt="Community X List" style="width: 100%; max-width: 100%; border: 2px solid var(--ink-black, #000); box-shadow: 2px 2px 0px rgba(0,0,0,0.1);" />
+          </a>
+          <a href="https://twitter.com/5wcol/lists/1712083470296686731" target="_blank" rel="noopener" class="add-now-link" style="display: block; margin-top: 10px; color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold; font-size: 1.1em;">add now!</a>
         </div>
       </div>
     </aside>
@@ -82,18 +77,15 @@ const trendingArticles = await getTrendingArticles(db, 4);
         <li><a href="https://www.instagram.com/fishtank.live" target="_blank" rel="noopener">Official Instagram</a></li>
         <li><a href="https://www.youtube.com/@fishtankislive" target="_blank" rel="noopener">Official YouTube</a></li>
       </ul>
-      <div class="x-embed" id="twitter-embed-2">
+      <div class="x-embed" id="fishtank-profile-card">
         <h3>Official Feed</h3>
-        <div class="twitter-timeline-container">
-          <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/fishtankislive?ref_src=twsrc%5Etfw">Tweets by fishtankislive</a>
-          <div class="twitter-loading" style="display: block; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
-            <p style="margin: 0; font-size: 1em; color: var(--ink-black, #000);">Loading X timeline...</p>
-          </div>
-          <div class="twitter-error" style="display: none; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
-            <p style="margin: 0 0 15px 0; font-size: 1em; color: var(--ink-black, #000); font-weight: bold;">Unable to load X timeline</p>
-            <p style="margin: 0 0 15px 0; font-size: 0.9em; color: var(--ink-black, #000);">This may be due to rate limiting.</p>
-            <a href="https://twitter.com/fishtankislive" target="_blank" rel="noopener" style="color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold;">View on X →</a>
-          </div>
+        <div class="fishtank-profile-card" style="text-align: center; padding: 20px; background: var(--paper-white, #fdfaf5); border: 2px solid var(--ink-black, #000); box-shadow: 2px 2px 0px rgba(0,0,0,0.1);">
+          <a href="https://x.com/fishtankislive" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+            <img src="https://pbs.twimg.com/profile_images/1933275371496939520/LKgxmbF8_400x400.jpg" alt="Fishtank Live Profile" onerror="this.onerror=null;this.src='/logo.webp';" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--ink-black, #000); display: block; margin: 0 auto 15px auto; object-fit: cover;" />
+            <p style="margin: 0 0 5px 0; font-size: 1.2em; font-weight: bold; color: var(--ink-black, #000);">Fishtank Live</p>
+            <p style="margin: 0 0 15px 0; font-size: 0.9em; color: var(--aged-sepia, #8B7355);">@fishtankislive</p>
+          </a>
+          <a href="https://x.com/fishtankislive" target="_blank" rel="noopener" class="ftn-btn" style="display: inline-block; padding: 12px 24px; background-color: var(--ink-black, #000); color: var(--paper-white, #fff); text-decoration: none; font-weight: bold; border: 2px solid var(--ink-black, #000); transition: all 0.3s ease;">Follow on X</a>
         </div>
       </div>
     </aside>
@@ -124,114 +116,15 @@ const trendingArticles = await getTrendingArticles(db, 4);
       // Note: Sidebar responsive behavior is now handled entirely by CSS media queries
       // in news.css. No JavaScript manipulation of sidebar styles is needed.
 
-      // Twitter embed lazy loading with error handling
-      let twitterScriptLoaded = false;
-      let twitterScriptLoading = false;
-      let retryCount = 0;
-      const maxRetries = 3;
-      const retryDelay = 2000; // Start with 2 seconds
-      const renderCheckInterval = 500; // Check for iframe rendering every 500ms
-      const renderTimeout = 10000; // Wait up to 10 seconds for timeline render
-
-      // Manage embed UI state (loading, loaded, error)
-      function setEmbedState(state) {
-        const loadingElements = document.querySelectorAll('.twitter-loading');
-        const errorElements = document.querySelectorAll('.twitter-error');
-        
-        if (state === 'loading') {
-          loadingElements.forEach(el => el.style.display = 'block');
-          errorElements.forEach(el => el.style.display = 'none');
-        } else if (state === 'loaded') {
-          loadingElements.forEach(el => el.style.display = 'none');
-          errorElements.forEach(el => el.style.display = 'none');
-        } else if (state === 'error') {
-          loadingElements.forEach(el => el.style.display = 'none');
-          errorElements.forEach(el => el.style.display = 'block');
-        }
-      }
-
-      function loadTwitterWidget() {
-        if (twitterScriptLoaded || twitterScriptLoading) return;
-        
-        twitterScriptLoading = true;
-        const script = document.createElement('script');
-        script.src = 'https://platform.twitter.com/widgets.js';
-        script.charset = 'utf-8';
-        script.async = true;
-
-        script.onload = () => {
-          console.log('Twitter widget script loaded successfully');
-          twitterScriptLoaded = true;
-          twitterScriptLoading = false;
-
-          // Monitor timeline rendering with timeout
-          const checkInterval = setInterval(() => {
-            const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
-            if (iframes.length > 0) {
-              console.log('Twitter timelines rendered successfully');
-              setEmbedState('loaded');
-              clearInterval(checkInterval);
-            }
-          }, renderCheckInterval);
-
-          // Fallback: after timeout, hide loading regardless
-          setTimeout(() => {
-            clearInterval(checkInterval);
-            const iframes = document.querySelectorAll('iframe[id^="twitter-widget"]');
-            if (iframes.length === 0) {
-              console.warn('Twitter timelines failed to render after timeout');
-              setEmbedState('error');
-            } else {
-              setEmbedState('loaded');
-            }
-          }, renderTimeout);
-        };
-
-        script.onerror = () => {
-          console.error('Failed to load Twitter widget script');
-          twitterScriptLoading = false;
-          
-          // Retry with exponential backoff
-          if (retryCount < maxRetries) {
-            retryCount++;
-            // Exponential backoff using bit shifting for performance
-            const delay = retryDelay << (retryCount - 1);
-            console.log(`Retrying Twitter widget load in ${delay}ms (attempt ${retryCount}/${maxRetries})`);
-            setTimeout(() => {
-              loadTwitterWidget();
-            }, delay);
-          } else {
-            console.error('Max retries reached for Twitter widget script');
-            twitterScriptLoaded = true; // Mark as loaded to prevent further attempts
-            setEmbedState('error');
-          }
-        };
-
-        document.head.appendChild(script);
-      }
-
-      // Intersection Observer for lazy loading
-      const twitterEmbeds = document.querySelectorAll('.x-embed');
-      
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting && !twitterScriptLoaded && !twitterScriptLoading) {
-              console.log('Twitter embed visible, loading widget...');
-              loadTwitterWidget();
-              // Observer stays active to allow retries if initial load fails
-              // The guard flags in loadTwitterWidget prevent duplicate loads
-            }
-          });
-        }, {
-          rootMargin: '100px' // Start loading when embed is 100px from viewport
-        });
-
-        twitterEmbeds.forEach(embed => observer.observe(embed));
-      } else {
-        // Fallback for browsers without IntersectionObserver
-        console.log('IntersectionObserver not supported, loading Twitter widget immediately');
-        loadTwitterWidget();
+      // Force GIF to loop by reloading it periodically
+      const listGif = document.getElementById('list-gif');
+      if (listGif) {
+        // Reload the GIF every 5 seconds to force it to restart
+        setInterval(() => {
+          const src = listGif.src;
+          listGif.src = '';
+          listGif.src = src;
+        }, 5000);
       }
     });
   </script>
