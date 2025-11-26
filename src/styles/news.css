@@ -775,7 +775,9 @@ hr {
 }
 
 /* Responsive design */
-@media (max-width: 1024px) {
+/* Breakpoint increased to 1280px to prevent sidebar overlap on iPad landscape (1180x820) */
+/* Total width needed: 280px (left) + 800px (main) + 280px (right) = 1360px */
+@media (max-width: 1280px) {
     .container,
     .ftn-container {
         flex-direction: column !important;
