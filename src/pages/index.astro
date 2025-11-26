@@ -9,8 +9,8 @@ const r2PublicUrl = Astro.locals.runtime.env.R2_PUBLIC_URL || '';
 // Fetch approved articles from the database
 const articles = await getArticles(db, 'approved');
 
-// Fetch trending articles (top 2 by view count)
-const trendingArticles = await getTrendingArticles(db, 2);
+// Fetch trending articles (up to 4, supports both automatic and manual modes)
+const trendingArticles = await getTrendingArticles(db, 4);
 ---
 
 <NewsLayout title="Home" hideNavigation={true}>
@@ -39,14 +39,14 @@ const trendingArticles = await getTrendingArticles(db, 2);
         <h3>Community Updates</h3>
         <p style="font-size: 0.85em; margin-bottom: 10px;">See what the community has to say:</p>
         <div class="twitter-timeline-container">
-          <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://x.com/i/lists/1712083470296686731">Unofficial Fishtank List</a>
+          <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/5wcol/lists/1712083470296686731?ref_src=twsrc%5Etfw">A Twitter List by 5wcol</a>
           <div class="twitter-loading" style="display: block; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
             <p style="margin: 0; font-size: 1em; color: var(--ink-black, #000);">Loading X timeline...</p>
           </div>
           <div class="twitter-error" style="display: none; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
             <p style="margin: 0 0 15px 0; font-size: 1em; color: var(--ink-black, #000); font-weight: bold;">Unable to load X timeline</p>
             <p style="margin: 0 0 15px 0; font-size: 0.9em; color: var(--ink-black, #000);">This may be due to rate limiting.</p>
-            <a href="https://x.com/i/lists/1712083470296686731" target="_blank" rel="noopener" style="color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold;">View on X →</a>
+            <a href="https://twitter.com/5wcol/lists/1712083470296686731" target="_blank" rel="noopener" style="color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold;">View on X →</a>
           </div>
         </div>
       </div>
@@ -85,14 +85,14 @@ const trendingArticles = await getTrendingArticles(db, 2);
       <div class="x-embed" id="twitter-embed-2">
         <h3>Official Feed</h3>
         <div class="twitter-timeline-container">
-          <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://x.com/fishtankislive">Posts by @fishtankislive</a>
+          <a class="twitter-timeline" data-height="500" data-theme="light" data-chrome="noheader nofooter noborders" href="https://twitter.com/fishtankislive?ref_src=twsrc%5Etfw">Tweets by fishtankislive</a>
           <div class="twitter-loading" style="display: block; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
             <p style="margin: 0; font-size: 1em; color: var(--ink-black, #000);">Loading X timeline...</p>
           </div>
           <div class="twitter-error" style="display: none; text-align: center; padding: 40px; background: var(--aged-white, #f8f8f0); border: 4px solid var(--ink-black, #000);">
             <p style="margin: 0 0 15px 0; font-size: 1em; color: var(--ink-black, #000); font-weight: bold;">Unable to load X timeline</p>
             <p style="margin: 0 0 15px 0; font-size: 0.9em; color: var(--ink-black, #000);">This may be due to rate limiting.</p>
-            <a href="https://x.com/fishtankislive" target="_blank" rel="noopener" style="color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold;">View on X →</a>
+            <a href="https://twitter.com/fishtankislive" target="_blank" rel="noopener" style="color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold;">View on X →</a>
           </div>
         </div>
       </div>
