@@ -40,7 +40,7 @@ const trendingArticles = await getTrendingArticles(db, 4);
         <p style="font-size: 0.85em; margin-bottom: 10px;">See what the community has to say:</p>
         <div class="list-gif-container" style="text-align: center;">
           <a href="https://twitter.com/5wcol/lists/1712083470296686731" target="_blank" rel="noopener">
-            <img src="/list.gif" alt="Community X List" style="width: 100%; max-width: 100%; border: 2px solid var(--ink-black, #000); box-shadow: 2px 2px 0px rgba(0,0,0,0.1);" />
+            <img id="list-gif" src="/list.gif" alt="Community X List" style="width: 100%; max-width: 100%; border: 2px solid var(--ink-black, #000); box-shadow: 2px 2px 0px rgba(0,0,0,0.1);" />
           </a>
           <a href="https://twitter.com/5wcol/lists/1712083470296686731" target="_blank" rel="noopener" class="add-now-link" style="display: block; margin-top: 10px; color: var(--aged-sepia, #8B7355); text-decoration: underline; font-weight: bold; font-size: 1.1em;">add now!</a>
         </div>
@@ -115,6 +115,17 @@ const trendingArticles = await getTrendingArticles(db, 4);
 
       // Note: Sidebar responsive behavior is now handled entirely by CSS media queries
       // in news.css. No JavaScript manipulation of sidebar styles is needed.
+
+      // Force GIF to loop by reloading it periodically
+      const listGif = document.getElementById('list-gif');
+      if (listGif) {
+        // Reload the GIF every 5 seconds to force it to restart
+        setInterval(() => {
+          const src = listGif.src;
+          listGif.src = '';
+          listGif.src = src;
+        }, 5000);
+      }
     });
   </script>
 </NewsLayout>
