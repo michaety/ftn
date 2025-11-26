@@ -891,7 +891,12 @@ hr {
     /* Add spacing between header and filters on mobile */
     .filters,
     .ftn-filters {
-        margin-top: 40px;
+        margin-top: 60px;
+    }
+
+    /* Add spacing for article detail headline on mobile */
+    .ftn-article-detail {
+        padding-top: 60px !important;
     }
 
     .article h2,
