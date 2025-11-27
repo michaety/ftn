@@ -98,6 +98,13 @@ export async function getArticlesByAuthor(db: any, authorId: number) {
   return result.results || [];
 }
 
+export async function getAllDrafts(db: any) {
+  const result = await db.prepare(
+    'SELECT a.*, u.name as author_name, u.email as author_email, u.author_handle FROM articles a LEFT JOIN users u ON a.author_id = u.id WHERE a.status = ? ORDER BY a.created_at DESC'
+  ).bind('draft').all();
+  return result.results || [];
+}
+
 export async function createArticle(db: any, data: {
   title: string;
   slug: string;
