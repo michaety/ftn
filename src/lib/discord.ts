@@ -1,4 +1,48 @@
 /**
+ * Discord embed field type
+ */
+interface DiscordEmbedField {
+  name: string;
+  value: string;
+  inline?: boolean;
+}
+
+/**
+ * Discord embed type
+ */
+interface DiscordEmbed {
+  title?: string;
+  description?: string;
+  color?: number;
+  fields?: DiscordEmbedField[];
+  timestamp?: string;
+}
+
+/**
+ * Discord webhook message type
+ */
+interface DiscordMessage {
+  content?: string;
+  embeds?: DiscordEmbed[];
+}
+
+/**
+ * Validates that a URL is a valid Discord webhook URL
+ * @param url - The URL to validate
+ * @returns true if the URL is a valid Discord webhook URL
+ */
+function isValidDiscordWebhookUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    // Only allow Discord webhook URLs
+    return parsedUrl.hostname === 'discord.com' && 
+           parsedUrl.pathname.startsWith('/api/webhooks/');
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Sends a Discord notification via webhook
  * @param webhookUrl - The Discord webhook URL
  * @param message - The message content to send
@@ -6,14 +50,14 @@
  */
 export async function sendDiscordNotification(
   webhookUrl: string,
-  message: { content?: string; embeds?: Array<{
-    title?: string;
-    description?: string;
-    color?: number;
-    fields?: Array<{ name: string; value: string; inline?: boolean }>;
-    timestamp?: string;
-  }> }
+  message: DiscordMessage
 ): Promise<boolean> {
+  // Validate webhook URL to prevent SSRF attacks
+  if (!isValidDiscordWebhookUrl(webhookUrl)) {
+    console.error('Invalid Discord webhook URL');
+    return false;
+  }
+
   try {
     const response = await fetch(webhookUrl, {
       method: 'POST',
