@@ -1,2 +1,3 @@
 API_TOKEN=your_token_here
 R2_PUBLIC_URL=https://img.fishtank.news
+DISCORD_WEBHOOK_URL=your_discord_webhook_url_here
