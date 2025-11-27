@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getAllDrafts, getSession, getCookie } from '@/lib/db-utils';
+import { getArticles, getSession, getCookie } from '@/lib/db-utils';
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     const db = locals.runtime.env.DB;
-    const drafts = await getAllDrafts(db);
+    const drafts = await getArticles(db, 'draft');
     return new Response(JSON.stringify({ drafts }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
