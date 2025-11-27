@@ -34,8 +34,9 @@ interface DiscordMessage {
 function isValidDiscordWebhookUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
-    // Only allow Discord webhook URLs
-    return parsedUrl.hostname === 'discord.com' && 
+    // Only allow Discord webhook URLs (both discord.com and discordapp.com)
+    const validHostnames = ['discord.com', 'discordapp.com'];
+    return validHostnames.includes(parsedUrl.hostname) && 
            parsedUrl.pathname.startsWith('/api/webhooks/');
   } catch {
     return false;
@@ -75,6 +76,16 @@ export async function sendDiscordNotification(
 }
 
 /**
+ * Escapes special Discord markdown characters in a string
+ * @param text - The text to escape
+ * @returns The escaped text safe for Discord messages
+ */
+function escapeDiscordMarkdown(text: string): string {
+  // Escape Discord markdown special characters
+  return text.replace(/([*_~`|\\])/g, '\\$1');
+}
+
+/**
  * Sends a new writer signup notification to Discord
  * @param webhookUrl - The Discord webhook URL
  * @param writerDetails - Details about the new writer
@@ -88,9 +99,9 @@ export async function sendWriterSignupNotification(
     description: 'A new writer has signed up and is pending approval.',
     color: 0x5865F2, // Discord blurple color
     fields: [
-      { name: 'Name', value: writerDetails.name, inline: true },
-      { name: 'Email', value: writerDetails.email, inline: true },
-      { name: 'Author Handle', value: writerDetails.authorHandle, inline: true },
+      { name: 'Name', value: escapeDiscordMarkdown(writerDetails.name), inline: true },
+      { name: 'Email', value: escapeDiscordMarkdown(writerDetails.email), inline: true },
+      { name: 'Author Handle', value: escapeDiscordMarkdown(writerDetails.authorHandle), inline: true },
     ],
     timestamp: new Date().toISOString(),
   };
