@@ -1,2 +1,18 @@
 API_TOKEN=your_token_here
 R2_PUBLIC_URL=https://img.fishtank.news
+
+# Discord Integration (optional - for user signup notifications with approve/reject buttons)
+# 
+# Setup Instructions:
+# 1. Create a Discord Application at https://discord.com/developers/applications
+# 2. Copy the Public Key from General Information tab -> DISCORD_PUBLIC_KEY
+# 3. Set up a webhook in your Discord server and copy the URL -> DISCORD_WEBHOOK_URL
+#    (For interactive buttons, use an application-owned webhook)
+# 4. In Discord Developer Portal, set Interactions Endpoint URL to:
+#    https://your-domain.com/api/discord/interactions
+#
+# When a new user signs up, a Discord notification with Approve/Reject buttons will be sent.
+# Clicking these buttons will update the user's status in the database.
+
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/your_webhook_id/your_webhook_token
+DISCORD_PUBLIC_KEY=your_discord_application_public_key
