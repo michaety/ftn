@@ -1,6 +1,23 @@
 import type { APIRoute } from 'astro';
 import { createUser } from '@/lib/db-utils';
 import { sendWriterSignupNotification } from '@/lib/discord';
+import { sendSignupNotification } from '@/lib/discord';
+
+// User interface from database
+interface CreatedUser {
+  id: number;
+  email: string;
+  name: string;
+  status: string;
+  role: string;
+  author_handle?: string;
+}
+
+// Environment with Discord configuration
+interface SignupEnv {
+  DB: D1Database;
+  DISCORD_WEBHOOK_URL?: string;
+}
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -17,7 +34,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    const db = locals.runtime.env.DB;
+    const env = locals.runtime.env as SignupEnv;
+    const db = env.DB;
 
     // Create user with pending status
     const user = await createUser(db, {
@@ -27,7 +45,23 @@ export const POST: APIRoute = async ({ request, locals }) => {
       name,
       authorHandle,
       status: 'pending'
-    });
+    }) as CreatedUser;
+
+    // Send Discord notification with approve/reject buttons
+    const discordWebhookUrl = env.DISCORD_WEBHOOK_URL;
+    if (discordWebhookUrl) {
+      try {
+        await sendSignupNotification(discordWebhookUrl, {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          authorHandle,
+        });
+      } catch (discordError) {
+        // Log error but don't fail the signup
+        console.error('Failed to send Discord notification:', discordError);
+      }
+    }
 
     // Send Discord notification (non-blocking, doesn't affect signup success)
     const discordWebhookUrl = locals.runtime.env.DISCORD_WEBHOOK_URL;
