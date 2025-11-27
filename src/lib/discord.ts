@@ -89,6 +89,7 @@ function escapeDiscordMarkdown(text: string): string {
  * Sends a new writer signup notification to Discord
  * @param webhookUrl - The Discord webhook URL
  * @param writerDetails - Details about the new writer
+ * @returns Promise that resolves to true if successful, false otherwise
  */
 export async function sendWriterSignupNotification(
   webhookUrl: string,
