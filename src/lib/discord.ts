@@ -108,6 +108,9 @@ export async function sendWriterSignupNotification(
   };
 
   return sendDiscordNotification(webhookUrl, { embeds: [embed] });
+}
+
+/**
  * Discord Integration Utilities
  * Handles Discord webhook notifications and interaction verification
  * 
