@@ -196,7 +196,10 @@ export async function sendSignupNotification(
     ],
   };
 
-  return fetch(webhookUrl + '?wait=true', {
+  const url = new URL(webhookUrl);
+  url.searchParams.set('wait', 'true');
+
+  return fetch(url.toString(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

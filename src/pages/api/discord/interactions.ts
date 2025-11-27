@@ -9,9 +9,25 @@ import {
 } from '@/lib/discord';
 import { approveUser, rejectUser, getUserById } from '@/lib/db-utils';
 
+// User interface from database
+interface User {
+  id: number;
+  email: string;
+  name: string;
+  status: string;
+  role: string;
+  author_handle?: string;
+}
+
+// Environment with Discord configuration
+interface DiscordEnv {
+  DB: D1Database;
+  DISCORD_PUBLIC_KEY?: string;
+}
+
 export const POST: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime.env;
-  const discordPublicKey = (env as Record<string, unknown>).DISCORD_PUBLIC_KEY as string | undefined;
+  const env = locals.runtime.env as DiscordEnv;
+  const discordPublicKey = env.DISCORD_PUBLIC_KEY;
 
   // Check if Discord public key is configured
   if (!discordPublicKey) {
@@ -75,7 +91,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     try {
       // Get user info first for the response message
-      const user = await getUserById(db, userId);
+      const user = await getUserById(db, userId) as User | null;
       
       if (!user) {
         const response = createActionResponse(action, 'Unknown User', false);
@@ -86,7 +102,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       }
 
       // Check if user is still pending
-      if ((user as { status: string }).status !== 'pending') {
+      if (user.status !== 'pending') {
         // User has already been processed
         const response = {
           type: DISCORD_CALLBACK_TYPE.UPDATE_MESSAGE,
@@ -94,7 +110,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
             embeds: [
               {
                 title: 'ℹ️ Already Processed',
-                description: `**${(user as { name: string }).name}** has already been ${(user as { status: string }).status}.`,
+                description: `**${user.name}** has already been ${user.status}.`,
                 color: 0x5865F2,
                 timestamp: new Date().toISOString(),
               },
@@ -115,7 +131,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         await rejectUser(db, userId);
       }
 
-      const response = createActionResponse(action, (user as { name: string }).name, true);
+      const response = createActionResponse(action, user.name, true);
       return new Response(JSON.stringify(response), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }

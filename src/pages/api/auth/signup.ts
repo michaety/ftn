@@ -2,6 +2,22 @@ import type { APIRoute } from 'astro';
 import { createUser } from '@/lib/db-utils';
 import { sendSignupNotification } from '@/lib/discord';
 
+// User interface from database
+interface CreatedUser {
+  id: number;
+  email: string;
+  name: string;
+  status: string;
+  role: string;
+  author_handle?: string;
+}
+
+// Environment with Discord configuration
+interface SignupEnv {
+  DB: D1Database;
+  DISCORD_WEBHOOK_URL?: string;
+}
+
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
     const formData = await request.formData();
@@ -17,7 +33,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    const db = locals.runtime.env.DB;
+    const env = locals.runtime.env as SignupEnv;
+    const db = env.DB;
 
     // Create user with pending status
     const user = await createUser(db, {
@@ -27,10 +44,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
       name,
       authorHandle,
       status: 'pending'
-    }) as { id: number; name: string; email: string };
+    }) as CreatedUser;
 
     // Send Discord notification with approve/reject buttons
-    const discordWebhookUrl = (locals.runtime.env as Record<string, unknown>).DISCORD_WEBHOOK_URL as string | undefined;
+    const discordWebhookUrl = env.DISCORD_WEBHOOK_URL;
     if (discordWebhookUrl) {
       try {
         await sendSignupNotification(discordWebhookUrl, {
