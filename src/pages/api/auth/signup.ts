@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro';
 import { createUser } from '@/lib/db-utils';
-import { sendWriterSignupNotification } from '@/lib/discord';
 import { sendSignupNotification } from '@/lib/discord';
 
 // User interface from database
@@ -61,18 +60,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
         // Log error but don't fail the signup
         console.error('Failed to send Discord notification:', discordError);
       }
-    }
-
-    // Send Discord notification (non-blocking, doesn't affect signup success)
-    const discordWebhookUrl = locals.runtime.env.DISCORD_WEBHOOK_URL;
-    if (discordWebhookUrl) {
-      sendWriterSignupNotification(discordWebhookUrl, {
-        name,
-        email,
-        authorHandle,
-      }).catch((error) => {
-        console.error('Failed to send Discord notification:', error);
-      });
     }
 
     // Return success
