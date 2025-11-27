@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createUser } from '@/lib/db-utils';
+import { sendSignupNotification } from '@/lib/discord';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -26,7 +27,23 @@ export const POST: APIRoute = async ({ request, locals }) => {
       name,
       authorHandle,
       status: 'pending'
-    });
+    }) as { id: number; name: string; email: string };
+
+    // Send Discord notification with approve/reject buttons
+    const discordWebhookUrl = (locals.runtime.env as Record<string, unknown>).DISCORD_WEBHOOK_URL as string | undefined;
+    if (discordWebhookUrl) {
+      try {
+        await sendSignupNotification(discordWebhookUrl, {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          authorHandle,
+        });
+      } catch (discordError) {
+        // Log error but don't fail the signup
+        console.error('Failed to send Discord notification:', discordError);
+      }
+    }
 
     // Return success
     return new Response(JSON.stringify({
