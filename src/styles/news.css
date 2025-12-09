@@ -862,18 +862,6 @@ hr {
         --header-height: 120px;
     }
 
-    body {
-        padding-top: 0 !important;
-    }
-
-    /* Unlock header on mobile devices */
-    header, .ftn-header {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-    }
-
     /* Reduce container padding on small screens */
     .container,
     .ftn-container {
