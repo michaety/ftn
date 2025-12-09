@@ -778,6 +778,18 @@ hr {
 /* Breakpoint increased to 1280px to prevent sidebar overlap on iPad landscape (1180x820) */
 /* Total width needed: 280px (left) + 800px (main) + 280px (right) = 1360px */
 @media (max-width: 1280px) {
+    body {
+        padding-top: 0 !important;
+    }
+
+    /* Unlock header on tablet/mobile devices */
+    header, .ftn-header {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+    }
+
     .container,
     .ftn-container {
         flex-direction: column !important;
@@ -793,6 +805,7 @@ hr {
         width: 100% !important;
         height: auto !important;
         margin-bottom: 20px !important;
+        margin-top: 0 !important;
         top: auto !important;
         overflow-y: visible !important;
     }
@@ -850,7 +863,15 @@ hr {
     }
 
     body {
-        padding-top: 120px !important;
+        padding-top: 0 !important;
+    }
+
+    /* Unlock header on mobile devices */
+    header, .ftn-header {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
     }
 
     /* Reduce container padding on small screens */
@@ -890,15 +911,15 @@ hr {
         margin: 5px;
     }
 
-    /* Add spacing between header and filters on mobile */
+    /* No additional top margin needed since header is no longer fixed on mobile */
     .filters,
     .ftn-filters {
-        margin-top: 80px;
+        margin-top: 0;
     }
 
-    /* Add spacing for article detail headline on mobile */
+    /* No additional top padding needed since header is no longer fixed on mobile */
     .ftn-article-detail {
-        padding-top: 60px !important;
+        padding-top: 40px !important;
     }
 
     .article h2,
