@@ -59,34 +59,32 @@ const socialDescription = article.excerpt ||
 ---
 
 <NewsLayout title={article.title} description={socialDescription} image={imageUrl}>
-  <div class="ftn-container">
-    <article class="ftn-article-detail">
-      <h1>{article.title}</h1>
-      
-      {imageUrl && (
-        <img src={imageUrl} alt={article.title} class="ftn-article-hero" />
-      )}
+  <article class="ftn-article-detail">
+    <h1>{article.title}</h1>
+    
+    {imageUrl && (
+      <img src={imageUrl} alt={article.title} class="ftn-article-hero" />
+    )}
 
-      {article.excerpt && (
-        <p class="ftn-article-subtitle">{article.excerpt}</p>
-      )}
-      
-      <div class="ftn-article-body" set:html={htmlContent} />
-      
-      <div class="ftn-article-footer">
-        <div class="ftn-article-meta">
-          <span class="ftn-article-author">{article.author_name}</span>
-          <span class="ftn-article-separator">|</span>
-          <a href={twitterUrl} target="_blank" rel="noopener" class="ftn-article-handle">{authorHandle}</a>
-          <span class="ftn-article-separator">|</span>
-          <span class="ftn-article-date">{formattedDate}</span>
-        </div>
-        {article.category && (
-          <div class="ftn-article-category">
-            <span class="ftn-category-badge">{article.category}</span>
-          </div>
-        )}
+    {article.excerpt && (
+      <p class="ftn-article-subtitle">{article.excerpt}</p>
+    )}
+    
+    <div class="ftn-article-body" set:html={htmlContent} />
+    
+    <div class="ftn-article-footer">
+      <div class="ftn-article-meta">
+        <span class="ftn-article-author">{article.author_name}</span>
+        <span class="ftn-article-separator">|</span>
+        <a href={twitterUrl} target="_blank" rel="noopener" class="ftn-article-handle">{authorHandle}</a>
+        <span class="ftn-article-separator">|</span>
+        <span class="ftn-article-date">{formattedDate}</span>
       </div>
-    </article>
-  </div>
+      {article.category && (
+        <div class="ftn-article-category">
+          <span class="ftn-category-badge">{article.category}</span>
+        </div>
+      )}
+    </div>
+  </article>
 </NewsLayout>

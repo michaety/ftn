@@ -1023,7 +1023,7 @@ hr {
 /* Article Detail Styles */
 .ftn-article-detail {
     max-width: 800px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 40px;
     background-color: var(--paper-white);
     border: 2px solid var(--ink-black);
