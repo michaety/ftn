@@ -905,14 +905,19 @@ hr {
         margin-top: 0;
     }
 
-    /* No additional top padding needed since header is no longer fixed on mobile */
+    /* Reduce padding on mobile to prevent text overflow */
     .ftn-article-detail {
-        padding-top: 40px !important;
+        padding: 40px 20px !important;
     }
 
     .article h2,
     .ftn-article-title {
         font-size: 1.8em;
+    }
+    
+    /* Disable text justification on mobile for better readability */
+    .ftn-article-body {
+        text-align: left;
     }
 
     .main-feed,
@@ -979,6 +984,11 @@ hr {
     .sidebar,
     .ftn-sidebar {
         padding: 15px !important;
+    }
+    
+    /* Further reduce padding on very small screens */
+    .ftn-article-detail {
+        padding: 30px 15px !important;
     }
 
     .filters button,
