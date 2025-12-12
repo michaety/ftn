@@ -48,20 +48,18 @@ const formattedDate = new Date(article.published_at || article.created_at).toLoc
 ---
 
 <NewsLayout title={article.title}>
-  <div class="ftn-container">
-    <article class="ftn-article-detail">
-      <h1>{article.title}</h1>
-      
-      <div class="ftn-article-meta">
-        <span class="ftn-article-author">By {article.author_name}</span>
-        <span class="ftn-article-date">{formattedDate}</span>
-      </div>
-      
-      {imageUrl && (
-        <img src={imageUrl} alt={article.title} class="ftn-article-hero" />
-      )}
-      
-      <div class="ftn-article-body" set:html={htmlContent} />
-    </article>
-  </div>
+  <article class="ftn-article-detail">
+    <h1>{article.title}</h1>
+    
+    <div class="ftn-article-meta">
+      <span class="ftn-article-author">By {article.author_name}</span>
+      <span class="ftn-article-date">{formattedDate}</span>
+    </div>
+    
+    {imageUrl && (
+      <img src={imageUrl} alt={article.title} class="ftn-article-hero" />
+    )}
+    
+    <div class="ftn-article-body" set:html={htmlContent} />
+  </article>
 </NewsLayout>
