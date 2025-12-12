@@ -382,12 +382,14 @@ header::after,
     font-size: 1.05em;
     overflow: hidden;
     padding: 20px 0;
+    overflow-wrap: break-word;
 }
 
 .article-content p,
 .ftn-article-content p,
 .ftn-article-excerpt {
     margin-bottom: 1em;
+    overflow-wrap: break-word;
 }
 
 /* Excerpt displayed as subtitle under image */
@@ -1038,6 +1040,7 @@ hr {
     background-color: var(--paper-white);
     border: 2px solid var(--ink-black);
     box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+    overflow-wrap: break-word;
 }
 
 .ftn-article-detail > h1 {
@@ -1081,6 +1084,7 @@ hr {
     font-size: 1.05em;
     text-align: justify;
     margin: 30px 0;
+    overflow-wrap: break-word;
 }
 
 .ftn-article-body h1 {
@@ -1118,6 +1122,7 @@ hr {
 
 .ftn-article-body p {
     margin-bottom: 1.2em;
+    overflow-wrap: break-word;
 }
 
 .ftn-article-body img {
@@ -1135,6 +1140,7 @@ hr {
     font-weight: 600;
     text-decoration: underline;
     transition: color 0.3s ease;
+    overflow-wrap: break-word;
 }
 
 .ftn-article-body a:hover {
