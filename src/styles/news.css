@@ -911,6 +911,12 @@ hr {
     .ftn-article-detail {
         padding: 40px 20px !important;
     }
+    
+    /* Ensure subtitle doesn't overflow on mobile */
+    .ftn-article-subtitle {
+        padding: 0 10px;
+        max-width: 100%;
+    }
 
     .article h2,
     .ftn-article-title {
@@ -1056,6 +1062,8 @@ hr {
     border-top: 1px solid var(--ink-black);
     border-bottom: 1px solid var(--ink-black);
     padding: 15px 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .ftn-article-hero {
@@ -1077,6 +1085,9 @@ hr {
     margin: 10px auto 30px;
     max-width: 600px;
     line-height: 1.5;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .ftn-article-body {
