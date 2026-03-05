@@ -334,6 +334,65 @@ header::after,
     transition: color 0.3s ease;
 }
 
+/* Article byline — appears between headline and image */
+.ftn-article-byline {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px 10px;
+    padding: 10px 0 14px;
+    border-bottom: 1px solid var(--aged-sepia);
+    margin-bottom: 20px;
+    font-size: 0.82em;
+    font-style: italic;
+    color: var(--ink-black);
+    letter-spacing: 0.5px;
+}
+
+.ftn-byline-label {
+    color: var(--aged-sepia);
+    font-weight: 600;
+    font-style: normal;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+}
+
+.ftn-byline-item strong {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--ink-black);
+}
+
+.ftn-byline-sep {
+    color: var(--aged-sepia);
+    font-size: 0.75em;
+    font-style: normal;
+}
+
+.ftn-byline-handle {
+    color: var(--ink-black);
+    font-weight: 700;
+    font-style: normal;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.ftn-byline-handle:hover {
+    color: var(--aged-sepia);
+    text-decoration: underline;
+}
+
+.ftn-byline-category {
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ink-black);
+    font-size: 0.9em;
+}
+
 .ftn-article-title a {
     color: var(--ink-black);
     text-decoration: none;

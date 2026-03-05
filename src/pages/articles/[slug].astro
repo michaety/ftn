@@ -61,7 +61,18 @@ const socialDescription = article.excerpt ||
 <NewsLayout title={article.title} description={socialDescription} image={imageUrl}>
   <article class="ftn-article-detail">
     <h1>{article.title}</h1>
-    
+
+    <div class="ftn-article-byline">
+      <span class="ftn-byline-item"><span class="ftn-byline-label">Written by:</span> <strong>{article.author_name}</strong></span>
+      <span class="ftn-byline-sep">✦</span>
+      <span class="ftn-byline-item"><span class="ftn-byline-label">Twitter:</span> <a href={twitterUrl} target="_blank" rel="noopener" class="ftn-byline-handle">{authorHandle}</a></span>
+      <span class="ftn-byline-sep">✦</span>
+      <span class="ftn-byline-item"><span class="ftn-byline-label">Date Published:</span> <strong>{formattedDate}</strong></span>
+      {article.category && (
+        <><span class="ftn-byline-sep">✦</span><span class="ftn-byline-item ftn-byline-category">{article.category.toUpperCase()}</span></>
+      )}
+    </div>
+
     {imageUrl && (
       <img src={imageUrl} alt={article.title} class="ftn-article-hero" />
     )}
@@ -69,22 +80,7 @@ const socialDescription = article.excerpt ||
     {article.excerpt && (
       <p class="ftn-article-subtitle">{article.excerpt}</p>
     )}
-    
+
     <div class="ftn-article-body" set:html={htmlContent} />
-    
-    <div class="ftn-article-footer">
-      <div class="ftn-article-meta">
-        <span class="ftn-article-author">{article.author_name}</span>
-        <span class="ftn-article-separator">|</span>
-        <a href={twitterUrl} target="_blank" rel="noopener" class="ftn-article-handle">{authorHandle}</a>
-        <span class="ftn-article-separator">|</span>
-        <span class="ftn-article-date">{formattedDate}</span>
-      </div>
-      {article.category && (
-        <div class="ftn-article-category">
-          <span class="ftn-category-badge">{article.category}</span>
-        </div>
-      )}
-    </div>
   </article>
 </NewsLayout>

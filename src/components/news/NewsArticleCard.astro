@@ -68,7 +68,7 @@ const articleClasses = `article ftn-article-card all ${categoryClass}`;
   <h2 class="ftn-article-title">
     <a href={`/articles/${article.slug}`}>{article.title}</a>
   </h2>
-  
+
   {imageUrl && (
     <div class="ftn-article-image">
       <img src={imageUrl} alt={article.title} class="article-thumbnail" />
@@ -78,13 +78,13 @@ const articleClasses = `article ftn-article-card all ${categoryClass}`;
   {article.excerpt && (
     <p class="ftn-article-excerpt-subtitle">{article.excerpt}</p>
   )}
-  
+
   <div class="ftn-article-content article-content">
     {mainText && (
       <p class="ftn-article-main-text">{mainText}</p>
     )}
   </div>
-  
+
   <span class="tag ftn-article-meta">
     {article.author_name} | <a href={twitterUrl} target="_blank" rel="noopener" style="color: var(--aged-sepia); font-weight: 700;">{authorHandle}</a> | {formattedDate}
     {article.category && (
