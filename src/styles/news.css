@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Georgia&display=swap');
 
 :root {
-    --header-height: 200px;
+    --header-height: 140px;
     --beige-bg: #f5f0e6;
     --paper-white: #fdfaf5;
     --ink-black: #1a1a1a;
@@ -49,7 +49,7 @@ body::before {
 header, .ftn-header {
     background-color: var(--paper-white) !important;
     text-align: center !important;
-    padding: 30px 20px 20px !important;
+    padding: 15px 20px 10px !important;
     border-bottom: 4px double var(--ink-black) !important;
     border-top: 2px solid var(--ink-black) !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
@@ -88,7 +88,7 @@ header::after,
 .header-title,
 .ftn-logo {
     font-family: 'Playfair Display', serif !important;
-    font-size: 5.5em !important;
+    font-size: 4em !important;
     font-weight: 900 !important;
     margin: 0;
     letter-spacing: 8px !important;
@@ -117,14 +117,14 @@ header::after,
 
 .header-subtitle,
 .ftn-header-subtitle {
-    font-size: 1.1em;
+    font-size: 0.85em;
     color: var(--ink-black);
-    margin-top: 15px;
+    margin-top: 6px;
     letter-spacing: 1px;
     font-weight: 400;
     border-top: 1px solid var(--ink-black);
     border-bottom: 1px solid var(--ink-black);
-    padding: 8px 0;
+    padding: 4px 0;
     display: inline-block;
     max-width: 90%;
 }
@@ -861,7 +861,7 @@ hr {
 
 @media (max-width: 768px) {
     :root {
-        --header-height: 120px;
+        --header-height: 90px;
     }
 
     /* Reduce container padding on small screens */
